@@ -1,3 +1,3 @@
 # hackacode-backend
 
-![Diagrama de clases hackacode](https://github.com/Iv-Mieres/hackacode-backend/assets/103857812/3131e651-c068-4c1b-83ed-c4f57135debd)
+![Diagrama sin título drawio (5)](https://github.com/Iv-Mieres/hackacode-backend/assets/103857812/485b80bb-a026-4998-8ed1-8f48fe4902f2)
