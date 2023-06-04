@@ -1,6 +1,7 @@
 package com.hackacode.themepark.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class TicketVip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @DecimalMin(value = "0.0", message = "El valor mínimo ingresado debe ser de 0.0")
     private double price;
     @CreationTimestamp
     private LocalDateTime date;

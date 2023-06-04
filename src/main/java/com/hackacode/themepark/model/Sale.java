@@ -22,4 +22,16 @@ public class Sale {
     private List<TicketVip> ticketsVip;
     @OneToMany(mappedBy = "sale")
     private List<Ticket> tickets;
+
+    public double calculateTotalPrice(){
+        double sum = 0.0;
+
+        for (Ticket ticket: tickets) {
+          sum += ticket.getGame().getPrice();
+        }
+        for (TicketVip vip: ticketsVip) {
+            sum += vip.getPrice();
+        }
+        return sum;
+    }
 }

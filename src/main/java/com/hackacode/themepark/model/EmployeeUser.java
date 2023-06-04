@@ -1,6 +1,9 @@
 package com.hackacode.themepark.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,9 +25,17 @@ public class EmployeeUser extends Person implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotEmpty(message = "No puede estar vacio")
+    @Email(message = "Debe ingresar un formato de tipo email")
     private String email;
+    @NotEmpty(message = "No puede estar vacio")
+    @Size(min = 4, max = 10, message = "Debe contener un mínimo de 4 y un máximo de 10 caracteres")
     private String username;
+    @NotEmpty(message = "Do puede estar vacio")
+    @Size(min = 6, message = "Debe contener un mínimo de 6 caracteres")
     private String password;
+    private boolean isEnable;
+
     @ManyToMany
     @JoinTable(name = "employeeRole",
             joinColumns = @JoinColumn(name = "fkEmployee"),
@@ -61,6 +72,9 @@ public class EmployeeUser extends Person implements UserDetails {
 
     @Override
     public boolean isEnabled() {
+        if (this.isEnable){
+            return false;
+        }
         return true;
     }
 }

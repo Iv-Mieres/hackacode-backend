@@ -1,0 +1,47 @@
+package com.hackacode.themepark.model;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class GameTest {
+
+    private Game game;
+    private Buyer buyer;
+
+    @BeforeEach
+    void beforAll(){
+        game = new Game();
+        buyer = new Buyer();
+    }
+
+    @Test
+    void validateAgeGreater18ThenTrue(){
+        buyer.setBirthdate(LocalDate.of(2005, 6, 3));
+        game.setMinAge(18);
+
+        assertEquals(true, game.validateAge(buyer));
+
+    }
+
+    @Test
+    void validateAgeUnder18ThenTrue(){
+        buyer.setBirthdate(LocalDate.of(2005, 6, 5));
+        game.setMinAge(18);
+
+        assertEquals(false, game.validateAge(buyer));
+    }
+
+    @Test
+    void ValidateAgeIsEqualsThenTrue(){
+        buyer.setBirthdate(LocalDate.of(2005, 6, 4));
+        game.setMinAge(18);
+
+        assertEquals(true, game.validateAge(buyer));
+    }
+
+
+}
