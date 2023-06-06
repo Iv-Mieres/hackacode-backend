@@ -8,24 +8,23 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity(name = "sales")
 public class Sale {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private double totalPrice;
-    @OneToMany(mappedBy = "sale")
+    @OneToMany
     private List<TicketVip> ticketsVip;
-    @OneToMany(mappedBy = "sale")
+    @OneToMany
     private List<Ticket> tickets;
 
     public double calculateTotalPrice(){
         double sum = 0.0;
-
         for (Ticket ticket: tickets) {
           sum += ticket.getGame().getPrice();
         }

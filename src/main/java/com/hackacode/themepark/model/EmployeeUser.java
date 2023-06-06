@@ -1,8 +1,10 @@
 package com.hackacode.themepark.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,22 +18,20 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Entity(name = "Employees")
 public class EmployeeUser extends Person implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
     @NotEmpty(message = "No puede estar vacio")
     @Email(message = "Debe ingresar un formato de tipo email")
     private String email;
-    @NotEmpty(message = "No puede estar vacio")
+    @NotNull(message = "No puede estar vacio")
     @Size(min = 4, max = 10, message = "Debe contener un mínimo de 4 y un máximo de 10 caracteres")
     private String username;
-    @NotEmpty(message = "Do puede estar vacio")
+    @NotNull(message = "Do puede estar vacio")
     @Size(min = 6, message = "Debe contener un mínimo de 6 caracteres")
     private String password;
     private boolean isEnable;
@@ -41,10 +41,8 @@ public class EmployeeUser extends Person implements UserDetails {
             joinColumns = @JoinColumn(name = "fkEmployee"),
             inverseJoinColumns = @JoinColumn(name = "fkRole")
     )
+    @JsonIgnoreProperties("employee")
     private Set<Role> roles;
-    @OneToOne
-    @JoinColumn(name = "fkGame")
-    private Game game;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -8,25 +8,23 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity(name = "tickets")
 public class Ticket {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     @CreationTimestamp
-    private LocalDateTime dateTime;
+    private LocalDateTime purchaseDate;
     private boolean used;
     @OneToOne
     @JoinColumn(name = "fkGame")
     private Game game;
-    @ManyToOne
-    @JoinColumn(name = "fkSale")
-    private Sale sale;
     @OneToOne
     @JoinColumn(name = "fkBuyer")
     private Buyer buyer;

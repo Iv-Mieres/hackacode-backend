@@ -9,26 +9,24 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity(name = "ticketsVip")
 public class TicketVip {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     @DecimalMin(value = "0.0", message = "El valor mínimo ingresado debe ser de 0.0")
     private double price;
     @CreationTimestamp
-    private LocalDateTime date;
+    private LocalDateTime purchaseDate;
     private boolean used;
-    @ManyToOne
-    @JoinColumn(name = "fkSale")
-    private Sale sale;
     @OneToOne
-    @JoinColumn(name = "fkBuyer")
+    @JoinColumn(name = "fkBuyer", referencedColumnName = "id")
     private Buyer buyer;
 
 }

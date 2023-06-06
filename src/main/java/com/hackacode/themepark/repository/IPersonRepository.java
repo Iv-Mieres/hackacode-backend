@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
 @NoRepositoryBean
-public interface PersonRepository<T extends Person, ID> extends JpaRepository<T, ID> {
+public interface IPersonRepository<T extends Person, ID> extends JpaRepository<T, ID> {
 }
