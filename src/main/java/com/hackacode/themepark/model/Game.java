@@ -37,7 +37,7 @@ public class Game {
     private Schedule schedule;
     @OneToOne
     @JoinColumn(name = "fkEmployee")
-    private EmployeeUser employee;
+    private Employee employee;
 
     //Método para validar si el comprador es menor o mayor a 18 años
     public boolean validateAge(Buyer buyer){

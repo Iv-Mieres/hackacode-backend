@@ -23,5 +23,5 @@ public class Role {
     private String role;
     @ManyToMany(mappedBy = "roles")
     @JsonIgnoreProperties("roles")
-    private List<EmployeeUser> employee;
+    private List<Employee> employee;
 }

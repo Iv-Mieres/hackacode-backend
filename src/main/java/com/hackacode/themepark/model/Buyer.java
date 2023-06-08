@@ -1,15 +1,12 @@
 package com.hackacode.themepark.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
-
+@EqualsAndHashCode(callSuper = true)
+@Data
 @AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Entity(name = "buyers")
 public class Buyer extends Person{
 

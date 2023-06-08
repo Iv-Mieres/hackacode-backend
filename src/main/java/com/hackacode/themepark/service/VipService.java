@@ -1,31 +1,31 @@
 package com.hackacode.themepark.service;
 
-import com.hackacode.themepark.model.TicketVip;
-import com.hackacode.themepark.repository.ITicketVipRepository;
+import com.hackacode.themepark.model.Vip;
+import com.hackacode.themepark.repository.IVipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class TicketVipService implements ITicketVipService{
+public class VipService implements IVipService {
 
     @Autowired
-    private ITicketVipRepository ticketVipRepository;
+    private IVipRepository ticketVipRepository;
 
 
     @Override
-    public void saveTicketVip(TicketVip ticketVip) {
-        ticketVipRepository.save(ticketVip);
+    public void saveTicketVip(Vip vip) {
+        ticketVipRepository.save(vip);
     }
 
     @Override
-    public TicketVip getTicketVipById(Long TicketVipId) {
+    public Vip getTicketVipById(Long TicketVipId) {
         return null;
     }
 
     @Override
-    public List<TicketVip> getTicketVips() {
+    public List<Vip> getTicketVips() {
         return ticketVipRepository.findAll();
     }
 

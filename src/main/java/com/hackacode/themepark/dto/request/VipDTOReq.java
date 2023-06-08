@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TicketDTOReq {
+public class VipDTOReq {
 
     private LocalDateTime purchaseDate;
-    private GameDTOReq gameDTO;
+    private double price;
     private BuyerDTOReq buyerDTO;
 }

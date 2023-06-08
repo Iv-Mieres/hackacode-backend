@@ -6,7 +6,7 @@ import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class EmployeeUserTest {
+class EmployeeTest {
 
     @Test
     void testThatGetAuthoritiesReturnsAListOfRoles(){
@@ -17,7 +17,7 @@ class EmployeeUserTest {
         var roles = new HashSet<Role>();
         roles.add(role1);
         //Se crea un Empleado asignando el Set de roles
-        var employee = EmployeeUser.builder().roles(roles).build();
+        var employee = Employee.builder().roles(roles).build();
         //se comprueba que el método getAuthorities de la entidad Employee contenga el role asignado
         var result = employee.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ADMIN"));
 
@@ -26,13 +26,13 @@ class EmployeeUserTest {
 
     @Test
     void ifEmployeeIsDismissedThenIsEnableTrue(){
-        var employee = EmployeeUser.builder().isEnable(true).build();
+        var employee = Employee.builder().isEnable(true).build();
         assertEquals(false, employee.isEnabled());
     }
 
     @Test
     void ifEmployeeIsNotDismissedThenIsEnableFalse(){
-        var employee = EmployeeUser.builder().isEnable(false).build();
+        var employee = Employee.builder().isEnable(false).build();
         assertEquals(true, employee.isEnabled());
     }
 

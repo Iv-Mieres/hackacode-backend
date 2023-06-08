@@ -1,7 +1,8 @@
 package com.hackacode.themepark.controller;
 
+import com.hackacode.themepark.model.Normal;
 import com.hackacode.themepark.model.Ticket;
-import com.hackacode.themepark.service.ITicketService;
+import com.hackacode.themepark.service.INormalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TicketController {
 
-    private ITicketService ticketService;
+    private INormalService ticketService;
 
     @PostMapping("/")
-    public void saveTicket(@RequestBody Ticket ticket){
-        ticketService.saveTicket(ticket);
+    public void saveTicket(@RequestBody Normal ticket){
+        ticketService.saveNormalTicket(ticket);
     }
 
 }

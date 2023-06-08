@@ -4,15 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TicketDTORes {
+public class VipDTORes {
 
-    private LocalDateTime dateTime;
-    private boolean used;
-    private GameDTORes gameDTO;
+    private UUID ticketId;
+    private double Price;
+    private LocalDate purchaseDate;
     private BuyerDTORes buyerDTO;
 }
