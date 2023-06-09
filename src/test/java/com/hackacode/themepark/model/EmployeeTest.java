@@ -25,14 +25,14 @@ class EmployeeTest {
     }
 
     @Test
-    void ifEmployeeIsDismissedThenIsEnableTrue(){
-        var employee = Employee.builder().isEnable(true).build();
+    void ifEmployeeIsDismissedThenIsEnableFalse(){
+        var employee = Employee.builder().isEnable(false).build();
         assertEquals(false, employee.isEnabled());
     }
 
     @Test
-    void ifEmployeeIsNotDismissedThenIsEnableFalse(){
-        var employee = Employee.builder().isEnable(false).build();
+    void ifEmployeeIsNotDismissedThenIsEnableTrue(){
+        var employee = Employee.builder().isEnable(true).build();
         assertEquals(true, employee.isEnabled());
     }
 

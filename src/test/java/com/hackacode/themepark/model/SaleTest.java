@@ -11,12 +11,12 @@ class SaleTest {
 
     private Game game;
     private Sale sale;
-    private Normal normalTicket;
+    private NormalTicket normalTicket;
 
     @BeforeEach
     void setUp() {
         game = new Game();
-        normalTicket = new Normal();
+        normalTicket = new NormalTicket();
         sale = new Sale();
     }
 
@@ -29,23 +29,23 @@ class SaleTest {
         normalTicket.setGame(game);
 
         //se guarda el ticket en una lista
-        var normalTickets = new ArrayList<Normal>();
+        var normalTickets = new ArrayList<NormalTicket>();
         normalTickets.add(normalTicket);
 
         //se crean tickets vips
-        Vip vip1 = new Vip();
-        vip1.setPrice(5000.0);
-        Vip vip2 = new Vip();
-        vip2.setPrice(5000.0);
+        VipTicket vipTicket1 = new VipTicket();
+        vipTicket1.setPrice(5000.0);
+        VipTicket vipTicket2 = new VipTicket();
+        vipTicket2.setPrice(5000.0);
 
         //se guardan los tickets vips en una lista
-        var vips = new ArrayList<Vip>();
-        vips.add(vip1);
-        vips.add(vip2);
+        var vips = new ArrayList<VipTicket>();
+        vips.add(vipTicket1);
+        vips.add(vipTicket2);
 
         //se settean los tickets de Sale con las listas de tickets creadas
-        sale.setNormalTickets(normalTickets);
-        sale.setVips(vips);
+        sale.setNormalTicketTickets(normalTickets);
+        sale.setVipTickets(vips);
 
         assertEquals(12000.0, sale.calculateTotalPrice());
     }

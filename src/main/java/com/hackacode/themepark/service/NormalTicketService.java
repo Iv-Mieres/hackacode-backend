@@ -1,31 +1,30 @@
 package com.hackacode.themepark.service;
 
-import com.hackacode.themepark.model.Normal;
-import com.hackacode.themepark.model.Ticket;
-import com.hackacode.themepark.repository.INormalRepository;
+import com.hackacode.themepark.model.NormalTicket;
+import com.hackacode.themepark.repository.INormalTicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class NormalService implements INormalService {
+public class NormalTicketService implements INormalTicketService {
 
     @Autowired
-    private INormalRepository ticketRepository;
+    private INormalTicketRepository ticketRepository;
 
     @Override
-    public void saveNormalTicket(Normal ticket) {
+    public void saveNormalTicket(NormalTicket ticket) {
         ticketRepository.save(ticket);
     }
 
     @Override
-    public Normal getNormalTicketById(Long TicketId) {
+    public NormalTicket getNormalTicketById(Long TicketId) {
         return null;
     }
 
     @Override
-    public List<Normal> getNormalTickets() {
+    public List<NormalTicket> getNormalTickets() {
         return null;
     }
 

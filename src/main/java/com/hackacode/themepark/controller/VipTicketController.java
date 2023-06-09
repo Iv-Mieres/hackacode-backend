@@ -1,7 +1,7 @@
 package com.hackacode.themepark.controller;
 
-import com.hackacode.themepark.model.Vip;
-import com.hackacode.themepark.service.IVipService;
+import com.hackacode.themepark.model.VipTicket;
+import com.hackacode.themepark.service.IVipTicketService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -10,19 +10,19 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/ticket_vip")
-public class TicketVipController {
+public class VipTicketController {
 
     @Autowired
-    private IVipService ticketVipService;
+    private IVipTicketService ticketVipService;
 
     @PostMapping()
-    public void saveTicketVip(@Valid @RequestBody Vip vip){
+    public void saveTicketVip(@Valid @RequestBody VipTicket vipTicket){
 
-        ticketVipService.saveTicketVip(vip);
+        ticketVipService.saveTicketVip(vipTicket);
     }
 
     @GetMapping("/ver_todos")
-    public List<Vip> allVips(){
+    public List<VipTicket> allVips(){
         return ticketVipService.getTicketVips();
     }
 

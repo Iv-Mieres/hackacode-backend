@@ -19,17 +19,17 @@ public class Sale {
     private Long id;
     private double totalPrice;
     @OneToMany
-    private List<Vip> vips;
+    private List<VipTicket> vipTickets;
     @OneToMany
-    private List<Normal> normalTickets;
+    private List<NormalTicket> normalTicketTickets;
 
     public double calculateTotalPrice(){
         double sum = 0.0;
-        for (Normal ticket: normalTickets) {
-          sum += ticket.getGame().getPrice();
+        for (NormalTicket normalTicket: normalTicketTickets) {
+          sum += normalTicket.getGame().getPrice();
         }
-        for (Vip vip: vips) {
-            sum += vip.getPrice();
+        for (VipTicket vipTicket : vipTickets) {
+            sum += vipTicket.getPrice();
         }
         return sum;
     }

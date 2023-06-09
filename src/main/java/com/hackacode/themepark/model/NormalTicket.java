@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "normals")
-public class Normal extends Ticket{
+public class NormalTicket extends Ticket{
 
     private boolean used;
     @OneToOne

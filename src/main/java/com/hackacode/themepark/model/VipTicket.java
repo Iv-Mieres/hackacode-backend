@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "vips")
-public class Vip extends Ticket{
+public class VipTicket extends Ticket{
 
     @OneToOne
     @JoinColumn(name = "fkBuyer", referencedColumnName = "id")
