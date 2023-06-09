@@ -68,9 +68,6 @@ public class Employee extends Person implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        if (this.isEnable){
-            return false;
-        }
-        return true;
+        return this.isEnable;
     }
 }
