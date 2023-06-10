@@ -34,7 +34,7 @@ public class Employee extends Person implements UserDetails {
     private String password;
     private boolean isEnable;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "employeeRole",
             joinColumns = @JoinColumn(name = "fkEmployee"),
             inverseJoinColumns = @JoinColumn(name = "fkRole")
@@ -46,7 +46,7 @@ public class Employee extends Person implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> authorities = new HashSet<>();
         for (Role role : roles) {
-        authorities.add(new SimpleGrantedAuthority(role.getRole()));
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRole()));
         }
         return authorities;
     }

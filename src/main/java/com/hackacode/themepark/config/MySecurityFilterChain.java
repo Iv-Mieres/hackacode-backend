@@ -2,12 +2,18 @@ package com.hackacode.themepark.config;
 
 import com.hackacode.themepark.config.filters.JWTAuthenticationFilter;
 import com.hackacode.themepark.config.filters.JWTAuthorizationFilter;
+import com.hackacode.themepark.service.UserDetailsServiceImpl;
 import com.hackacode.themepark.util.JWTUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,6 +26,7 @@ import org.springframework.stereotype.Component;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class MySecurityFilterChain {
 
     @Autowired
@@ -28,17 +35,21 @@ public class MySecurityFilterChain {
     @Autowired
     JWTAuthorizationFilter authorizationFilter;
 
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
 
         JWTAuthenticationFilter jwtAuthenticationFilter = new JWTAuthenticationFilter(jwtUtils);
         jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
-        jwtAuthenticationFilter.setFilterProcessesUrl("/login");
+//        jwtAuthenticationFilter.setFilterProcessesUrl("/login");
 
         return httpSecurity
                 .csrf(config -> config.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/hello").permitAll();
+                    auth.requestMatchers("/empleado").permitAll();
+//                    auth.requestMatchers("/login").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> {
@@ -55,11 +66,22 @@ public class MySecurityFilterChain {
     }
 
 //    @Bean
-//    AuthenticationManager authenticationManager(HttpSecurity httpSecurity, PasswordEncoder passwordEncoder) throws Exception {
-//        return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class)
-//                .userDetailsService()
-//                .passwordEncoder(passwordEncoder)
-//                .and().build();
+//    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+//            throws Exception {
+//        return authenticationConfiguration.getAuthenticationManager();
 //    }
+
+    @Bean
+    AuthenticationManager authenticationManager(HttpSecurity httpSecurity, PasswordEncoder passwordEncoder) throws Exception {
+        return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder)
+                .and().build();
+    }
+
+    @Bean
+    ModelMapper modelMapper(){
+        return new ModelMapper();
+    }
 
 }

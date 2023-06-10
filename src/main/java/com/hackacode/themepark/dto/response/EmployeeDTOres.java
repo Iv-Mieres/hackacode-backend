@@ -4,15 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NormalDTORes {
+public class EmployeeDTOres {
 
-    private LocalDateTime dateTime;
-    private boolean used;
+    private Long employeeId;
+    private String email;
+    private String username;
     private GameDTORes gameDTO;
-    private BuyerDTORes buyerDTO;
+
 }

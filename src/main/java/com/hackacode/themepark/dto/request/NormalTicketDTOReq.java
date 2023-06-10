@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NormalDTOReq {
+public class NormalTicketDTOReq {
 
     private LocalDateTime purchaseDate;
     private GameDTOReq gameDTO;
