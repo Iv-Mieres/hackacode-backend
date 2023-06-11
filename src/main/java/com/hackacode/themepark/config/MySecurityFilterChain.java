@@ -48,6 +48,7 @@ public class MySecurityFilterChain {
                 .csrf(config -> config.disable())
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/empleado").permitAll();
+                    auth.requestMatchers("/logout").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> {

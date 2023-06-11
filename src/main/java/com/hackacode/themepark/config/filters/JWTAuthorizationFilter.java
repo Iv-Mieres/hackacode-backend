@@ -23,9 +23,6 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     @Autowired
     private JWTUtils jwtUtils;
 
-//    @Autowired
-//    private IEmployeeUserRepository employRepo;
-
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
@@ -41,9 +38,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
             if(jwtUtils.isTokenValid(token)){
                 String username = jwtUtils.getUsernameFromToken(token);
-
-//                Employee employeeUser = employRepo.findByUsername(username).orElse(null);
-               UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                var userDetails = userDetailsService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(username, null, userDetails.getAuthorities());
 

@@ -21,13 +21,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
        Employee employeeUser = employeeUserRepository.findByUsername(username)
                .orElseThrow(() -> new UsernameNotFoundException("El usuario " + username + " no existe"));
 
-
         return new User(employeeUser.getUsername(),
                 employeeUser.getPassword(),
-                true,
-                true,
-                true,
-                true,
+                employeeUser.isEnabled(),
+                employeeUser.isAccountNonExpired(),
+                employeeUser.isCredentialsNonExpired(),
+                employeeUser.isAccountNonLocked(),
                 employeeUser.getAuthorities());
     }
 }

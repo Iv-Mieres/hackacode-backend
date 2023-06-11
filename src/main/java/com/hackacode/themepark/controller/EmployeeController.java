@@ -16,7 +16,7 @@ public class EmployeeController {
     @Autowired
     private IEmployeeService employeeService;
 
-
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PostMapping
     public void saveEmployee(@Valid @RequestBody EmployeeDTOReq employeeDTO) throws Exception {
          employeeService.saveEmployee(employeeDTO);
