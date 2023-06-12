@@ -5,7 +5,6 @@ import com.hackacode.themepark.dto.response.EmployeeDTOres;
 import com.hackacode.themepark.model.Employee;
 import com.hackacode.themepark.model.Role;
 import com.hackacode.themepark.repository.IEmployeeUserRepository;
-import com.hackacode.themepark.repository.IRoleRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,22 +26,14 @@ public class EmployeeService implements IEmployeeService{
     @Autowired
     private IEmployeeUserRepository employeeUserRepository;
 
-    @Autowired
-    private IRoleRepository roleRepository;
-
-    public EmployeeService(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
-
     // Guarda el Empleado con su respectivo Rol
     @Override
     public void saveEmployee(EmployeeDTOReq employeeDTO) throws Exception {
-        Employee employee = modelMapper.map(employeeDTO, Employee.class);
-        employee.setEnable(true);
+        var employee = modelMapper.map(employeeDTO, Employee.class);
+        var role = modelMapper.map(employeeDTO.getRoleDTO(), Role.class);
 
-        Role roleBD = roleRepository.findById(employeeDTO.getRoleId())
-                .orElseThrow(() -> new Exception("El id " + employeeDTO.getRoleId() + " no existe"));
-        employee.setRoles(Set.of(roleBD));
+        employee.setEnable(true);
+        employee.setRoles(Set.of(role));
         employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         employeeUserRepository.save(employee);
     }

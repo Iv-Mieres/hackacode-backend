@@ -50,7 +50,8 @@ public class MySecurityFilterChain {
         return httpSecurity
                 .csrf(config -> config.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/empleado","/swagger-ui/**").permitAll();
+                    auth.requestMatchers("/empleado").permitAll();
+                    auth.requestMatchers("/logout").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> {
