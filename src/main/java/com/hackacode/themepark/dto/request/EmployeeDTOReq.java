@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @Builder
 public class EmployeeDTOReq {
 
+    private Long employeeId;
     private String name;
     private String surname;
     private String dni;

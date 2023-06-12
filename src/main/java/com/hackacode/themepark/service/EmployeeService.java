@@ -1,17 +1,19 @@
 package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.EmployeeDTOReq;
-import com.hackacode.themepark.dto.response.EmployeeDTOres;
+import com.hackacode.themepark.dto.response.EmployeeDTORes;
 import com.hackacode.themepark.model.Employee;
 import com.hackacode.themepark.model.Role;
 import com.hackacode.themepark.repository.IEmployeeUserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -26,42 +28,101 @@ public class EmployeeService implements IEmployeeService{
     @Autowired
     private IEmployeeUserRepository employeeUserRepository;
 
-    // Guarda el Empleado con su respectivo Rol
+    //CREA UN EMPLEADO CON SU ROLE
     @Override
     public void saveEmployee(EmployeeDTOReq employeeDTO) throws Exception {
+        this.validateEmployeeDataBeforeSaving(employeeDTO.getEmail(),
+                                              employeeDTO.getDni(),
+                                              employeeDTO.getUsername());
+
         var employee = modelMapper.map(employeeDTO, Employee.class);
         var role = modelMapper.map(employeeDTO.getRoleDTO(), Role.class);
-
         employee.setEnable(true);
         employee.setRoles(Set.of(role));
         employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         employeeUserRepository.save(employee);
     }
 
+    //MUESTRA EMPLEADO POR ID
     @Override
-    public EmployeeDTOres getEmployeeById(Long employeeId) {
+    public EmployeeDTORes getEmployeeById(Long employeeId) {
        var employeeBD = employeeUserRepository.findById(employeeId).orElse(null);
-       return modelMapper.map(employeeBD, EmployeeDTOres.class);
+       return modelMapper.map(employeeBD, EmployeeDTORes.class);
     }
 
+    //LISTA DTO DE EMPLEADOS PAGINADOS
     @Override
-    public List<EmployeeDTOres> getAllEmployees() {
-        var employees = employeeUserRepository.findAll();
-        var employeesDTO = new ArrayList<EmployeeDTOres>();
+    public Page<EmployeeDTORes> getAllEmployees(Pageable pageable) {
+        var employees = employeeUserRepository.findAll(pageable);
+        var employeesDTO = new ArrayList<EmployeeDTORes>();
 
         for (Employee employee: employees) {
-           employeesDTO.add(modelMapper.map(employee, EmployeeDTOres.class));
+           employeesDTO.add(modelMapper.map(employee, EmployeeDTORes.class));
         }
-        return employeesDTO;
+        return new PageImpl<>(employeesDTO, pageable, employeesDTO.size());
     }
 
+    //MODIFICA DATOS DEL EMPLEADO
     @Override
-    public void updateEmployee(EmployeeDTOReq employeeDTO) {
+    public void updateEmployee(EmployeeDTOReq employeeDTO) throws Exception {
+        var employeeBD = employeeUserRepository.findById(employeeDTO.getEmployeeId())
+                .orElseThrow(() -> new Exception("El id" + employeeDTO.getEmployeeId() + " no existe"));
 
+        //valida que el email, dni y username ingresados no existan en la bd
+        //y si existen que solo pertenezacan al empleado encontrado
+        this.validateIfExistsByEmail(employeeDTO.getEmail(),employeeBD.getEmail());
+        this.validateIfExistsByDni(employeeDTO.getDni(), employeeBD.getDni());
+        this.validateIfExistsByUsername(employeeDTO.getUsername(), employeeBD.getUsername());
+
+        //asigna los nuevos datos y guarda el empleado
+        var saveEmployee = modelMapper.map(employeeDTO, Employee.class);
+        saveEmployee.setRoles(employeeBD.getRoles());
+        saveEmployee.setEnable(true);
+        saveEmployee.setPassword(passwordEncoder.encode(employeeDTO.getPassword()));
+        employeeUserRepository.save(saveEmployee);
     }
 
+    //ELIMINA EMPLEADO DE FORMA LÓGICA
     @Override
-    public void deleteEmployee(Long employeeID) {
+    public void deleteEmployee(Long employeeID) throws Exception {
+        var employeeBD = employeeUserRepository.findById(employeeID)
+                .orElseThrow(() -> new Exception("El id " + employeeID + " no existe"));
+        employeeBD.setEnable(false);
+        employeeUserRepository.save(employeeBD);
+    }
 
+    // Validaciones para el método UPDATE
+
+    public void validateIfExistsByEmail(String emailDTO, String emailBD) throws Exception {
+        if(!emailDTO.equals(emailBD) & employeeUserRepository.existsByEmail(emailDTO)){
+            throw new Exception("El email " + emailDTO + " ya existe. Ingrese un nuevo email");
+        }
+    }
+
+    public void validateIfExistsByDni(String dniDTO, String dniBD) throws Exception {
+        if(!dniDTO.equals(dniBD) && employeeUserRepository.existsByDni(dniDTO)){
+            throw new Exception("El dni " + dniDTO + " ya existe. Ingrese un nuevo dni");
+        }
+    }
+
+    public void validateIfExistsByUsername(String usernameDTO, String usernameBD) throws Exception {
+        if(!usernameDTO.equals(usernameBD) && employeeUserRepository.existsByUsername(usernameDTO)){
+            throw new Exception("El username " + usernameDTO + " ya existe. Ingrese un nuevo username");
+        }
+    }
+
+    // Validaciones para el método SAVE
+
+    //validar que el email, dni y username sean únicos al guardar un empleado
+    public void validateEmployeeDataBeforeSaving(String emailDTO, String dniDTO, String usernameDTO) throws Exception {
+        if(employeeUserRepository.existsByEmail(emailDTO)){
+            throw new Exception("El email " + emailDTO + " ya existe. Ingrese un nuevo email");
+        }
+        if(employeeUserRepository.existsByUsername(usernameDTO)){
+            throw new Exception("El username " + usernameDTO + " ya existe. Ingrese un nuevo username");
+        }
+        if(employeeUserRepository.existsByDni(dniDTO)){
+            throw new Exception("El dni " +dniDTO + " ya existe. Ingrese un nuevo dni");
+        }
     }
 }

@@ -5,9 +5,6 @@ import com.hackacode.themepark.dto.response.BuyerDTORes;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
-
 public interface IBuyerService {
 
     void saveBuyer(BuyerDTOReq buyerDTO) throws Exception;

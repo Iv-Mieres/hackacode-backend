@@ -1,15 +1,15 @@
 package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.EmployeeDTOReq;
-import com.hackacode.themepark.dto.response.EmployeeDTOres;
-
-import java.util.List;
+import com.hackacode.themepark.dto.response.EmployeeDTORes;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface IEmployeeService {
 
     void saveEmployee(EmployeeDTOReq employeeDTO) throws Exception;
-    EmployeeDTOres getEmployeeById(Long employeeId);
-    List<EmployeeDTOres> getAllEmployees();
-    void updateEmployee(EmployeeDTOReq employeeDTO);
-    void deleteEmployee(Long employeeID);
+    EmployeeDTORes getEmployeeById(Long employeeId);
+    Page<EmployeeDTORes> getAllEmployees(Pageable pageable);
+    void updateEmployee(EmployeeDTOReq employeeDTO) throws Exception;
+    void deleteEmployee(Long employeeID) throws Exception;
 }

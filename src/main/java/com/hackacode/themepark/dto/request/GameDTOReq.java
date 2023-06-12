@@ -13,4 +13,5 @@ public class GameDTOReq {
     private double price;
     private int requiredAge;
     private EmployeeDTOReq employeeDTO;
+    private ScheduleDTOReq scheduleDTO;
 }

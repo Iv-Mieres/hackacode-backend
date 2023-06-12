@@ -13,6 +13,5 @@ public class ScheduleDTOReq {
 
     private LocalTime startTime;
     private LocalTime endTime;
-    private GameDTOReq gameDTO;
 
 }
