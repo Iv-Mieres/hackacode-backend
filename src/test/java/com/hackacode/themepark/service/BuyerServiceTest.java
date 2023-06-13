@@ -8,10 +8,7 @@ import org.hibernate.loader.ast.internal.SingleIdArrayLoadPlan;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -39,6 +36,9 @@ class BuyerServiceTest {
 
     @Mock
     private ModelMapper modelMapper;
+
+    @Captor
+    private ArgumentCaptor<Pageable> pageableCaptor;
 
     private BuyerDTOReq buyerDTOReq;
 
@@ -127,7 +127,47 @@ class BuyerServiceTest {
 
     @Test
     void findAllBuyersPageable(){
+        var buyer2 = new Buyer();
+        buyer2.setId(2L);
+        buyer2.setName("Martin");
+        buyer2.setSurname("Martinez");
+        buyer2.setBirthdate(LocalDate.of(1990,4,17));
+        buyer2.setDni("41948585");
 
+        var buyer3 = new Buyer();
+        buyer3.setId(3L);
+        buyer3.setName("Analia");
+        buyer3.setSurname("Martinez");
+        buyer3.setBirthdate(LocalDate.of(1991,3,13));
+        buyer3.setDni("42948585");
+        // lista de compradores
+        List<Buyer> buyers = new ArrayList<>();
+        buyers.add(this.buyer);
+        buyers.add(buyer2);
+        buyers.add(buyer3);
+
+        // lista de compradores DTO
+        List<BuyerDTORes> buyersDTO = new ArrayList<>();
+        buyersDTO.add(this.buyerDTORes);
+
+        Pageable pageable = Pageable.ofSize(10).withPage(0);
+        when(buyerRepository.findAll(pageable)).thenReturn(new PageImpl<>(buyers, pageable, buyers.size()));
+        when(modelMapper.map(any(Buyer.class), eq(BuyerDTORes.class))).thenReturn(buyersDTO.get(0));
+
+        // Llama al service
+        Page<BuyerDTORes> result = buyerService.getAllBuyers(pageable);
+
+        // Verifica el resultado
+        assertEquals(buyers.size(), result.getContent().size());
+        verify(buyerRepository).findAll(pageable);
+
+        // Verifica que se haya llamado al repositorio con los parámetros correctos utilizando el ArgumentCaptor
+//        verify(buyerRepository).findAll(pageableCaptor.capture());
+//        Pageable capturedPageable = pageableCaptor.getValue();
+//        assertEquals(pageable, capturedPageable);
+
+        // Verifica que los objetos coincidan
+        assertEquals(this.buyer, result.getContent().get(0));
     }
 
 }
