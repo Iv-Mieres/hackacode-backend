@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @PreAuthorize("hasRole('ADMINISTRADOR')")
-@RequestMapping("/compradores")
+@RequestMapping("/api/compradores")
 public class BuyerController {
 
     @Autowired
