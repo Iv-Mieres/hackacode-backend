@@ -1,10 +1,15 @@
 package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.GameDTOReq;
+import com.hackacode.themepark.dto.response.EmployeeDTORes;
 import com.hackacode.themepark.dto.response.GameDTORes;
+import com.hackacode.themepark.dto.response.ScheduleDTORes;
+import com.hackacode.themepark.model.Employee;
 import com.hackacode.themepark.model.Game;
+import com.hackacode.themepark.model.Schedule;
 import com.hackacode.themepark.repository.IGameRepository;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -53,8 +58,8 @@ public class GameService implements IGameService{
 
     //ACTUALIZA UN JUEGO
     @Override
-    public void updateGame(GameDTORes gameDTO) throws Exception {
-        var gameBD = gameRepository.findById(gameDTO.getGameId())
+    public void updateGame(GameDTOReq gameDTO) throws Exception {
+        var gameBD = gameRepository.findById(gameDTO.getId())
                 .orElseThrow(() -> new Exception("El id " + gameDTO + " no existe. Ingrese un nuevo id"));
         //valida que el nombre del juego no exista y si existe que coincida con el juego encontrado
         if (!gameDTO.getName().equals(gameBD.getName()) && gameRepository.existsByName(gameDTO.getName())){

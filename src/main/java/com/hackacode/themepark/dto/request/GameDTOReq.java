@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GameDTOReq {
 
+    private Long id;
     private String name;
     private double price;
     private int requiredAge;
-    private EmployeeDTOReq employeeDTO;
-    private ScheduleDTOReq scheduleDTO;
+    private EmployeeDTOReq employee;
+    private ScheduleDTOReq schedule;
 }

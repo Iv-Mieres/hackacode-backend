@@ -54,8 +54,14 @@ public class MySecurityFilterChain {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/**").permitAll()
-                    .requestMatchers("/api/**").hasRole("ADMINISTRADOR");
+                    auth.requestMatchers("/token").permitAll()
+                            .requestMatchers("/**").permitAll()
+                            .requestMatchers("/api/compradores", "/api/empleados", "/api/roles").hasRole("ADMINISTRADOR")
+                            .requestMatchers("/api/juegos", "/api/horarios").hasRole("JUEGOS")
+                            .requestMatchers("/api/ventas", "/api/tickets_normales",
+                                    "/api/tickets_vip").hasRole("VENTAS")
+                            .requestMatchers("/api/reportes").hasRole("GERENTE");
+
 
                 })
                 .authorizeHttpRequests(

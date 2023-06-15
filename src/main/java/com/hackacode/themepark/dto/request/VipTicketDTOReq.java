@@ -11,7 +11,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class VipTicketDTOReq {
 
+    private Long id;
     private LocalDateTime purchaseDate;
     private double price;
-    private BuyerDTOReq buyerDTO;
+    private BuyerDTOReq buyer;
 }

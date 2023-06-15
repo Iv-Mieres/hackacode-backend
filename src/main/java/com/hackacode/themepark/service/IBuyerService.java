@@ -11,5 +11,5 @@ public interface IBuyerService {
     BuyerDTORes getBuyerById(Long buyerId) throws Exception;
     Page<BuyerDTORes> getAllBuyers(Pageable pageable);
     void updateBuyer(BuyerDTORes buyerDTO) throws Exception;
-    void deleteBuyer(Long buyerID);
+    void deleteBuyer(Long buyerID) throws Exception;
 }

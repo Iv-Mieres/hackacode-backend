@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @Builder
 public class BuyerDTOReq {
 
+    private Long id;
     private String dni;
     private String name;
     private String surname;

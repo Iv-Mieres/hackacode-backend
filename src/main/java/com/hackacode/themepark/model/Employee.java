@@ -11,15 +11,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Entity(name = "Employees")
 public class Employee extends Person implements UserDetails {
 
@@ -41,6 +39,25 @@ public class Employee extends Person implements UserDetails {
     )
     @JsonIgnoreProperties("employee")
     private Set<Role> roles;
+
+    @OneToOne(mappedBy = "employee", fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("employee")
+    private Game game;
+
+    public Employee() {
+        super();
+    }
+
+    public Employee(Long id, String dni, String name, String surname, LocalDate birthdate,
+                    String email, String username, String password, boolean isEnable, Set<Role> roles, Game game) {
+        super(id, dni, name, surname, birthdate);
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.isEnable = isEnable;
+        this.roles = roles;
+        this.game = game;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

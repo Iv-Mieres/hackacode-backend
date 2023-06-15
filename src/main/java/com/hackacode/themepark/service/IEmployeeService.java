@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 public interface IEmployeeService {
 
     void saveEmployee(EmployeeDTOReq employeeDTO) throws Exception;
-    EmployeeDTORes getEmployeeById(Long employeeId);
+    EmployeeDTORes getEmployeeById(Long employeeId) throws Exception;
     Page<EmployeeDTORes> getAllEmployees(Pageable pageable);
     void updateEmployee(EmployeeDTOReq employeeDTO) throws Exception;
     void deleteEmployee(Long employeeID) throws Exception;
