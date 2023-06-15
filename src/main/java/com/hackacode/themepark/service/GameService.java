@@ -29,7 +29,7 @@ public class GameService implements IGameService{
         if (gameRepository.existsByName(gameDTO.getName())){
             throw new Exception("El nombre " + gameDTO.getName() + " ya existe. Ingrese un nuevo nombre");
         }
-        this.validateEmployeeSchedule(gameDTO.getEmployee().getId(), gameDTO.getSchedule().getStartTime());
+        this.validateEmployeeSchedule(gameDTO.getEmployee().getId(), gameDTO.getSchedule().getId());
         gameRepository.save(modelMapper.map(gameDTO, Game.class));
     }
 
@@ -71,14 +71,14 @@ public class GameService implements IGameService{
         gameRepository.deleteById(gameID);
     }
 
-    //VALIDA QUE EL EMPLEADO NO PUEDA SER ASIGNADO A MÁS DE UN JUEO CON EL MISMO HORARIO
-    public void validateEmployeeSchedule(Long employeeIdDTO, LocalTime startTimeDTO) throws Exception {
+    //VALIDA QUE EL EMPLEADO NO PUEDA SER ASIGNADO A MÁS DE UN JUEGO CON EL MISMO HORARIO
+    public void validateEmployeeSchedule(Long employeeIdDTO, Long scheduleId) throws Exception {
         var games = gameRepository.findAll();
         for (Game game: games) {
             if (game.getEmployee().getId().equals(employeeIdDTO)
-                    && game.getSchedule().getStartTime().equals(startTimeDTO)){
-                throw new Exception("Este empleado ya está asignado a un juego con horario: "
-                        + startTimeDTO + "hs asigne un nuevo horario o un nuevo empleado a este juego");
+                    && game.getSchedule().getId().equals(scheduleId)){
+                throw new Exception("Este empleado ya está asignado a un juego con horario " +
+                        "selecionado. Ingrese un nuevo horario o un nuevo empleado a este juego");
             }
         }
     }
