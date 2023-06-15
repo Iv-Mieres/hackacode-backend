@@ -1,12 +1,13 @@
 package com.hackacode.themepark.controller;
 
-import com.hackacode.themepark.model.NormalTicket;
+import com.hackacode.themepark.dto.request.NormalTicketDTOReq;
+import com.hackacode.themepark.dto.response.NormalTicketDTORes;
 import com.hackacode.themepark.service.INormalTicketService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/ticket")
@@ -16,8 +17,14 @@ public class NormalTicketController {
     private INormalTicketService ticketService;
 
     @PostMapping("/")
-    public void saveTicket(@RequestBody NormalTicket ticket){
+    public void saveTicket(@RequestBody NormalTicketDTOReq ticket){
         ticketService.saveNormalTicket(ticket);
     }
+
+    @GetMapping("/ver_todos")
+    public ResponseEntity<Page<NormalTicketDTORes>> getTicketsVip(Pageable pageable){
+        return ResponseEntity.ok(ticketService.getNormalTickets(pageable));
+    }
+
 
 }
