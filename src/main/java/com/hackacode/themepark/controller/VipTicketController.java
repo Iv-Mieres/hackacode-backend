@@ -15,17 +15,4 @@ public class VipTicketController {
     @Autowired
     private IVipTicketService ticketVipService;
 
-    @PostMapping()
-    public void saveTicketVip(@Valid @RequestBody VipTicket vipTicket){
-
-        ticketVipService.saveTicketVip(vipTicket);
-    }
-
-    @GetMapping("/ver_todos")
-    public List<VipTicket> allVips(){
-        return ticketVipService.getTicketVips();
-    }
-
-
-
 }

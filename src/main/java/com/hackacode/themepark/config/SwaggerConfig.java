@@ -13,27 +13,27 @@ import java.util.Collections;
 
 @Configuration
 public class SwaggerConfig {
-    @Bean
-    public Docket api() {
-
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("com.hackacode.themepark.controller"))
-                .paths(PathSelectors.any())
-                .build()
-                .apiInfo(getApiInfo());
-    }
-
-    private ApiInfo getApiInfo() {
-        return new ApiInfo(
-                "King Park",
-                "Api de administracion y venta de tickets de juegos tematicos",
-                "1.0",
-                "https://kingpark.com/",
-                new Contact("kingpark", "https://kingpark.com", "kingpark@gmail.com"),
-                "King Park SRL License",
-                "https://kingpark.com/license",
-                Collections.emptyList()
-        );
-    }
+//    @Bean
+//    public Docket api() {
+//
+//        return new Docket(DocumentationType.SWAGGER_2)
+//                .select()
+//                .apis(RequestHandlerSelectors.basePackage("com.hackacode.themepark.controller"))
+//                .paths(PathSelectors.any())
+//                .build()
+//                .apiInfo(getApiInfo());
+//    }
+//
+//    private ApiInfo getApiInfo() {
+//        return new ApiInfo(
+//                "King Park",
+//                "Api de administracion y venta de tickets de juegos tematicos",
+//                "1.0",
+//                "https://kingpark.com/",
+//                new Contact("kingpark", "https://kingpark.com", "kingpark@gmail.com"),
+//                "King Park SRL License",
+//                "https://kingpark.com/license",
+//                Collections.emptyList()
+//        );
+//    }
 }

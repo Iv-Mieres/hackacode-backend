@@ -13,8 +13,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@PreAuthorize("hasRole('VENTAS')")
-@RequestMapping("/horarios")
+@PreAuthorize("hasRole('JUEGOS')")
+@RequestMapping("api/horarios")
 public class ScheduleController {
 
     @Autowired
@@ -26,7 +26,7 @@ public class ScheduleController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/scheduleId")
+    @GetMapping("/{scheduleId}")
     public ResponseEntity<ScheduleDTORes> getSchedule(@PathVariable Long scheduleId) throws Exception {
        return ResponseEntity.ok(scheduleService.getScheduleById(scheduleId));
     }
@@ -37,12 +37,12 @@ public class ScheduleController {
     }
 
     @PutMapping()
-    public ResponseEntity<HttpStatus> updateSchedule(@RequestBody ScheduleDTORes scheduleDTO) throws Exception {
+    public ResponseEntity<HttpStatus> updateSchedule(@Valid @RequestBody ScheduleDTORes scheduleDTO) throws Exception {
         scheduleService.updateSchedule(scheduleDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/{scheduleId}")
     public ResponseEntity<HttpStatus> deleteSchedule(@PathVariable Long scheduleId) throws Exception {
         scheduleService.deleteSchedule(scheduleId);
         return new ResponseEntity<>(HttpStatus.OK);

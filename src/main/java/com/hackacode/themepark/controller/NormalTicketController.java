@@ -15,9 +15,4 @@ public class NormalTicketController {
 
     private INormalTicketService ticketService;
 
-    @PostMapping("/")
-    public void saveTicket(@RequestBody NormalTicket ticket){
-        ticketService.saveNormalTicket(ticket);
-    }
-
 }

@@ -13,6 +13,6 @@ public class NormalTicketDTORes {
 
     private LocalDateTime dateTime;
     private boolean used;
-    private GameDTORes gameDTO;
-    private BuyerDTORes buyerDTO;
+    private GameDTORes game;
+    private BuyerDTORes buyer;
 }

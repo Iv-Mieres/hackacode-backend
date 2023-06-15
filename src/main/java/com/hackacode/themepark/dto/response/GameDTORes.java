@@ -13,6 +13,6 @@ public class GameDTORes {
     private String name;
     private double price;
     private int requiredAge;
-    private ScheduleDTORes scheduleDTO;
+    private ScheduleDTORes schedule;
 
 }

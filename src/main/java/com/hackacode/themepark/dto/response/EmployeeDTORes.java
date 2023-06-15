@@ -18,6 +18,6 @@ public class EmployeeDTORes {
     private LocalDate birthdate;
     private String email;
     private String username;
-    private GameDTORes gameDTO;
+    private GameDTORes game;
 
 }

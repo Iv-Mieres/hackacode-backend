@@ -5,6 +5,7 @@ import com.hackacode.themepark.dto.response.GameDTORes;
 import com.hackacode.themepark.model.Game;
 import com.hackacode.themepark.service.IGameService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -14,10 +15,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@PreAuthorize("hasRole('VENTAS')")
-@RequestMapping("/juegos")
+@PreAuthorize("hasRole('JUEGOS')")
+@RequestMapping("api/juegos")
 public class GameController {
 
+    @Autowired
     private IGameService gameService;
 
     @PostMapping()
@@ -26,7 +28,7 @@ public class GameController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/gameId")
+    @GetMapping("/{gameId}")
     public ResponseEntity<GameDTORes> getGame(@PathVariable Long gameId) throws Exception {
         return ResponseEntity.ok(gameService.getGameById(gameId));
     }
@@ -37,12 +39,12 @@ public class GameController {
     }
 
     @PutMapping()
-    public ResponseEntity<HttpStatus> updateGame(@RequestBody GameDTORes gameDTO) throws Exception {
+    public ResponseEntity<HttpStatus> updateGame(@Valid @RequestBody GameDTOReq gameDTO) throws Exception {
         gameService.updateGame(gameDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/gameId")
+    @DeleteMapping("/{gameId}")
     public ResponseEntity<HttpStatus> deleteGame(@PathVariable Long gameId) throws Exception {
         gameService.deleteGame(gameId);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -1,39 +1,50 @@
 package com.hackacode.themepark.model;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class EmployeeTest {
 
+    private Employee employee;
+    private Role role;
+
+    @BeforeEach
+    void beforeAll() {
+        this.role = new Role();
+        role.setRole("ADMINISTRADOR");
+        Set<Role> roles = new HashSet<Role>();
+        roles.add(role);
+
+        this.employee =  new Employee(2L,"41948585", "Martin", "Martinez", LocalDate.of(1990, 4,17),
+                "martin@mail.com", "martincito", "martin1234", true, roles, null);
+    }
+
     @Test
     void testThatGetAuthoritiesReturnsAListOfRoles(){
-        //se crea el role
-        var role1 = new Role();
-        role1.setRole("ADMIN");
-        //el Role se guarda en un Set
-        var roles = new HashSet<Role>();
-        roles.add(role1);
-        //Se crea un Empleado asignando el Set de roles
-        var employee = Employee.builder().roles(roles).build();
-        //se comprueba que el método getAuthorities de la entidad Employee contenga el role asignado
-        var result = employee.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ADMIN"));
-
+        boolean result = this.employee.getAuthorities()
+                .stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMINISTRADOR"));
         assertEquals(true, result);
     }
 
     @Test
     void ifEmployeeIsDismissedThenIsEnableFalse(){
-        var employee = Employee.builder().isEnable(false).build();
+        this.employee.setEnable(false);
         assertEquals(false, employee.isEnabled());
     }
 
     @Test
     void ifEmployeeIsNotDismissedThenIsEnableTrue(){
-        var employee = Employee.builder().isEnable(true).build();
+        this.employee.setEnable(true);
         assertEquals(true, employee.isEnabled());
     }
+
+
 
 }

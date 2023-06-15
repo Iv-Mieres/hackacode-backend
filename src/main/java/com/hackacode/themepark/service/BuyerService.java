@@ -66,15 +66,17 @@ public class BuyerService implements IBuyerService {
 
     //ELIMINA UN COMPRADOR POR ID
     @Override
-    public void deleteBuyer(Long buyerId) {
-        buyerRepository.deleteById(buyerId);
+    public void deleteBuyer(Long buyerId) throws Exception {
+        var buyerBD = buyerRepository.findById(buyerId)
+                .orElseThrow(() -> new Exception("El id " + buyerId + " no existe"));
+        buyerBD.setBanned(true);
+        buyerRepository.save(buyerBD);
     }
 
-    // Métodos de validación
+    // Método de validación para el UPDATE
 
     public void validateIfExistsByDni(String BuyerDTODni, String buyerBDDni) throws Exception {
-        if(buyerRepository.existsByDni(BuyerDTODni)
-                && !BuyerDTODni.equals(buyerBDDni)){
+        if(!BuyerDTODni.equals(buyerBDDni) && buyerRepository.existsByDni(BuyerDTODni)){
             throw new Exception("El dni " + BuyerDTODni + " ya existe. Ingrese un nuevo dni");
         }
     }

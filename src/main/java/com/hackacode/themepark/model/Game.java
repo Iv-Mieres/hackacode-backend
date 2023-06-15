@@ -26,10 +26,9 @@ public class Game {
     @NotNull(message = "No puede estar vacio")
     @Size(min = 4, message = "Debe contener un mínimo de 4 caracteres")
     private String name;
-    @NotEmpty(message = "No puede estar vacio")
     @DecimalMin(value = "0.0", message = "El valor mínimo ingresado debe ser de 0.0")
     private double price;
-    @NotEmpty(message = "No puede estar vacio")
+    @NotNull(message = "No puede estar vacio")
     private int requiredAge;
     @ManyToOne
     @JoinColumn(name = "fkSchedule")
@@ -37,6 +36,7 @@ public class Game {
     private Schedule schedule;
     @OneToOne
     @JoinColumn(name = "fkEmployee")
+    @JsonIgnoreProperties("game")
     private Employee employee;
 
     //Método para validar si el comprador es menor o mayor a 18 años

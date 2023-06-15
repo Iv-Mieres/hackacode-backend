@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +21,9 @@ public class BuyerController {
     private IBuyerService buyerServer;
 
     @PostMapping()
-    public void saveBuyer(@Valid @RequestBody BuyerDTOReq buyerDTO) throws Exception {
+    public ResponseEntity<HttpStatus> saveBuyer(@Valid @RequestBody BuyerDTOReq buyerDTO) throws Exception {
         buyerServer.saveBuyer(buyerDTO);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/{buyerId}")
@@ -35,13 +37,15 @@ public class BuyerController {
     }
 
     @PutMapping()
-    public void updateBuyer(@RequestBody BuyerDTORes buyerDTO) throws Exception {
+    public ResponseEntity<HttpStatus> updateBuyer(@Valid @RequestBody BuyerDTORes buyerDTO) throws Exception {
         buyerServer.updateBuyer(buyerDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{buyerId}")
-    public void deleteBuyer(@PathVariable Long buyerId){
+    public ResponseEntity<HttpStatus> deleteBuyer(@PathVariable Long buyerId) throws Exception {
         buyerServer.deleteBuyer(buyerId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

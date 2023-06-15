@@ -75,7 +75,7 @@ public class ScheduleService implements IScheduleService {
     public void validateIfEndAndStartTimeDoesNotExistInBD(LocalTime startTimeDTO, LocalTime startTimeBD,
                                                           LocalTime endTimeDTO, LocalTime endTimeBD) throws Exception {
         if((!startTimeDTO.equals(startTimeBD) && scheduleRepository.existsByStartTime(startTimeDTO))
-                && (!endTimeDTO.equals(endTimeBD) && scheduleRepository.existsByEndTime(startTimeDTO))){
+                && (!endTimeDTO.equals(endTimeBD) && scheduleRepository.existsByEndTime(endTimeDTO))){
             throw new Exception("Los horarios ingresados ya existen. Ingrese nuevos horarios");
         }
     }

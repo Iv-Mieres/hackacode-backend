@@ -15,5 +15,5 @@ public class VipTicketDTORes {
     private UUID ticketId;
     private double Price;
     private LocalDate purchaseDate;
-    private BuyerDTORes buyerDTO;
+    private BuyerDTORes buyer;
 }

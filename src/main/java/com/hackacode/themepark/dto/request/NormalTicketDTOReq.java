@@ -11,7 +11,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class NormalTicketDTOReq {
 
+    private Long id;
     private LocalDateTime purchaseDate;
-    private GameDTOReq gameDTO;
-    private BuyerDTOReq buyerDTO;
+    private GameDTOReq game;
+    private BuyerDTOReq buyer;
 }

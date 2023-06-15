@@ -4,7 +4,6 @@ import com.hackacode.themepark.dto.request.BuyerDTOReq;
 import com.hackacode.themepark.dto.response.BuyerDTORes;
 import com.hackacode.themepark.model.Buyer;
 import com.hackacode.themepark.repository.IBuyerRepository;
-import org.hibernate.loader.ast.internal.SingleIdArrayLoadPlan;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +14,6 @@ import org.mockito.quality.Strictness;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.*;
 
-import java.sql.Array;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class BuyerServiceTest {
 
     @InjectMocks
@@ -48,12 +45,8 @@ class BuyerServiceTest {
 
     @BeforeEach
     void setUp() {
-        this.buyer = new Buyer();
-        buyer.setId(1L);
-        buyer.setName("Diego");
-        buyer.setSurname("Martinez");
-        buyer.setBirthdate(LocalDate.of(1988,06,14));
-        buyer.setDni("40948585");
+        this.buyer = new Buyer(1L, "40948585", "Diego", "Martinez",
+                LocalDate.of(1988,06,14), false);
 
         this.buyerDTOReq = new BuyerDTOReq();
         buyerDTOReq.setName("Diego");
@@ -95,8 +88,15 @@ class BuyerServiceTest {
 
     @Test
     void throwAnExceptionIfTheDniExistsWhenUpdatingTheBuyer() throws Exception {
-        when(buyerRepository.existsByDni(this.buyerDTORes.getDni())).thenReturn(true);
-        assertThrows(Exception.class, () -> buyerService.updateBuyer(this.buyerDTORes));
+        String dniDTO = "23456778";
+        String dniBD = "34459845";
+        String espectedMjError = "El dni " + dniDTO + " ya existe. Ingrese un nuevo dni";
+
+        when(buyerRepository.existsByDni(dniDTO)).thenReturn(true);
+        Exception currentMjError = assertThrows(Exception.class,
+                () -> buyerService.validateIfExistsByDni(dniDTO, dniBD));
+
+        assertEquals(espectedMjError, currentMjError.getMessage());
     }
 
     @Test
@@ -120,54 +120,42 @@ class BuyerServiceTest {
     }
 
     @Test
-    void deleteBuyerById(){
-        doNothing().when(buyerRepository).deleteById(1L);
+    void deleteBuyerById() throws Exception {
+        this.buyer.setBanned(true);
+
+        when(buyerRepository.findById(1L)).thenReturn(Optional.ofNullable(this.buyer));
         buyerService.deleteBuyer(1L);
+
+        verify(buyerRepository).save(this.buyer);
     }
 
     @Test
     void findAllBuyersPageable(){
-        var buyer2 = new Buyer();
-        buyer2.setId(2L);
-        buyer2.setName("Martin");
-        buyer2.setSurname("Martinez");
-        buyer2.setBirthdate(LocalDate.of(1990,4,17));
-        buyer2.setDni("41948585");
+        int page = 0;
+        int size = 3;
 
-        var buyer3 = new Buyer();
-        buyer3.setId(3L);
-        buyer3.setName("Analia");
-        buyer3.setSurname("Martinez");
-        buyer3.setBirthdate(LocalDate.of(1991,3,13));
-        buyer3.setDni("42948585");
-        // lista de compradores
-        List<Buyer> buyers = new ArrayList<>();
+        var buyers = new ArrayList<Buyer>();
         buyers.add(this.buyer);
-        buyers.add(buyer2);
-        buyers.add(buyer3);
+        buyers.add(new Buyer(2L, "41948585", "Martin", "Martinez",
+                LocalDate.of(1990,4,17), false));
+        buyers.add(new Buyer(3L, "42948585", "Analia", "Martinez",
+                LocalDate.of(1991,3,13), false));
 
-        // lista de compradores DTO
-        List<BuyerDTORes> buyersDTO = new ArrayList<>();
-        buyersDTO.add(this.buyerDTORes);
-
-        Pageable pageable = Pageable.ofSize(10).withPage(0);
+        Pageable pageable = PageRequest.of(page, size);
+        when(modelMapper.map(this.buyer, BuyerDTORes.class)).thenReturn(this.buyerDTORes);
         when(buyerRepository.findAll(pageable)).thenReturn(new PageImpl<>(buyers, pageable, buyers.size()));
-        when(modelMapper.map(any(Buyer.class), eq(BuyerDTORes.class))).thenReturn(buyersDTO.get(0));
 
         // Llama al service
         Page<BuyerDTORes> result = buyerService.getAllBuyers(pageable);
 
-        // Verifica el resultado
-        assertEquals(buyers.size(), result.getContent().size());
+        assertEquals(this.buyerDTORes, result.getContent().get(0));
+
+        assertEquals(buyers.size(), result.getTotalElements());
+        assertEquals(0, result.getNumber());
+        assertEquals(1, result.getTotalPages());
+
         verify(buyerRepository).findAll(pageable);
 
-        // Verifica que se haya llamado al repositorio con los parámetros correctos utilizando el ArgumentCaptor
-//        verify(buyerRepository).findAll(pageableCaptor.capture());
-//        Pageable capturedPageable = pageableCaptor.getValue();
-//        assertEquals(pageable, capturedPageable);
-
-        // Verifica que los objetos coincidan
-        assertEquals(this.buyer, result.getContent().get(0));
     }
 
 }

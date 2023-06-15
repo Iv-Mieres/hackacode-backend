@@ -11,6 +11,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class ScheduleDTOReq {
 
+    private Long id;
     private LocalTime startTime;
     private LocalTime endTime;
 

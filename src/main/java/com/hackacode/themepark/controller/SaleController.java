@@ -10,11 +10,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class SaleController {
 
-
     private ISaleService saleService;
 
-    @PostMapping("/")
-    public void saveSale(@RequestBody Sale sale){
-        saleService.saveSale(sale);
-    }
 }

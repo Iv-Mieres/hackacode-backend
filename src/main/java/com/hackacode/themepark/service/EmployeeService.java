@@ -2,6 +2,8 @@ package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.EmployeeDTOReq;
 import com.hackacode.themepark.dto.response.EmployeeDTORes;
+import com.hackacode.themepark.dto.response.GameDTORes;
+import com.hackacode.themepark.dto.response.ScheduleDTORes;
 import com.hackacode.themepark.model.Employee;
 import com.hackacode.themepark.model.Role;
 import com.hackacode.themepark.repository.IEmployeeUserRepository;
@@ -36,7 +38,7 @@ public class EmployeeService implements IEmployeeService{
                                               employeeDTO.getUsername());
 
         var employee = modelMapper.map(employeeDTO, Employee.class);
-        var role = modelMapper.map(employeeDTO.getRoleDTO(), Role.class);
+        var role = modelMapper.map(employeeDTO.getRole(), Role.class);
         employee.setEnable(true);
         employee.setRoles(Set.of(role));
         employee.setPassword(passwordEncoder.encode(employee.getPassword()));
@@ -45,19 +47,20 @@ public class EmployeeService implements IEmployeeService{
 
     //MUESTRA EMPLEADO POR ID
     @Override
-    public EmployeeDTORes getEmployeeById(Long employeeId) {
-       var employeeBD = employeeUserRepository.findById(employeeId).orElse(null);
+    public EmployeeDTORes getEmployeeById(Long employeeId) throws Exception {
+       var employeeBD = employeeUserRepository.findById(employeeId)
+               .orElseThrow(() -> new Exception("El id " + employeeId + " no existe"));
        return modelMapper.map(employeeBD, EmployeeDTORes.class);
     }
 
     //LISTA DTO DE EMPLEADOS PAGINADOS
     @Override
     public Page<EmployeeDTORes> getAllEmployees(Pageable pageable) {
-        var employees = employeeUserRepository.findAll(pageable);
+        var employees = employeeUserRepository.findAllByIsEnable(true, pageable);
         var employeesDTO = new ArrayList<EmployeeDTORes>();
 
         for (Employee employee: employees) {
-           employeesDTO.add(modelMapper.map(employee, EmployeeDTORes.class));
+            employeesDTO.add(modelMapper.map(employee, EmployeeDTORes.class));
         }
         return new PageImpl<>(employeesDTO, pageable, employeesDTO.size());
     }
@@ -65,8 +68,8 @@ public class EmployeeService implements IEmployeeService{
     //MODIFICA DATOS DEL EMPLEADO
     @Override
     public void updateEmployee(EmployeeDTOReq employeeDTO) throws Exception {
-        var employeeBD = employeeUserRepository.findById(employeeDTO.getEmployeeId())
-                .orElseThrow(() -> new Exception("El id" + employeeDTO.getEmployeeId() + " no existe"));
+        var employeeBD = employeeUserRepository.findById(employeeDTO.getId())
+                .orElseThrow(() -> new Exception("El id" + employeeDTO.getId() + " no existe"));
 
         //valida que el email, dni y username ingresados no existan en la bd
         //y si existen que solo pertenezacan al empleado encontrado

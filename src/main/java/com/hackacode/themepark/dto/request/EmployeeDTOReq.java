@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Builder
 public class EmployeeDTOReq {
 
-    private Long employeeId;
+    private Long id;
     private String name;
     private String surname;
     private String dni;
@@ -22,5 +22,5 @@ public class EmployeeDTOReq {
     private String email;
     private String username;
     private String password;
-    private RoleDTORes roleDTO;
+    private RoleDTORes role;
 }

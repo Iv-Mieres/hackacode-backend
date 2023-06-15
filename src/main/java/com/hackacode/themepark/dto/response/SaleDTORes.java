@@ -13,7 +13,7 @@ public class SaleDTORes {
 
     private Long saleId;
     private double totalPrice;
-    private List<NormalTicketDTORes> ticketDTOList;
-    private List<VipTicketDTORes> ticketVipDTOList;
+    private List<NormalTicketDTORes> tickets;
+    private List<VipTicketDTORes> ticketVip;
 
 }
