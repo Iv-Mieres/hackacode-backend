@@ -56,6 +56,7 @@ public class GameService implements IGameService{
     //ACTUALIZA UN JUEGO
     @Override
     public void updateGame(GameDTOReq gameDTO) throws Exception {
+        this.validateEmployeeSchedule(gameDTO.getEmployee().getId(), gameDTO.getSchedule().getId());
         var gameBD = gameRepository.findById(gameDTO.getId())
                 .orElseThrow(() -> new Exception("El id " + gameDTO + " no existe. Ingrese un nuevo id"));
         //valida que el nombre del juego no exista y si existe que coincida con el juego encontrado
