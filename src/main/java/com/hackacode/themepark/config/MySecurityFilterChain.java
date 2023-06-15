@@ -54,7 +54,7 @@ public class MySecurityFilterChain {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/token").permitAll()
+                    auth.requestMatchers("/**").permitAll()
                     .requestMatchers("/api/**").hasRole("ADMINISTRADOR");
 
                 })
