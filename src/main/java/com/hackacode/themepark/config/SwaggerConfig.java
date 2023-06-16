@@ -1,39 +1,26 @@
 package com.hackacode.themepark.config;
 
+import io.swagger.v3.oas.models.ExternalDocumentation;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.Collections;
 
 @Configuration
 public class SwaggerConfig {
-//    @Bean
-//    public Docket api() {
-//
-//        return new Docket(DocumentationType.SWAGGER_2)
-//                .select()
-//                .apis(RequestHandlerSelectors.basePackage("com.hackacode.themepark.controller"))
-//                .paths(PathSelectors.any())
-//                .build()
-//                .apiInfo(getApiInfo());
-//    }
-//
-//    private ApiInfo getApiInfo() {
-//        return new ApiInfo(
-//                "King Park",
-//                "Api de administracion y venta de tickets de juegos tematicos",
-//                "1.0",
-//                "https://kingpark.com/",
-//                new Contact("kingpark", "https://kingpark.com", "kingpark@gmail.com"),
-//                "King Park SRL License",
-//                "https://kingpark.com/license",
-//                Collections.emptyList()
-//        );
-//    }
+
+    @Bean
+    public OpenAPI themeparkOpenAPI() {
+        return new OpenAPI()
+                .info(new Info().title("Crazy Land Themepark API")
+                        .description("Api rest application for thematic park administration")
+                        .version("v1.0.0")
+                        .license(new License().name("Crazy Land 1.0").url("http://crazy-land.com")))
+                .externalDocs(new ExternalDocumentation()
+                        .description("Themepark Documentation")
+                        .url("https://crazy-land.com/docs"));
+    }
 }
