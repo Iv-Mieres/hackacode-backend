@@ -79,9 +79,7 @@ class BuyerServiceTest {
 
     @Test
     void updateBuyerIfDniDoesNotExistInTheDataBase() throws Exception {
-        when(buyerRepository.existsByDni(this.buyerDTORes.getDni())).thenReturn(false);
         when(buyerRepository.findById(1L)).thenReturn(Optional.ofNullable(this.buyer));
-
         buyerService.updateBuyer(this.buyerDTORes);
         verify(buyerRepository).save(modelMapper.map(this.buyerDTORes, Buyer.class));
     }

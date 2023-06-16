@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -57,6 +58,14 @@ class GameServiceTest {
 
     @Test
     void saveGame() throws Exception {
+        var employee = new EmployeeDTOReq();
+        employee.setId(1L);
+        var schedule = new ScheduleDTOReq();
+        schedule.setStartTime(LocalTime.of(2,00));
+
+        this.gameDTOReq.setEmployee(employee);
+        this.gameDTOReq.setSchedule(schedule);
+
         when(modelMapper.map(this.gameDTOReq, Game.class)).thenReturn(this.game);
         gameService.saveGame(this.gameDTOReq);
         verify(gameRepository).save(this.game);

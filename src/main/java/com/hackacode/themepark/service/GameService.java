@@ -1,21 +1,17 @@
 package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.GameDTOReq;
-import com.hackacode.themepark.dto.response.EmployeeDTORes;
 import com.hackacode.themepark.dto.response.GameDTORes;
-import com.hackacode.themepark.dto.response.ScheduleDTORes;
-import com.hackacode.themepark.model.Employee;
 import com.hackacode.themepark.model.Game;
-import com.hackacode.themepark.model.Schedule;
 import com.hackacode.themepark.repository.IGameRepository;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 @Service
@@ -33,6 +29,7 @@ public class GameService implements IGameService{
         if (gameRepository.existsByName(gameDTO.getName())){
             throw new Exception("El nombre " + gameDTO.getName() + " ya existe. Ingrese un nuevo nombre");
         }
+        this.validateEmployeeSchedule(gameDTO.getEmployee().getId(), gameDTO.getSchedule().getId());
         gameRepository.save(modelMapper.map(gameDTO, Game.class));
     }
 
@@ -59,6 +56,7 @@ public class GameService implements IGameService{
     //ACTUALIZA UN JUEGO
     @Override
     public void updateGame(GameDTOReq gameDTO) throws Exception {
+        this.validateEmployeeSchedule(gameDTO.getEmployee().getId(), gameDTO.getSchedule().getId());
         var gameBD = gameRepository.findById(gameDTO.getId())
                 .orElseThrow(() -> new Exception("El id " + gameDTO + " no existe. Ingrese un nuevo id"));
         //valida que el nombre del juego no exista y si existe que coincida con el juego encontrado
@@ -73,4 +71,17 @@ public class GameService implements IGameService{
     public void deleteGame(Long gameID) {
         gameRepository.deleteById(gameID);
     }
+
+    //VALIDA QUE EL EMPLEADO NO PUEDA SER ASIGNADO A MÁS DE UN JUEGO CON EL MISMO HORARIO
+    public void validateEmployeeSchedule(Long employeeIdDTO, Long scheduleId) throws Exception {
+        var games = gameRepository.findAll();
+        for (Game game: games) {
+            if (game.getEmployee().getId().equals(employeeIdDTO)
+                    && game.getSchedule().getId().equals(scheduleId)){
+                throw new Exception("Este empleado ya está asignado a un juego con horario " +
+                        "selecionado. Ingrese un nuevo horario o un nuevo empleado a este juego");
+            }
+        }
+    }
+
 }
