@@ -16,7 +16,6 @@ public class EmployeeDTORes {
     private String surname;
     private String dni;
     private LocalDate birthdate;
-    private String email;
     private String username;
     private GameDTORes game;
 

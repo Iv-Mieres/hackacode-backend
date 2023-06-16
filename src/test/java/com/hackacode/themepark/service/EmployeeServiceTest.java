@@ -65,7 +65,7 @@ class EmployeeServiceTest {
         Set<Role> roles = new HashSet<>();
 
         this.employee = new Employee(1L, "34845347", "Diego", "Sosa", LocalDate.of(1989, 3,1),
-                "diego@mail.com", "dieguito", "1234", true, roles, null);
+                "diego@mail.com", "1234", true, roles, null);
 
     }
 
@@ -74,16 +74,13 @@ class EmployeeServiceTest {
 
         EmployeeDTOReq employeeDTO = EmployeeDTOReq.builder()
                 .id(1L)
-                .username("dieguito")
-                .email("diego@mail.com")
+                .username("diego@mail.com")
                 .password(passwordEncoder.encode("1234"))
-                .role(this.roleDTO)
+                .roles(Set.of(this.roleDTO))
                 .build();
 
         when(employeeUserRepository.existsByDni(employeeDTO.getDni())).thenReturn(false);
-        when(employeeUserRepository.existsByEmail(employeeDTO.getEmail())).thenReturn(false);
         when(employeeUserRepository.existsByUsername(employeeDTO.getUsername())).thenReturn(false);
-        when(modelMapper.map(this.roleDTO, Role.class)).thenReturn(this.role);
         when(modelMapper.map(employeeDTO, Employee.class)).thenReturn(this.employee);
         employeeService.saveEmployee(employeeDTO);
         verify(employeeUserRepository).save(this.employee);
@@ -94,27 +91,16 @@ class EmployeeServiceTest {
     void throwAnExceptionIfExistsByDniIsTrue() throws Exception {
 
         when(employeeUserRepository.existsByDni(this.employee.getDni())).thenReturn(true);
-        assertThrows(Exception.class, () -> employeeService.validateEmployeeDataBeforeSaving(this.employee.getEmail(),
-                this.employee.getDni(),
-                this.employee.getUsername()));
+        assertThrows(Exception.class,
+                () -> employeeService.validateEmployeeDataBeforeSaving(this.employee.getDni(), this.employee.getUsername()));
     }
 
     @Test
     void throwAnExceptionIfExistsByUsernameIsTrue() throws Exception {
 
         when(employeeUserRepository.existsByUsername(this.employee.getUsername())).thenReturn(true);
-        assertThrows(Exception.class, () -> employeeService.validateEmployeeDataBeforeSaving(this.employee.getEmail(),
-                this.employee.getDni(),
-                this.employee.getUsername()));
-    }
-
-    @Test
-    void throwAnExceptionIfExistsByEmailIsTrue() throws Exception {
-
-        when(employeeUserRepository.existsByEmail(this.employee.getEmail())).thenReturn(true);
-        assertThrows(Exception.class, () -> employeeService.validateEmployeeDataBeforeSaving(this.employee.getEmail(),
-                this.employee.getDni(),
-                this.employee.getUsername()));
+        assertThrows(Exception.class,
+                () -> employeeService.validateEmployeeDataBeforeSaving(this.employee.getDni(), this.employee.getUsername()));
     }
 
     @Test
@@ -150,7 +136,7 @@ class EmployeeServiceTest {
         var employees = new ArrayList<Employee>();
         employees.add(this.employee);
         employees.add(new Employee(2L, "56845347", "Silvia", "Sosa", LocalDate.of(1989, 3,1),
-                "silv@mail.com", "silvita", "1234", true, roles, null));
+                "silv@mail.com", "1234", true, roles, null));
 
         var pageable = PageRequest.of(page, size);
         when(modelMapper.map(this.employee, EmployeeDTORes.class)).thenReturn(employeeDTORes);
@@ -194,17 +180,6 @@ class EmployeeServiceTest {
 
     }
 
-    @Test
-    void ifWhenValidatingTheEmailItIsNotUniqueToThrowAnException() throws Exception {
-        String dniDTO = "dani@mail.com";
-        String espectedMjError = "El email " + dniDTO + " ya existe. Ingrese un nuevo email";
-
-        when(employeeUserRepository.existsByEmail(dniDTO)).thenReturn(true);
-        Exception currentMjError= assertThrows(Exception.class,
-                () ->  employeeService.validateIfExistsByEmail(dniDTO , "diego@mail.com"));
-        assertEquals(espectedMjError, currentMjError.getMessage());
-
-    }
 
     @Test
     void updateEmployeeIfDniDoesNotExistInTheDataBase() throws Exception {
@@ -212,8 +187,8 @@ class EmployeeServiceTest {
         var employeeDTO = EmployeeDTOReq.builder().id(1L)
                 .username("dieguito")
                 .dni("34845347")
-                .email("diego@mail.com")
-                .role(this.roleDTO)
+                .username("diego@mail.com")
+                .roles(Set.of(this.roleDTO))
                 .build();
 
         when(employeeUserRepository.findById(1L)).thenReturn(Optional.ofNullable(this.employee));

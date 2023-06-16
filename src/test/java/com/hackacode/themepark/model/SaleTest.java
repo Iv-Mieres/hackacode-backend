@@ -44,7 +44,7 @@ class SaleTest {
         vips.add(vipTicket2);
 
         //se settean los tickets de Sale con las listas de tickets creadas
-        sale.setNormalTicketTickets(normalTickets);
+        sale.setNormalTickets(normalTickets);
         sale.setVipTickets(vips);
 
         assertEquals(12000.0, sale.calculateTotalPrice());

@@ -23,9 +23,6 @@ public class Employee extends Person implements UserDetails {
 
     @NotEmpty(message = "No puede estar vacio")
     @Email(message = "Debe ingresar un formato de tipo email")
-    private String email;
-    @NotNull(message = "No puede estar vacio")
-    @Size(min = 4, max = 10, message = "Debe contener un mínimo de 4 y un máximo de 10 caracteres")
     private String username;
     @NotNull(message = "Do puede estar vacio")
     @Size(min = 6, message = "Debe contener un mínimo de 6 caracteres")
@@ -40,7 +37,8 @@ public class Employee extends Person implements UserDetails {
     @JsonIgnoreProperties("employee")
     private Set<Role> roles;
 
-    @OneToOne(mappedBy = "employee", fetch = FetchType.EAGER)
+    @ManyToOne
+    @JoinColumn(name = "fkGame")
     @JsonIgnoreProperties("employee")
     private Game game;
 
@@ -49,9 +47,8 @@ public class Employee extends Person implements UserDetails {
     }
 
     public Employee(Long id, String dni, String name, String surname, LocalDate birthdate,
-                    String email, String username, String password, boolean isEnable, Set<Role> roles, Game game) {
+                    String username, String password, boolean isEnable, Set<Role> roles, Game game) {
         super(id, dni, name, surname, birthdate);
-        this.email = email;
         this.username = username;
         this.password = password;
         this.isEnable = isEnable;

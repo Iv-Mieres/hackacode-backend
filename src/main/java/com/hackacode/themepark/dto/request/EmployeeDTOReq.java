@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -19,8 +20,8 @@ public class EmployeeDTOReq {
     private String surname;
     private String dni;
     private LocalDate birthdate;
-    private String email;
     private String username;
     private String password;
-    private RoleDTORes role;
+    private Set<RoleDTORes> roles;
+    private GameDTOReq game;
 }

@@ -58,14 +58,13 @@ class GameServiceTest {
 
     @Test
     void saveGame() throws Exception {
-        var employee = new EmployeeDTOReq();
-        employee.setId(1L);
         var schedule = new ScheduleDTOReq();
+        schedule.setId(1L);
         schedule.setStartTime(LocalTime.of(2,00));
 
-        this.gameDTOReq.setEmployee(employee);
         this.gameDTOReq.setSchedule(schedule);
 
+        when(gameRepository.existsBySchedule_id(1L)).thenReturn(true);
         when(modelMapper.map(this.gameDTOReq, Game.class)).thenReturn(this.game);
         gameService.saveGame(this.gameDTOReq);
         verify(gameRepository).save(this.game);
@@ -101,16 +100,6 @@ class GameServiceTest {
         int page = 0;
         int size = 2;
 
-        var employee = new Employee();
-        employee.setEnable(true);
-        employee.setId(2L);
-        employee.setRoles(Set.of(new Role()));
-
-        var employee2 = new Employee();
-        employee2.setEnable(true);
-        employee2.setId(6L);
-        employee2.setRoles(Set.of(new Role()));
-
         var schedule = new Schedule();
         schedule.setId(4L);
 
@@ -118,7 +107,6 @@ class GameServiceTest {
                 .id(1L)
                 .price(3000.0)
                 .requiredAge(18)
-                .employee(employee)
                 .schedule(schedule)
                 .build();
         var game2 = Game.builder().id(2L).build();
@@ -151,17 +139,11 @@ class GameServiceTest {
         this.game.setId(1L);
         var schedule = new Schedule();
         schedule.setId(4L);
-        var employee = new Employee();
-        employee.setEnable(true);
-        employee.setId(2L);
-        employee.setRoles(Set.of(new Role()));
-
 
         this.gameDTOReq.setId(1L);
         this.gameDTOReq.setName("Montaña Rusa");
         this.gameDTOReq.setPrice(3000.0);
         this.gameDTOReq.setRequiredAge(18);
-        this.gameDTOReq.setEmployee(modelMapper.map(employee, EmployeeDTOReq.class));
         this.gameDTOReq.setSchedule(modelMapper.map(schedule, ScheduleDTOReq.class));
 
         when(gameRepository.findById(1L)).thenReturn(Optional.ofNullable(this.game));

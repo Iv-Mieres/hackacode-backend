@@ -23,7 +23,7 @@ class EmployeeTest {
         roles.add(role);
 
         this.employee =  new Employee(2L,"41948585", "Martin", "Martinez", LocalDate.of(1990, 4,17),
-                "martin@mail.com", "martincito", "martin1234", true, roles, null);
+                "martin@mail.com", "martin1234", true, roles, null);
     }
 
     @Test

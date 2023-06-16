@@ -12,7 +12,7 @@ public interface IEmployeeUserRepository extends JpaRepository<Employee, Long> {
 
     Page<Employee> findAllByIsEnable(boolean isEnable, Pageable pageable);
     Optional<Employee> findByUsername(String username);
-    boolean existsByEmail(String email);
+    boolean existsByGame_id(Long gameId);
     boolean existsByDni(String dni);
     boolean existsByUsername(String username);
 }

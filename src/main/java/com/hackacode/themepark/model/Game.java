@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -34,10 +35,9 @@ public class Game {
     @JoinColumn(name = "fkSchedule")
     @JsonIgnoreProperties("games")
     private Schedule schedule;
-    @OneToOne
-    @JoinColumn(name = "fkEmployee")
+    @OneToMany(mappedBy = "game")
     @JsonIgnoreProperties("game")
-    private Employee employee;
+    private List<Employee> employees;
 
     //Método para validar si el comprador es menor o mayor a 18 años
     public boolean validateAge(Buyer buyer){
