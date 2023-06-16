@@ -23,8 +23,8 @@ public class SaleController {
     private ISaleService saleService;
 
     @PostMapping("/")
-    public ResponseEntity<HttpStatus> saveSale(@Valid @RequestBody SaleDTOReq sale){
-        saleService.saveSale(sale);
+    public ResponseEntity<HttpStatus> saveSale(@Valid @RequestBody SaleDTOReq saleDTOReq){
+        saleService.saveSale(saleDTOReq);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -44,7 +44,7 @@ public class SaleController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteSale(@PathVariable Long id) throws Exception {
         saleService.deleteSale(id);
         return new ResponseEntity<>(HttpStatus.OK);

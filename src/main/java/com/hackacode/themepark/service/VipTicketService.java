@@ -47,12 +47,12 @@ public class VipTicketService implements IVipTicketService {
     }
 
     @Override
-    public void updateTicketVip(Long TicketVipId) {
-
+    public void updateTicketVip(VipTicketDTOReq vipTicketDTOReq) {
+        ticketVipRepository.save(modelMapper.map(vipTicketDTOReq, VipTicket.class));
     }
 
     @Override
-    public void deleteTicketVip(Long TicketVipId) {
-
+    public void deleteTicketVip(UUID ticketVipId) {
+        ticketVipRepository.deleteById(ticketVipId);
     }
 }

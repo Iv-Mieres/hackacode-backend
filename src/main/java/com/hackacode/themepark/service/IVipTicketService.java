@@ -14,6 +14,6 @@ public interface IVipTicketService {
     void saveTicketVip(VipTicketDTOReq vipTicketDTOReq);
     VipTicketDTORes getTicketVipById(UUID ticketVipId);
     Page<VipTicketDTORes> getTicketVips(Pageable pageable);
-    void updateTicketVip(Long TicketVipId);
-    void deleteTicketVip(Long TicketVipId);
+    void updateTicketVip(VipTicketDTOReq vipTicketDTOReq);
+    void deleteTicketVip(UUID TicketVipId);
 }
