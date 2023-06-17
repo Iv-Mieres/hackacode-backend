@@ -3,13 +3,12 @@ package com.hackacode.themepark.service;
 import com.hackacode.themepark.dto.request.EmployeeDTOReq;
 import com.hackacode.themepark.dto.response.EmployeeDTORes;
 import com.hackacode.themepark.model.Employee;
-import com.hackacode.themepark.repository.IEmployeeUserRepository;
+import com.hackacode.themepark.repository.IEmployeeRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,10 +21,7 @@ public class EmployeeService implements IEmployeeService {
     private ModelMapper modelMapper;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private IEmployeeUserRepository employeeUserRepository;
+    private IEmployeeRepository employeeUserRepository;
 
     //CREA UN EMPLEADO CON SU ROL Y SU JUEGO ASIGNADO
     @Override

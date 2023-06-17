@@ -1,12 +1,11 @@
 package com.hackacode.themepark.dto.request;
 
-import com.hackacode.themepark.dto.response.RoleDTORes;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -16,6 +15,8 @@ public class UserDTOReq {
     private Long id;
     private String username;
     private String password;
+    @NotNull(message = "No puede estar vacio")
     private EmployeeDTOReq employee;
-    private List<RoleDTORes> roles;
+    @NotNull(message = "No puede estar vacio")
+    private List<RoleDTOReq> roles;
 }

@@ -1,18 +1,23 @@
 package com.hackacode.themepark.service;
 
+import com.hackacode.themepark.dto.request.EmployeeDTOReq;
+import com.hackacode.themepark.dto.request.RoleDTOReq;
 import com.hackacode.themepark.dto.request.UserDTOReq;
 import com.hackacode.themepark.dto.response.UserDTORes;
 import com.hackacode.themepark.model.CustomUser;
 import com.hackacode.themepark.repository.ICustomUserRepository;
+import com.hackacode.themepark.repository.IEmployeeRepository;
+import com.hackacode.themepark.repository.IRoleRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CustomUserService implements ICustomUserService{
@@ -23,15 +28,22 @@ public class CustomUserService implements ICustomUserService{
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private IRoleRepository roleRepository;
+
+    @Autowired
+    private IEmployeeRepository employeeRepository;
 
     //CREAR USUARIO
     @Override
     public void saveUser(UserDTOReq user) throws Exception {
-        if (userRepository.existsByUsername(user.getUsername())){
-            throw new Exception("El Email " + user.getUsername() + " ya existe. Ingrese un nuevo Email");
-        }
+        this.validateDataBeforeSavingUser(user.getUsername(), user.getEmployee().getId(), user.getRoles());
         var saveUser = modelMapper.map(user, CustomUser.class);
         saveUser.setEnable(true);
+        saveUser.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(saveUser);
     }
 
@@ -58,11 +70,14 @@ public class CustomUserService implements ICustomUserService{
     //MODIFICAR USUARIO
     @Override
     public void updateUser(UserDTOReq user) throws Exception {
-        if (userRepository.existsByUsername(user.getUsername())){
-            throw new Exception("El Email " + user.getUsername() + " ya existe");
-        }
+        var userBD = userRepository.findById(user.getId())
+                .orElseThrow(() -> new Exception("El id " + user.getId() + " no existe"));
+
+        this.validateDataBeforeUpdatingUser(user.getUsername(), userBD.getUsername(),
+                                            user.getEmployee().getId(), user.getRoles());
         var saveUser = modelMapper.map(user, CustomUser.class);
         saveUser.setEnable(true);
+        saveUser.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(saveUser);
     }
 
@@ -73,6 +88,46 @@ public class CustomUserService implements ICustomUserService{
                 .orElseThrow(() -> new Exception("El id" + userId + " no existe"));
         userBD.setEnable(false);
         userRepository.save(userBD);
+    }
+
+
+    //VALIDA DATOS ANTES DE GUARDAR UN USARIO
+    public void validateDataBeforeSavingUser(String usernameDTO, Long employeeIdDTO, List<RoleDTOReq> rolesDTO) throws Exception {
+        if (userRepository.existsByUsername(usernameDTO)){
+            throw new Exception("El Email " + usernameDTO + " ya existe. Ingrese un nuevo Email");
+        }
+        if (!employeeRepository.existsById(employeeIdDTO)){
+            throw new Exception("El empleado que intenta ingresar no existe");
+        }
+        if(employeeRepository.existsById(employeeIdDTO)){
+            throw new Exception("El empleado que intenta ingresar ya tiene asignado un usuario");
+        }
+        for (RoleDTOReq roleDTO: rolesDTO) {
+            if (!roleRepository.existsById(roleDTO.getId())){
+                throw new Exception("El rol que intenta ingresar no existe");
+            }
+        }
+    }
+
+    //VALIDA DATOS ANTES DE MODIFICAR UN USARIO
+    public void validateDataBeforeUpdatingUser(String usernameDTO, String usernameBD , Long employeeIdDTO, List<RoleDTOReq> rolesDTO) throws Exception {
+        var employeeBD = employeeRepository.findById(employeeIdDTO)
+                .orElseThrow(() -> new Exception("El id " + employeeIdDTO + " no existe"));
+
+        if (!usernameDTO.equals(usernameBD) && userRepository.existsByUsername(usernameDTO)){
+            throw new Exception("El Email " + usernameDTO + " ya existe");
+        }
+        if ( !employeeRepository.existsById(employeeIdDTO)){
+            throw new Exception("El empleado que intenta ingresar no existe");
+        }
+        if(!employeeIdDTO.equals(employeeBD.getId()) && employeeRepository.existsById(employeeIdDTO)){
+            throw new Exception("El empleado que intenta ingresar ya tiene asignado un usuario");
+        }
+        for (RoleDTOReq roleDTO: rolesDTO) {
+            if (!roleRepository.existsById(roleDTO.getId())){
+                throw new Exception("El rol que intenta ingresar no existe");
+            }
+        }
     }
 
 }

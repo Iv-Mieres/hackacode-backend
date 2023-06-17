@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 public class RoleDTORes {
 
     private Long id;
-    private Long roleId;
     private String role;
 }

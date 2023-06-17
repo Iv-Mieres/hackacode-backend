@@ -1,30 +1,18 @@
 package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.EmployeeDTOReq;
-import com.hackacode.themepark.dto.response.BuyerDTORes;
 import com.hackacode.themepark.dto.response.EmployeeDTORes;
-import com.hackacode.themepark.dto.response.RoleDTORes;
-import com.hackacode.themepark.model.Buyer;
 import com.hackacode.themepark.model.Employee;
-import com.hackacode.themepark.model.Role;
-import com.hackacode.themepark.repository.IEmployeeUserRepository;
-import com.hackacode.themepark.repository.IRoleRepository;
+import com.hackacode.themepark.repository.IEmployeeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -37,7 +25,7 @@ import static org.mockito.Mockito.when;
 class EmployeeServiceTest {
 
     @Mock
-    private IEmployeeUserRepository employeeUserRepository;
+    private IEmployeeRepository employeeUserRepository;
 
     @InjectMocks
     private EmployeeService employeeService;

@@ -7,7 +7,5 @@ import java.util.Optional;
 
 public interface ICustomUserRepository extends JpaRepository<CustomUser, Long> {
     boolean existsByUsername(String username);
-    boolean existsByRoles_id(Long roleId);
-    boolean existsByEmployee_id(Long employeeId);
     Optional<CustomUser> findByUsername(String username);
 }

@@ -36,7 +36,7 @@ public class UserController {
 
     @PutMapping()
     public ResponseEntity<HttpStatus> updateUser(@Valid @RequestBody UserDTOReq userDTO) throws Exception {
-        userService.saveUser(userDTO);
+        userService.updateUser(userDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
