@@ -24,7 +24,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/username/{username}")
+    @GetMapping("/por_nombre/{username}")
     public ResponseEntity<UserDTORes> getUserByUsername(@PathVariable String username) throws Exception {
         return  ResponseEntity.ok(userService.getByUsername(username));
     }
