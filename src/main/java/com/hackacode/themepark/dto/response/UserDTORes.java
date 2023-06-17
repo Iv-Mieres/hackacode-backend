@@ -4,12 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoleDTORes {
+public class UserDTORes {
 
     private Long id;
-    private Long roleId;
-    private String role;
+    private String username;
+    private EmployeeDTORes employee;
+    private Set<RoleDTORes> roles;
 }

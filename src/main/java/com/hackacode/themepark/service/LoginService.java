@@ -2,7 +2,9 @@ package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.AuthRequestDTOReq;
 import com.hackacode.themepark.dto.response.AuthResponseDTORes;
+import com.hackacode.themepark.model.CustomUser;
 import com.hackacode.themepark.model.Employee;
+import com.hackacode.themepark.repository.ICustomUserRepository;
 import com.hackacode.themepark.repository.IEmployeeUserRepository;
 import com.hackacode.themepark.util.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,7 @@ public class LoginService implements ILoginService {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private IEmployeeUserRepository employeeUserRepository;
+    private ICustomUserRepository userRepository;
 
     @Override
     public AuthResponseDTORes authenticate(AuthRequestDTOReq request) {
@@ -30,8 +32,8 @@ public class LoginService implements ILoginService {
                         request.getPassword()
                 )
         );
-        Employee employee = employeeUserRepository.findByUsername(request.getUsername()).orElseThrow();
-        var token = jwtService.generateAccesToken(employee.getUsername());
+        CustomUser user = userRepository.findByUsername(request.getUsername()).orElseThrow();
+        var token = jwtService.generateAccesToken(user.getUsername());
         return AuthResponseDTORes.builder()
                 .token(token)
                 .build();

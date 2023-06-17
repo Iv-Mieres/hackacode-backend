@@ -45,27 +45,13 @@ class EmployeeServiceTest {
     @Mock
     private ModelMapper modelMapper;
 
-    @Mock
-    private PasswordEncoder passwordEncoder;
-
     private Employee employee;
-
-    private RoleDTORes roleDTO;
-
-    private Role role;
 
     @BeforeEach
     void setUp() {
 
-        this.roleDTO = new RoleDTORes();
-        roleDTO.setRole("ADMINISTRADOR");
-
-        this.role = new Role();
-        role.setRole("ADMINISTRADOR");
-        Set<Role> roles = new HashSet<>();
-
-        this.employee = new Employee(1L, "34845347", "Diego", "Sosa", LocalDate.of(1989, 3,1),
-                "diego@mail.com", "1234", true, roles, null);
+        this.employee = new Employee(1L, "34845347", "Diego", "Sosa",
+                LocalDate.of(1989, 3,1), true,null);
 
     }
 
@@ -74,13 +60,9 @@ class EmployeeServiceTest {
 
         EmployeeDTOReq employeeDTO = EmployeeDTOReq.builder()
                 .id(1L)
-                .username("diego@mail.com")
-                .password(passwordEncoder.encode("1234"))
-                .roles(Set.of(this.roleDTO))
                 .build();
 
         when(employeeUserRepository.existsByDni(employeeDTO.getDni())).thenReturn(false);
-        when(employeeUserRepository.existsByUsername(employeeDTO.getUsername())).thenReturn(false);
         when(modelMapper.map(employeeDTO, Employee.class)).thenReturn(this.employee);
         employeeService.saveEmployee(employeeDTO);
         verify(employeeUserRepository).save(this.employee);
@@ -90,17 +72,12 @@ class EmployeeServiceTest {
     @Test
     void throwAnExceptionIfExistsByDniIsTrue() throws Exception {
 
-        when(employeeUserRepository.existsByDni(this.employee.getDni())).thenReturn(true);
-        assertThrows(Exception.class,
-                () -> employeeService.validateEmployeeDataBeforeSaving(this.employee.getDni(), this.employee.getUsername()));
-    }
+        EmployeeDTOReq employeeDTOReq = new EmployeeDTOReq();
+        employeeDTOReq.setDni("23456778");
 
-    @Test
-    void throwAnExceptionIfExistsByUsernameIsTrue() throws Exception {
-
-        when(employeeUserRepository.existsByUsername(this.employee.getUsername())).thenReturn(true);
+        when(employeeUserRepository.existsByDni(employeeDTOReq.getDni())).thenReturn(true);
         assertThrows(Exception.class,
-                () -> employeeService.validateEmployeeDataBeforeSaving(this.employee.getDni(), this.employee.getUsername()));
+                () -> employeeService.saveEmployee(employeeDTOReq));
     }
 
     @Test
@@ -108,14 +85,14 @@ class EmployeeServiceTest {
         this.employee.setId(1L);
 
         EmployeeDTORes employeeDTORes = new EmployeeDTORes();
-        employeeDTORes.setEmployeeId(this.employee.getId());
+        employeeDTORes.setId(this.employee.getId());
 
 
         when(employeeUserRepository.findById(1L)).thenReturn(Optional.ofNullable(this.employee));
         when(modelMapper.map(this.employee, EmployeeDTORes.class)).thenReturn(employeeDTORes);
         EmployeeDTORes employeeDTORes1 =  employeeService.getEmployeeById(1L);
 
-        assertEquals(this.employee.getId(), employeeDTORes1.getEmployeeId());
+        assertEquals(this.employee.getId(), employeeDTORes1.getId());
         verify(employeeUserRepository).findById(1L);
 
     }
@@ -125,18 +102,14 @@ class EmployeeServiceTest {
         int page = 0;
         int size = 3;
 
-        //crear los objetos Role y EmployeeDTO
-        var roles = new HashSet<Role>();
-        roles.add(this.role);
-
         EmployeeDTORes employeeDTORes = new EmployeeDTORes();
-        employeeDTORes.setEmployeeId(this.employee.getId());
+        employeeDTORes.setId(this.employee.getId());
 
         //guardar los employees en una lista
         var employees = new ArrayList<Employee>();
         employees.add(this.employee);
-        employees.add(new Employee(2L, "56845347", "Silvia", "Sosa", LocalDate.of(1989, 3,1),
-                "silv@mail.com", "1234", true, roles, null));
+        employees.add(new Employee(2L, "56845347", "Silvia", "Sosa",
+                LocalDate.of(1989, 3,1), true,null));
 
         var pageable = PageRequest.of(page, size);
         when(modelMapper.map(this.employee, EmployeeDTORes.class)).thenReturn(employeeDTORes);
@@ -169,26 +142,11 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void ifWhenValidatingTheUsernameItIsNotUniqueToThrowAnException() throws Exception {
-        String dniDTO = "Dani";
-        String espectedMjError = "El username " + dniDTO + " ya existe. Ingrese un nuevo username";
-
-        when(employeeUserRepository.existsByUsername(dniDTO)).thenReturn(true);
-        Exception actual = assertThrows(Exception.class,
-                () ->  employeeService.validateIfExistsByUsername(dniDTO , "Diego"));
-        assertEquals(espectedMjError, actual.getMessage());
-
-    }
-
-
-    @Test
     void updateEmployeeIfDniDoesNotExistInTheDataBase() throws Exception {
 
-        var employeeDTO = EmployeeDTOReq.builder().id(1L)
-                .username("dieguito")
+        var employeeDTO = EmployeeDTOReq.builder()
+                .id(1L)
                 .dni("34845347")
-                .username("diego@mail.com")
-                .roles(Set.of(this.roleDTO))
                 .build();
 
         when(employeeUserRepository.findById(1L)).thenReturn(Optional.ofNullable(this.employee));

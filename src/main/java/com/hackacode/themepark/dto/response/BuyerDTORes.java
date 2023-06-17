@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class BuyerDTORes {
 
-    private Long buyerId;
+    private Long id;
     private String dni;
     private String name;
     private String surname;

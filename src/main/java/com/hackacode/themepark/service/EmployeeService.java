@@ -2,10 +2,7 @@ package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.EmployeeDTOReq;
 import com.hackacode.themepark.dto.response.EmployeeDTORes;
-import com.hackacode.themepark.dto.response.GameDTORes;
-import com.hackacode.themepark.dto.response.ScheduleDTORes;
 import com.hackacode.themepark.model.Employee;
-import com.hackacode.themepark.model.Role;
 import com.hackacode.themepark.repository.IEmployeeUserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Set;
 
 @Service
 public class EmployeeService implements IEmployeeService {
@@ -31,12 +27,13 @@ public class EmployeeService implements IEmployeeService {
     @Autowired
     private IEmployeeUserRepository employeeUserRepository;
 
-    //CREA UN EMPLEADO CON SU ROL
+    //CREA UN EMPLEADO CON SU ROL Y SU JUEGO ASIGNADO
     @Override
     public void saveEmployee(EmployeeDTOReq employeeDTO) throws Exception {
-        //valida que el dni y username sean únicos
-        this.validateEmployeeDataBeforeSaving(employeeDTO.getDni(), employeeDTO.getUsername());
-
+        //valida que el dni sea único
+        if (employeeUserRepository.existsByDni(employeeDTO.getDni())) {
+            throw new Exception("El dni " + employeeDTO.getDni() + " ya existe. Ingrese un nuevo dni");
+        }
         //valida que el juego no sea nulo y que su id no exista en la BD
         if (!Objects.isNull(employeeDTO.getGame()) &&
                 !employeeUserRepository.existsByGame_id(employeeDTO.getGame().getId())) {
@@ -46,7 +43,6 @@ public class EmployeeService implements IEmployeeService {
             //convierte el DTO a Entity y lo guarda
             var employee = modelMapper.map(employeeDTO, Employee.class);
             employee.setEnable(true);
-            employee.setPassword(passwordEncoder.encode(employee.getPassword()));
             employeeUserRepository.save(employee);
         }
     }
@@ -80,13 +76,10 @@ public class EmployeeService implements IEmployeeService {
         //valida que el dni y username ingresados no existan en la bd
         //y si existen que solo pertenezacan al empleado encontrado
         this.validateIfExistsByDni(employeeDTO.getDni(), employeeBD.getDni());
-        this.validateIfExistsByUsername(employeeDTO.getUsername(), employeeBD.getUsername());
 
         //asigna los nuevos datos y guarda el empleado
         var saveEmployee = modelMapper.map(employeeDTO, Employee.class);
-        saveEmployee.setRoles(employeeBD.getRoles());
         saveEmployee.setEnable(true);
-        saveEmployee.setPassword(passwordEncoder.encode(employeeDTO.getPassword()));
         employeeUserRepository.save(saveEmployee);
     }
 
@@ -99,7 +92,7 @@ public class EmployeeService implements IEmployeeService {
         employeeUserRepository.save(employeeBD);
     }
 
-    // Validaciones para el método UPDATE
+    // Validación de DNI para el método UPDATE
 
     public void validateIfExistsByDni(String dniDTO, String dniBD) throws Exception {
         if (!dniDTO.equals(dniBD) && employeeUserRepository.existsByDni(dniDTO)) {
@@ -107,21 +100,4 @@ public class EmployeeService implements IEmployeeService {
         }
     }
 
-    public void validateIfExistsByUsername(String usernameDTO, String usernameBD) throws Exception {
-        if (!usernameDTO.equals(usernameBD) && employeeUserRepository.existsByUsername(usernameDTO)) {
-            throw new Exception("El username " + usernameDTO + " ya existe. Ingrese un nuevo username");
-        }
-    }
-
-    // Validaciones para el método SAVE
-
-    //validar que el email, dni y username sean únicos al guardar un empleado
-    public void validateEmployeeDataBeforeSaving(String dniDTO, String usernameDTO) throws Exception {
-        if (employeeUserRepository.existsByUsername(usernameDTO)) {
-            throw new Exception("El username " + usernameDTO + " ya existe. Ingrese un nuevo username");
-        }
-        if (employeeUserRepository.existsByDni(dniDTO)) {
-            throw new Exception("El dni " + dniDTO + " ya existe. Ingrese un nuevo dni");
-        }
-    }
 }

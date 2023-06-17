@@ -57,8 +57,8 @@ public class BuyerService implements IBuyerService {
     //MODIFICA DATOS DEL COMPRADOR
     @Override
     public void updateBuyer(BuyerDTORes buyerDTO) throws Exception {
-        var buyerBD = buyerRepository.findById(buyerDTO.getBuyerId())
-                .orElseThrow(() -> new Exception("El id " + buyerDTO.getBuyerId() + " no existe"));
+        var buyerBD = buyerRepository.findById(buyerDTO.getId())
+                .orElseThrow(() -> new Exception("El id " + buyerDTO.getId() + " no existe"));
         //Si el dni ingresado ya existe en la BD lanza una Exception
         this.validateIfExistsByDni(buyerDTO.getDni(), buyerBD.getDni());
         buyerRepository.save( modelMapper.map(buyerBD, Buyer.class));

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GameDTORes {
 
-    private Long gameId;
+    private Long id;
     private String name;
     private double price;
     private int requiredAge;
