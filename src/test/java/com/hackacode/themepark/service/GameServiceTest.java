@@ -111,7 +111,7 @@ class GameServiceTest {
                 .build();
         var game2 = Game.builder().id(2L).build();
 
-        this.gameDTORes.setGameId(1L);
+        this.gameDTORes.setId(1L);
         this.gameDTORes.setPrice(3000.0);
         this.gameDTORes.setRequiredAge(18);
         this.gameDTORes.setSchedule(modelMapper.map(schedule, ScheduleDTORes.class));
