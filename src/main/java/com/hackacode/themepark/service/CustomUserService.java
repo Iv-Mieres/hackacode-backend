@@ -47,6 +47,14 @@ public class CustomUserService implements ICustomUserService{
         userRepository.save(saveUser);
     }
 
+    @Override
+    public UserDTORes getByUsername(String username) throws Exception{
+        var userDB = userRepository.findByUsername(username)
+                .orElseThrow(() -> new Exception("El usuario:" + username + " no existe"));
+
+        return modelMapper.map(userDB, UserDTORes.class);
+    }
+
     //MOSTRAR UN USUARIO POR ID
     @Override
     public UserDTORes getUserById(Long userId) throws Exception {

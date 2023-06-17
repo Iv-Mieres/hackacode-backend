@@ -24,6 +24,11 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @GetMapping("/{username}")
+    public ResponseEntity<UserDTORes> getUserByUsername(@PathVariable String username) throws Exception {
+        return  ResponseEntity.ok(userService.getByUsername(username));
+    }
+
     @GetMapping("/{userId}")
     public ResponseEntity<UserDTORes> getUser(@PathVariable Long userId) throws Exception {
         return ResponseEntity.ok(userService.getUserById(userId));

@@ -10,6 +10,7 @@ import java.util.List;
 public interface ICustomUserService {
 
     void saveUser(UserDTOReq user) throws Exception;
+    UserDTORes getByUsername(String username) throws Exception;
     UserDTORes getUserById(Long userId) throws Exception;
     Page<UserDTORes> getAllUsers(Pageable pageable);
     void updateUser(UserDTOReq user) throws Exception;
