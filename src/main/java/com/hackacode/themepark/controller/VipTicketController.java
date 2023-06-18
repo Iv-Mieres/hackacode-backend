@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/ticket_vip")
+@RequestMapping("/api/ticketsvip")
 public class VipTicketController {
 
     @Autowired
@@ -26,9 +26,8 @@ public class VipTicketController {
     public ResponseEntity<HttpStatus> saveTicketVip(@Valid @RequestBody VipTicketDTOReq vipTicketDTOReq){
 
         ticketVipService.saveTicketVip(vipTicketDTOReq);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
-
     @GetMapping("/ver_todos")
     public ResponseEntity<Page<VipTicketDTORes>> getTicketsVip(Pageable pageable){
         return ResponseEntity.ok(ticketVipService.getTicketVips(pageable));
@@ -39,13 +38,9 @@ public class VipTicketController {
         return ResponseEntity.ok(ticketVipService.getTicketVipById(vipTicketId));
     }
 
-    @PostMapping("/")
-    public ResponseEntity<HttpStatus> saveVipTicket(@RequestBody VipTicketDTOReq vipTicketDTOReq) {
-        ticketVipService.saveTicketVip(vipTicketDTOReq);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
 
-    @PutMapping("/")
+
+    @PutMapping()
     public ResponseEntity<HttpStatus> updateVipTicket(@RequestBody VipTicketDTOReq vipTicketDTOReq) {
         ticketVipService.updateTicketVip(vipTicketDTOReq);
         return new ResponseEntity<>(HttpStatus.OK);

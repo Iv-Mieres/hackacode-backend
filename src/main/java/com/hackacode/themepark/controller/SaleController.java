@@ -16,16 +16,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/sale")
+@RequestMapping("/api/ventas")
 public class SaleController {
 
 
-    private ISaleService saleService;
+    private final ISaleService saleService;
 
-    @PostMapping("/")
-    public ResponseEntity<HttpStatus> saveSale(@Valid @RequestBody SaleDTOReq saleDTOReq){
-        saleService.saveSale(saleDTOReq);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    @PostMapping()
+    public SaleDTORes saveSale(@Valid @RequestBody SaleDTOReq saleDTOReq) throws Exception {
+        return saleService.saveSale(saleDTOReq);
     }
 
     @GetMapping("/{id}")
@@ -38,7 +37,7 @@ public class SaleController {
         return ResponseEntity.ok(saleService.getSales(pageable));
     }
 
-    @PutMapping("/")
+    @PutMapping()
     public ResponseEntity<HttpStatus> updateSale ( @RequestBody SaleDTOReq saleDTOReq) throws Exception {
         saleService.updateSale(saleDTOReq);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -30,9 +30,9 @@ public class GameService implements IGameService{
         if (gameRepository.existsByName(gameDTO.getName())){
             throw new Exception("El nombre " + gameDTO.getName() + " ya existe. Ingrese un nuevo nombre");
         }
-        if (!gameRepository.existsBySchedule_id(gameDTO.getSchedule().getId())){
-            throw new Exception("El horario que intenta ingresar no existe. Ingrese un horario existente");
-        }
+//        if (gameRepository.existsBySchedule_id(gameDTO.getSchedule().getId())){
+//            throw new Exception("El horario que intenta ingresar no existe. Ingrese un horario existente");
+//        }
         gameRepository.save(modelMapper.map(gameDTO, Game.class));
     }
 

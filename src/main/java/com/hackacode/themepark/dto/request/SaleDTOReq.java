@@ -12,5 +12,5 @@ import java.util.List;
 public class SaleDTOReq {
     private Long id;
     private List<VipTicketDTOReq> vipTickets;
-    private List<NormalTicketDTOReq> normalTicketTickets;
+    private List<NormalTicketDTOReq> normalTickets;
 }
