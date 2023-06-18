@@ -11,13 +11,11 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class EmployeeDTORes {
 
-    private Long employeeId;
+    private Long id;
     private String name;
     private String surname;
     private String dni;
     private LocalDate birthdate;
-    private String email;
-    private String username;
     private GameDTORes game;
 
 }

@@ -1,6 +1,5 @@
 package com.hackacode.themepark.dto.request;
 
-import com.hackacode.themepark.dto.response.RoleDTORes;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,8 +18,5 @@ public class EmployeeDTOReq {
     private String surname;
     private String dni;
     private LocalDate birthdate;
-    private String email;
-    private String username;
-    private String password;
-    private RoleDTORes role;
+    private GameDTOReq game;
 }

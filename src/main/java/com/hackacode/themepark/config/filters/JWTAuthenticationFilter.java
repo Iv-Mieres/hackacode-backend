@@ -3,7 +3,7 @@ package com.hackacode.themepark.config.filters;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hackacode.themepark.model.Employee;
+import com.hackacode.themepark.model.CustomUser;
 import com.hackacode.themepark.util.JWTUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,13 +26,13 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
 
-        Employee employeeeUser = null;
+        CustomUser user = null;
         String username = "";
         String password = "";
         try{
-            employeeeUser = new ObjectMapper().readValue(request.getInputStream(), Employee.class);
-            username = employeeeUser.getUsername();
-            password = employeeeUser.getPassword();
+            user = new ObjectMapper().readValue(request.getInputStream(), CustomUser.class);
+            username = user.getUsername();
+            password = user.getPassword();
         } catch (StreamReadException e) {
             throw new RuntimeException(e);
         } catch (DatabindException e) {

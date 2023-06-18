@@ -21,11 +21,11 @@ public class Sale {
     @OneToMany
     private List<VipTicket> vipTickets;
     @OneToMany
-    private List<NormalTicket> normalTicketTickets;
+    private List<NormalTicket> normalTickets;
 
     public double calculateTotalPrice(){
         double sum = 0.0;
-        for (NormalTicket normalTicket: normalTicketTickets) {
+        for (NormalTicket normalTicket: normalTickets) {
           sum += normalTicket.getGame().getPrice();
         }
         for (VipTicket vipTicket : vipTickets) {

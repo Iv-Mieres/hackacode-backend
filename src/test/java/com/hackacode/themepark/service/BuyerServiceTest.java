@@ -55,7 +55,7 @@ class BuyerServiceTest {
         buyerDTOReq.setDni("40948585");
 
         this.buyerDTORes = new BuyerDTORes();
-        buyerDTORes.setBuyerId(1L);
+        buyerDTORes.setId(1L);
         buyerDTORes.setName("Diego");
         buyerDTORes.setSurname("Martinez");
         buyerDTORes.setBirthdate(LocalDate.of(1988,06,14));

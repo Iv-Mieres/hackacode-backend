@@ -4,17 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BuyerDTORes {
+public class UserDTORes {
 
     private Long id;
-    private String dni;
-    private String name;
-    private String surname;
-    private LocalDate birthdate;
-
+    private String username;
+    private EmployeeDTORes employee;
+    private Set<RoleDTORes> roles;
 }

@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class SaleDTORes {
 
-    private Long saleId;
+    private Long id;
     private double totalPrice;
     private List<NormalTicketDTORes> tickets;
     private List<VipTicketDTORes> ticketVip;

@@ -13,6 +13,5 @@ public class GameDTOReq {
     private String name;
     private double price;
     private int requiredAge;
-    private EmployeeDTOReq employee;
     private ScheduleDTOReq schedule;
 }

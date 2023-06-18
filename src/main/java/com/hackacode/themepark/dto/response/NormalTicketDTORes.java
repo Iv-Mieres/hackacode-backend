@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class NormalTicketDTORes {
 
+    private Long id;
     private LocalDateTime dateTime;
     private boolean used;
     private GameDTORes game;

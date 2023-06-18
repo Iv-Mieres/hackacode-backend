@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RoleDTORes {
 
-    private Long roleId;
+    private Long id;
     private String role;
 }

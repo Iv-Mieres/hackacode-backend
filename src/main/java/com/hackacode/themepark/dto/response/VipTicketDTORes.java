@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class VipTicketDTORes {
 
-    private UUID ticketId;
+    private UUID id;
     private double Price;
     private LocalDate purchaseDate;
     private BuyerDTORes buyer;
