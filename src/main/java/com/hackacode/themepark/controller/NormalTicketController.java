@@ -5,6 +5,7 @@ import com.hackacode.themepark.dto.request.VipTicketDTOReq;
 import com.hackacode.themepark.dto.response.NormalTicketDTORes;
 import com.hackacode.themepark.service.INormalTicketService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -14,13 +15,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/ticket")
+@RequestMapping("/api/tickets")
 @RequiredArgsConstructor
 public class NormalTicketController {
+    private final INormalTicketService ticketService;
 
-    private INormalTicketService ticketService;
-
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<HttpStatus> saveTicket(@RequestBody NormalTicketDTOReq ticket){
         ticketService.saveNormalTicket(ticket);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -36,7 +36,7 @@ public class NormalTicketController {
         return ResponseEntity.ok(ticketService.getNormalTicketById(normalTicketId));
     }
 
-    @PutMapping("/")
+    @PutMapping()
     public ResponseEntity<HttpStatus> updateNormalTicket(@RequestBody NormalTicketDTOReq normalTicketDTOReq) {
         ticketService.updateNormalTicket(normalTicketDTOReq);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -107,7 +107,7 @@ public class CustomUserService implements ICustomUserService{
         if (!employeeRepository.existsById(employeeIdDTO)){
             throw new Exception("El empleado que intenta ingresar no existe");
         }
-        if(employeeRepository.existsById(employeeIdDTO)){
+        if(userRepository.existsByEmployee_Id(employeeIdDTO)){
             throw new Exception("El empleado que intenta ingresar ya tiene asignado un usuario");
         }
         for (RoleDTOReq roleDTO: rolesDTO) {

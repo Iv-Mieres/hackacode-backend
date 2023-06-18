@@ -22,9 +22,9 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class NormalTicketService implements INormalTicketService {
-    private INormalTicketRepository ticketRepository;
+    private final INormalTicketRepository ticketRepository;
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     @Override
     public void saveNormalTicket(NormalTicketDTOReq ticket) {

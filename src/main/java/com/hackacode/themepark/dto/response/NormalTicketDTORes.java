@@ -5,13 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class NormalTicketDTORes {
 
-    private Long id;
+    private UUID id;
     private LocalDateTime dateTime;
     private boolean used;
     private GameDTORes game;

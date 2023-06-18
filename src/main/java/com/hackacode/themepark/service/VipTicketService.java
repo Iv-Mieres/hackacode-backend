@@ -21,8 +21,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class VipTicketService implements IVipTicketService {
 
-    private IVipTicketRepository ticketVipRepository;
-    private ModelMapper modelMapper;
+    private final IVipTicketRepository ticketVipRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public void saveTicketVip(VipTicketDTOReq vipTicketDTOReq) {
