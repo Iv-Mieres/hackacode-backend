@@ -2,20 +2,16 @@ package com.hackacode.themepark.controller;
 
 import com.hackacode.themepark.dto.request.GameDTOReq;
 import com.hackacode.themepark.dto.response.GameDTORes;
-import com.hackacode.themepark.model.Game;
 import com.hackacode.themepark.service.IGameService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@PreAuthorize("hasRole('JUEGOS')")
 @RequestMapping("api/juegos")
 public class GameController {
 

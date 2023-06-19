@@ -57,7 +57,7 @@ public class MySecurityFilterChain {
                     auth.requestMatchers("/token").permitAll()
                             .requestMatchers("/**").permitAll()
                             .requestMatchers("/api/compradores", "/api/empleados",
-                                    "/api/roles", "/api/users").hasRole("ADMINISTRADOR")
+                                    "/api/roles", "/api/usuarios").hasRole("ADMINISTRADOR")
                             .requestMatchers("/api/juegos", "/api/horarios").hasRole("JUEGOS")
                             .requestMatchers("/api/ventas", "/api/tickets_normales",
                                     "/api/tickets_vip").hasRole("VENTAS")
