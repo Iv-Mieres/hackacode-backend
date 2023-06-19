@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ISaleService {
 
-    void saveSale(SaleDTOReq sale);
+    SaleDTORes saveSale(SaleDTOReq saleDTOReq) throws Exception;
     SaleDTORes getSaleById(Long saleId);
     Page<SaleDTORes> getSales(Pageable pageable);
     void updateSale(SaleDTOReq saleDTOReq) throws Exception;
