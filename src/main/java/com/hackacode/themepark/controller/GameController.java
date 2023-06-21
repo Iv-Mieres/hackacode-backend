@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/juegos")
+@RequestMapping("/api/juegos")
 public class GameController {
 
     @Autowired

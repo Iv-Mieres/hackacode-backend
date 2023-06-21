@@ -24,10 +24,10 @@ public class VipTicketController {
 
     @PostMapping()
     public ResponseEntity<HttpStatus> saveTicketVip(@Valid @RequestBody VipTicketDTOReq vipTicketDTOReq){
-
         ticketVipService.saveTicketVip(vipTicketDTOReq);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
     @GetMapping("/ver_todos")
     public ResponseEntity<Page<VipTicketDTORes>> getTicketsVip(Pageable pageable){
         return ResponseEntity.ok(ticketVipService.getTicketVips(pageable));
@@ -38,10 +38,8 @@ public class VipTicketController {
         return ResponseEntity.ok(ticketVipService.getTicketVipById(vipTicketId));
     }
 
-
-
     @PutMapping()
-    public ResponseEntity<HttpStatus> updateVipTicket(@RequestBody VipTicketDTOReq vipTicketDTOReq) {
+    public ResponseEntity<HttpStatus> updateVipTicket(@Valid @RequestBody VipTicketDTOReq vipTicketDTOReq) {
         ticketVipService.updateTicketVip(vipTicketDTOReq);
         return new ResponseEntity<>(HttpStatus.OK);
     }

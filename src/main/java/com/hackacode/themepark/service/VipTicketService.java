@@ -1,20 +1,22 @@
 package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.VipTicketDTOReq;
+import com.hackacode.themepark.dto.response.BuyerDTORes;
 import com.hackacode.themepark.dto.response.VipTicketDTORes;
-import com.hackacode.themepark.model.NormalTicket;
 import com.hackacode.themepark.model.VipTicket;
 import com.hackacode.themepark.repository.IVipTicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -24,18 +26,21 @@ public class VipTicketService implements IVipTicketService {
     private final IVipTicketRepository ticketVipRepository;
     private final ModelMapper modelMapper;
 
+    //CREA UN TICKET VIP
     @Override
     public void saveTicketVip(VipTicketDTOReq vipTicketDTOReq) {
 
         ticketVipRepository.save(modelMapper.map(vipTicketDTOReq, VipTicket.class));
     }
 
+    //MUESTRA UN TICKET VIP
     @Override
     public VipTicketDTORes getTicketVipById(UUID ticketVipId) {
 
         return modelMapper.map(ticketVipRepository.findById(ticketVipId), VipTicketDTORes.class);
     }
 
+    //LISTA DTO DE TICKETS VIP
     @Override
     public Page<VipTicketDTORes> getTicketVips(Pageable pageable) {
         var ticketsVipDb = ticketVipRepository.findAll();
@@ -46,13 +51,28 @@ public class VipTicketService implements IVipTicketService {
         return new PageImpl<>(ticketsVipDTO, pageable, ticketsVipDTO.size());
     }
 
+    //MODIFICA UN TICKET VIP
     @Override
     public void updateTicketVip(VipTicketDTOReq vipTicketDTOReq) {
         ticketVipRepository.save(modelMapper.map(vipTicketDTOReq, VipTicket.class));
     }
 
+    //ELIMINA UN TICKET VIP
     @Override
     public void deleteTicketVip(UUID ticketVipId) {
         ticketVipRepository.deleteById(ticketVipId);
+    }
+
+    //MUESTRA AL COMPRADOR QUE MÁS ENTRADAS NORMALES COMPRÓ EN UN DETERMINADO MES
+    @Override
+    public BuyerDTORes buyerWithTheMostNormalTicketsSoldInTheMonth(int year, int month) throws Exception {
+        LocalDateTime start = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).minLength()), LocalTime.MIN);
+        LocalDateTime end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).maxLength()), LocalTime.MAX);
+
+        var vipTicketBD = ticketVipRepository.findTopByPurchaseDateBetweenOrderByBuyer_idDesc(start, end);
+        if(vipTicketBD.getBuyer() == null){
+            throw new Exception("La fecha ingresada no contiene ventas");
+        }
+        return modelMapper.map(vipTicketBD.getBuyer(), BuyerDTORes.class);
     }
 }

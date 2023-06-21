@@ -1,11 +1,10 @@
 package com.hackacode.themepark.controller;
 
 import com.hackacode.themepark.dto.request.NormalTicketDTOReq;
-import com.hackacode.themepark.dto.request.VipTicketDTOReq;
 import com.hackacode.themepark.dto.response.NormalTicketDTORes;
 import com.hackacode.themepark.service.INormalTicketService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -21,7 +20,7 @@ public class NormalTicketController {
     private final INormalTicketService ticketService;
 
     @PostMapping()
-    public ResponseEntity<HttpStatus> saveTicket(@RequestBody NormalTicketDTOReq ticket){
+    public ResponseEntity<HttpStatus> saveTicket(@Valid @RequestBody NormalTicketDTOReq ticket){
         ticketService.saveNormalTicket(ticket);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -37,7 +36,7 @@ public class NormalTicketController {
     }
 
     @PutMapping()
-    public ResponseEntity<HttpStatus> updateNormalTicket(@RequestBody NormalTicketDTOReq normalTicketDTOReq) {
+    public ResponseEntity<HttpStatus> updateNormalTicket(@Valid @RequestBody NormalTicketDTOReq normalTicketDTOReq) {
         ticketService.updateNormalTicket(normalTicketDTOReq);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -47,6 +46,8 @@ public class NormalTicketController {
         ticketService.deleteNormalTicket(normalTicketId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
 
 
 }

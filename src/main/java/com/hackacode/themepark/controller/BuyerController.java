@@ -2,6 +2,7 @@ package com.hackacode.themepark.controller;
 
 import com.hackacode.themepark.dto.request.BuyerDTOReq;
 import com.hackacode.themepark.dto.response.BuyerDTORes;
+import com.hackacode.themepark.repository.INormalTicketRepository;
 import com.hackacode.themepark.service.IBuyerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ public class BuyerController {
 
     @Autowired
     private IBuyerService buyerServer;
+
+    @Autowired
+    private INormalTicketRepository normalTicketRepository;
 
     @PostMapping()
     public ResponseEntity<HttpStatus> saveBuyer(@Valid @RequestBody BuyerDTOReq buyerDTO) throws Exception {

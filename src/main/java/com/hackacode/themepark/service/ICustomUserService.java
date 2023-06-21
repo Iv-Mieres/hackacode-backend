@@ -13,6 +13,10 @@ public interface ICustomUserService {
     UserDTORes getByUsername(String username) throws Exception;
     UserDTORes getUserById(Long userId) throws Exception;
     Page<UserDTORes> getAllUsers(Pageable pageable);
+
+    //LISTAR USUARIOS POR ROLE
+    Page<UserDTORes> getAllUsersPerRole(Pageable pageable, String role);
+
     void updateUser(UserDTOReq user) throws Exception;
     void deleteUser(Long userId) throws Exception;
 }

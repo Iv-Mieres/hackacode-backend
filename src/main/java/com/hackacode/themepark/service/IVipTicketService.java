@@ -1,6 +1,7 @@
 package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.VipTicketDTOReq;
+import com.hackacode.themepark.dto.response.BuyerDTORes;
 import com.hackacode.themepark.dto.response.VipTicketDTORes;
 import com.hackacode.themepark.model.VipTicket;
 import org.springframework.data.domain.Page;
@@ -16,4 +17,7 @@ public interface IVipTicketService {
     Page<VipTicketDTORes> getTicketVips(Pageable pageable);
     void updateTicketVip(VipTicketDTOReq vipTicketDTOReq);
     void deleteTicketVip(UUID TicketVipId);
+
+    //MUESTRA AL COMPRADOR QUE MÁS ENTRADAS NORMALES COMPRÓ EN UN DETERMINADO MES
+    BuyerDTORes buyerWithTheMostNormalTicketsSoldInTheMonth(int year, int month) throws Exception;
 }

@@ -13,7 +13,6 @@ import java.util.UUID;
 public class NormalTicketDTOReq {
 
     private UUID id;
-    private LocalDateTime purchaseDate;
     private GameDTOReq game;
     private BuyerDTOReq buyer;
 }

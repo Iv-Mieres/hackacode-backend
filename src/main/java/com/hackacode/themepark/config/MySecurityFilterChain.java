@@ -61,7 +61,7 @@ public class MySecurityFilterChain {
                             .requestMatchers("/api/juegos", "/api/horarios").hasRole("JUEGOS")
                             .requestMatchers("/api/ventas", "/api/tickets",
                                     "/api/ticketsvip").hasRole("VENTAS")
-                            .requestMatchers("/api/reportes").hasRole("GERENTE");
+                            .requestMatchers("/api/informes").hasRole("GERENTE");
 
 
                 })

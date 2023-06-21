@@ -2,6 +2,7 @@ package com.hackacode.themepark.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class NormalTicket extends Ticket{
 
     private boolean used;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "fkGame")
     private Game game;
     @OneToOne

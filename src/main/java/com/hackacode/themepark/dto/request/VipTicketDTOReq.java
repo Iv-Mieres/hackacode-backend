@@ -13,7 +13,6 @@ import java.util.UUID;
 public class VipTicketDTOReq {
 
     private UUID id;
-    private LocalDateTime purchaseDate;
     private double price;
     private BuyerDTOReq buyer;
 }

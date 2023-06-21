@@ -1,19 +1,26 @@
 package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.SaleDTOReq;
+import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.dto.response.SaleDTORes;
 import com.hackacode.themepark.model.Sale;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 public interface ISaleService {
 
-    SaleDTORes saveSale(SaleDTOReq saleDTOReq) throws Exception;
+    void saveSale(SaleDTOReq saleDTOReq) throws Exception;
     SaleDTORes getSaleById(Long saleId);
     Page<SaleDTORes> getSales(Pageable pageable);
     void updateSale(SaleDTOReq saleDTOReq) throws Exception;
     void deleteSale(Long saleId);
 
+    ReportDTORes sumTotalAmountOfAGivenDay(LocalDate date);
+
+    //SUMA DE MONTO TOTAL DE UN DETERMINADO DÍA - SIN TERMINAR
+    ReportDTORes sumTotalAmountOfAGivenMonth(int year , int month);
 }

@@ -39,6 +39,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers(pageable));
     }
 
+    @GetMapping("/por_rol/{role}")
+    public ResponseEntity<Page<UserDTORes>> getAllUsersPerRole(Pageable pageable, @PathVariable String role){
+        return ResponseEntity.ok(userService.getAllUsersPerRole(pageable, role));
+    }
+
     @PutMapping()
     public ResponseEntity<HttpStatus> updateUser(@Valid @RequestBody UserDTOReq userDTO) throws Exception {
         userService.updateUser(userDTO);

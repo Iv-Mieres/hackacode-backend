@@ -38,6 +38,8 @@ public class Game {
     @OneToMany(mappedBy = "game")
     @JsonIgnoreProperties("game")
     private List<Employee> employees;
+    @OneToMany(mappedBy = "game")
+    private List<NormalTicket> normalTickets;
 
     //Método para validar si el comprador es menor o mayor a 18 años
     public boolean validateAge(Buyer buyer){

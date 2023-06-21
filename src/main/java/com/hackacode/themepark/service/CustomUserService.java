@@ -1,6 +1,5 @@
 package com.hackacode.themepark.service;
 
-import com.hackacode.themepark.dto.request.EmployeeDTOReq;
 import com.hackacode.themepark.dto.request.RoleDTOReq;
 import com.hackacode.themepark.dto.request.UserDTOReq;
 import com.hackacode.themepark.dto.response.UserDTORes;
@@ -67,6 +66,18 @@ public class CustomUserService implements ICustomUserService{
     @Override
     public Page<UserDTORes> getAllUsers(Pageable pageable) {
         var usersBD = userRepository.findAll(pageable);
+        var usersDTO = new ArrayList<UserDTORes>();
+
+        for (CustomUser user: usersBD) {
+            usersDTO.add(modelMapper.map(user, UserDTORes.class));
+        }
+        return new PageImpl<>(usersDTO, pageable, usersDTO.size());
+    }
+
+    //LISTAR USUARIOS POR ROLE
+    @Override
+    public Page<UserDTORes> getAllUsersPerRole(Pageable pageable, String role) {
+        var usersBD = userRepository.findByRoles_role(pageable, role);
         var usersDTO = new ArrayList<UserDTORes>();
 
         for (CustomUser user: usersBD) {

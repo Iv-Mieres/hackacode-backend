@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -14,6 +15,6 @@ public class VipTicketDTORes {
 
     private UUID id;
     private double Price;
-    private LocalDate purchaseDate;
+    private LocalDateTime purchaseDate;
     private BuyerDTORes buyer;
 }
