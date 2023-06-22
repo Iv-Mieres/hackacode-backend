@@ -2,6 +2,7 @@ package com.hackacode.themepark.controller;
 
 import com.hackacode.themepark.dto.request.NormalTicketDTOReq;
 import com.hackacode.themepark.dto.response.NormalTicketDTORes;
+import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.service.INormalTicketService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,20 +32,20 @@ public class NormalTicketController {
     }
 
     @GetMapping("/{normalTicketId}")
-    public ResponseEntity<NormalTicketDTORes> getNormalTicket(@PathVariable UUID normalTicketId) {
+    public ResponseEntity<NormalTicketDTORes> getNormalTicket(@PathVariable UUID normalTicketId) throws IdNotFoundException {
         return ResponseEntity.ok(ticketService.getNormalTicketById(normalTicketId));
     }
 
     @PutMapping()
-    public ResponseEntity<HttpStatus> updateNormalTicket(@Valid @RequestBody NormalTicketDTOReq normalTicketDTOReq) {
+    public ResponseEntity<HttpStatus> updateNormalTicket(@Valid @RequestBody NormalTicketDTOReq normalTicketDTOReq) throws IdNotFoundException {
         ticketService.updateNormalTicket(normalTicketDTOReq);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{normalTicketId}")
     public ResponseEntity<HttpStatus> deleteVipTicket(@PathVariable UUID normalTicketId) {
         ticketService.deleteNormalTicket(normalTicketId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 

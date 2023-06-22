@@ -43,13 +43,13 @@ public class EmployeeController {
     @PutMapping()
     public ResponseEntity<HttpStatus> updateEmployee(@Valid @RequestBody EmployeeDTOReq employeeDTORes) throws Exception {
         employeeService.updateEmployee(employeeDTORes);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{employeeId}")
     public ResponseEntity<HttpStatus> deleteEmployee(@PathVariable Long employeeId) throws Exception {
         employeeService.deleteEmployee(employeeId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

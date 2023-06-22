@@ -169,20 +169,22 @@ public class SaleService implements ISaleService {
                 totalVipTicketsSold += sale.getVipTickets().size();
             }
         }
-        //crea y retorna un DTO con los datos del dia ingresado
-        if (dayOrmonth.equals("day")) {
-            return ReportDTORes.builder()
-                    .totalAmountSaleDay(sumTotal)
-                    .totalNormalTicketsSold(totalNormalTicketsSold)
-                    .totalVipTicketsSold(totalVipTicketsSold)
-                    .build();
-        } else {
-            //crea y retorna un DTO con los datos del año y mes ingesados
-            return ReportDTORes.builder()
-                    .totalAmountSaleMonthAndYear(sumTotal)
-                    .totalNormalTicketsSold(totalNormalTicketsSold)
-                    .totalVipTicketsSold(totalVipTicketsSold)
-                    .build();
+        switch (dayOrmonth) {
+            case "day":
+                //crea y retorna un DTO con los datos del dia ingresado
+                return ReportDTORes.builder()
+                        .totalAmountSaleDay(sumTotal)
+                        .totalNormalTicketsSold(totalNormalTicketsSold)
+                        .totalVipTicketsSold(totalVipTicketsSold)
+                        .build();
+            case "month":
+                //crea y retorna un DTO con los datos del año y mes ingesados
+                return ReportDTORes.builder()
+                        .totalAmountSaleMonthAndYear(sumTotal)
+                        .totalNormalTicketsSold(totalNormalTicketsSold)
+                        .totalVipTicketsSold(totalVipTicketsSold)
+                        .build();
+            default: return null;
         }
     }
 

@@ -3,6 +3,7 @@ package com.hackacode.themepark.controller;
 import com.hackacode.themepark.dto.request.SaleDTOReq;
 import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.dto.response.SaleDTORes;
+import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.service.ISaleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class SaleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SaleDTORes> getSale(@PathVariable Long id) {
+    public ResponseEntity<SaleDTORes> getSale(@PathVariable Long id) throws IdNotFoundException {
 
         return ResponseEntity.ok(saleService.getSaleById(id));
     }
@@ -43,13 +44,13 @@ public class SaleController {
     @PutMapping()
     public ResponseEntity<HttpStatus> updateSale(@Valid @RequestBody SaleDTOReq saleDTOReq) throws Exception {
         saleService.updateSale(saleDTOReq);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteSale(@PathVariable Long id) throws Exception {
         saleService.deleteSale(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/monto_total_por_dia")

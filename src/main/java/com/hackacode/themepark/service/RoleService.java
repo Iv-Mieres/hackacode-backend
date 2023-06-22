@@ -44,8 +44,8 @@ public class RoleService implements IRoleService{
         var rolesBD = roleRepository.findAll();
         var rolesDTO = new ArrayList<RoleDTORes>();
 
-        for (Role role: rolesBD) {
-            rolesDTO.add(modelMapper.map(role, RoleDTORes.class));
+        for (Role roleBD: rolesBD) {
+            rolesDTO.add(modelMapper.map(roleBD, RoleDTORes.class));
         }
         return rolesDTO;
     }

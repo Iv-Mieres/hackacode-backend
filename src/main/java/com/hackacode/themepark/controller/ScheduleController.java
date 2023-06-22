@@ -37,12 +37,12 @@ public class ScheduleController {
     @PutMapping()
     public ResponseEntity<HttpStatus> updateSchedule(@Valid @RequestBody ScheduleDTORes scheduleDTO) throws Exception {
         scheduleService.updateSchedule(scheduleDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{scheduleId}")
-    public ResponseEntity<HttpStatus> deleteSchedule(@PathVariable Long scheduleId) throws Exception {
+    public ResponseEntity<HttpStatus> deleteSchedule(@PathVariable Long scheduleId){
         scheduleService.deleteSchedule(scheduleId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -101,9 +101,9 @@ public class EmployeeService implements IEmployeeService {
 
     // Validación de DNI para el método UPDATE
 
-    public void validateIfExistsByDni(String dniDTO, String dniBD) throws Exception {
+    public void validateIfExistsByDni(String dniDTO, String dniBD) throws DniExistsException {
         if (!dniDTO.equals(dniBD) && employeeUserRepository.existsByDni(dniDTO)) {
-            throw new Exception("El dni " + dniDTO + " ya existe. Ingrese un nuevo dni");
+            throw new DniExistsException("El dni " + dniDTO + " ya existe. Ingrese un nuevo dni");
         }
     }
 

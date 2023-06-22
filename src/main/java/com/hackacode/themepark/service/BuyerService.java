@@ -2,6 +2,7 @@ package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.BuyerDTOReq;
 import com.hackacode.themepark.dto.response.BuyerDTORes;
+import com.hackacode.themepark.exception.DniExistsException;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.Buyer;
 import com.hackacode.themepark.repository.IBuyerRepository;
@@ -23,10 +24,10 @@ public class BuyerService implements IBuyerService {
 
     //CREA UN COMPRADOR
     @Override
-    public void saveBuyer(BuyerDTOReq buyerDTO) throws IdNotFoundException {
+    public void saveBuyer(BuyerDTOReq buyerDTO) throws DniExistsException {
         //Comprueba que el dni sea unico
         if(buyerRepository.existsByDni(buyerDTO.getDni())){
-            throw new IdNotFoundException("El dni " + buyerDTO.getDni() + " ya existe. Ingrese un nuevo dni");
+            throw new DniExistsException("El dni " + buyerDTO.getDni() + " ya existe. Ingrese un nuevo dni");
         }
         buyerRepository.save(modelMapper.map(buyerDTO, Buyer.class));
     }
@@ -71,9 +72,9 @@ public class BuyerService implements IBuyerService {
 
     // Método de validación para el UPDATE
 
-    public void validateIfExistsByDni(String BuyerDTODni, String buyerBDDni) throws Exception {
+    public void validateIfExistsByDni(String BuyerDTODni, String buyerBDDni) throws DniExistsException {
         if(!BuyerDTODni.equals(buyerBDDni) && buyerRepository.existsByDni(BuyerDTODni)){
-            throw new Exception("El dni " + BuyerDTODni + " ya existe. Ingrese un nuevo dni");
+            throw new DniExistsException("El dni " + BuyerDTODni + " ya existe. Ingrese un nuevo dni");
         }
     }
 

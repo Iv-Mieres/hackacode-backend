@@ -2,6 +2,7 @@ package com.hackacode.themepark.controller;
 
 import com.hackacode.themepark.dto.request.BuyerDTOReq;
 import com.hackacode.themepark.dto.response.BuyerDTORes;
+import com.hackacode.themepark.exception.DniExistsException;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.repository.INormalTicketRepository;
 import com.hackacode.themepark.service.IBuyerService;
@@ -24,7 +25,7 @@ public class BuyerController {
     private INormalTicketRepository normalTicketRepository;
 
     @PostMapping()
-    public ResponseEntity<HttpStatus> saveBuyer(@Valid @RequestBody BuyerDTOReq buyerDTO) throws IdNotFoundException {
+    public ResponseEntity<HttpStatus> saveBuyer(@Valid @RequestBody BuyerDTOReq buyerDTO) throws DniExistsException {
         buyerServer.saveBuyer(buyerDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -42,13 +43,13 @@ public class BuyerController {
     @PutMapping()
     public ResponseEntity<HttpStatus> updateBuyer(@Valid @RequestBody BuyerDTORes buyerDTO) throws Exception {
         buyerServer.updateBuyer(buyerDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{buyerId}")
     public ResponseEntity<HttpStatus> deleteBuyer(@PathVariable Long buyerId) throws IdNotFoundException {
         buyerServer.deleteBuyer(buyerId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

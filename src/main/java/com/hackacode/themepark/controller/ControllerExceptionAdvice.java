@@ -54,17 +54,19 @@ public class ControllerExceptionAdvice {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails);
     }
 
-//    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-//    @ExceptionHandler({IdNotFoundException.class, RoleNotFoundException.class,
-//            DniNotFoundException.class, UsernameNotFoundException.class})
-//    public ResponseEntity<ErrorDetails> notFoundExceptions(Exception ex) {
-//
-//        ErrorDetails errorDetails = new ErrorDetails();
-//        errorDetails.setStatus(HttpStatus.NOT_FOUND.value() + " NOT_FOUND");
-//        errorDetails.setMessage(ex.getMessage());
-//
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails);
-//    }
+    // Controla Bad Requests y excepciones generales
+
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({DniExistsException.class, EmailExistsException.class, HoursExistsException.class,
+                        NameExistsException.class, RoleExistsException.class, Exception.class})
+    public ResponseEntity<ErrorDetails> badRequestExceptions(Exception ex) {
+
+        ErrorDetails errorDetails = new ErrorDetails();
+        errorDetails.setStatus(HttpStatus.BAD_REQUEST.value() + " BAD_REQUEST");
+        errorDetails.setMessage(ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails);
+    }
 
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler({Exception.class, })
@@ -85,7 +87,7 @@ public class ControllerExceptionAdvice {
 
         ErrorDetails errorDetails = new ErrorDetails();
         errorDetails.setStatus(HttpStatus.NOT_FOUND.value() + " NOT_FOUND");
-        errorDetails.setMessage("Error de tipeo. Revise los datos ingresados.");
+        errorDetails.setMessage("Error de tipeo: Revise los datos ingresados.");
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails);
     }
