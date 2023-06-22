@@ -3,11 +3,14 @@ package com.hackacode.themepark.service;
 import com.hackacode.themepark.dto.request.RoleDTOReq;
 import com.hackacode.themepark.dto.request.UserDTOReq;
 import com.hackacode.themepark.dto.response.UserDTORes;
+import com.hackacode.themepark.exception.EmailExistsException;
 import com.hackacode.themepark.exception.IdNotFoundException;
+import com.hackacode.themepark.exception.RoleNotFoundException;
 import com.hackacode.themepark.model.CustomUser;
 import com.hackacode.themepark.repository.ICustomUserRepository;
 import com.hackacode.themepark.repository.IEmployeeRepository;
 import com.hackacode.themepark.repository.IRoleRepository;
+import jakarta.persistence.EntityExistsException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -49,11 +52,9 @@ public class CustomUserService implements ICustomUserService{
     }
 
     @Override
-    public UserDTORes getByUsername(String username) throws Exception{
-        var userDB = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("El usuario:" + username + " no existe"));
-
-        return modelMapper.map(userDB, UserDTORes.class);
+    public UserDTORes getByUsername(String username) throws UsernameNotFoundException{
+        return modelMapper.map(userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("El usuario:" + username + " no existe")), UserDTORes.class);
     }
 
     //MOSTRAR UN USUARIO POR ID
@@ -114,17 +115,17 @@ public class CustomUserService implements ICustomUserService{
     //VALIDA DATOS ANTES DE GUARDAR UN USARIO
     public void validateDataBeforeSavingUser(String usernameDTO, Long employeeIdDTO, List<RoleDTOReq> rolesDTO) throws Exception {
         if (userRepository.existsByUsername(usernameDTO)){
-            throw new Exception("El Email " + usernameDTO + " ya existe. Ingrese un nuevo Email");
+            throw new EmailExistsException("El Email " + usernameDTO + " ya existe. Ingrese un nuevo Email");
         }
         if (!employeeRepository.existsById(employeeIdDTO)){
             throw new IdNotFoundException("El empleado que intenta ingresar no existe");
         }
         if(userRepository.existsByEmployee_Id(employeeIdDTO)){
-            throw new Exception("El empleado que intenta ingresar ya tiene asignado un usuario");
+            throw new EntityExistsException("El empleado que intenta ingresar ya tiene asignado un usuario");
         }
         for (RoleDTOReq roleDTO: rolesDTO) {
             if (!roleRepository.existsById(roleDTO.getId())){
-                throw new Exception("El rol que intenta ingresar no existe");
+                throw new RoleNotFoundException("El rol que intenta ingresar no existe");
             }
         }
     }
@@ -135,17 +136,17 @@ public class CustomUserService implements ICustomUserService{
                 .orElseThrow(() -> new IdNotFoundException("El id " + employeeIdDTO + " no existe"));
 
         if (!usernameDTO.equals(usernameBD) && userRepository.existsByUsername(usernameDTO)){
-            throw new Exception("El Email " + usernameDTO + " ya existe");
+            throw new EmailExistsException("El Email " + usernameDTO + " ya existe");
         }
         if ( !employeeRepository.existsById(employeeIdDTO)){
             throw new IdNotFoundException("El empleado que intenta ingresar no existe");
         }
         if(!employeeIdDTO.equals(employeeBD.getId()) && employeeRepository.existsById(employeeIdDTO)){
-            throw new Exception("El empleado que intenta ingresar ya tiene asignado un usuario");
+            throw new EntityExistsException("El empleado que intenta ingresar ya tiene asignado un usuario");
         }
         for (RoleDTOReq roleDTO: rolesDTO) {
             if (!roleRepository.existsById(roleDTO.getId())){
-                throw new Exception("El rol que intenta ingresar no existe");
+                throw new RoleNotFoundException("El rol que intenta ingresar no existe");
             }
         }
     }

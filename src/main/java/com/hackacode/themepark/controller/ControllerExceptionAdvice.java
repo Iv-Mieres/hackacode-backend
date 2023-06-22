@@ -1,6 +1,6 @@
 package com.hackacode.themepark.controller;
 
-import com.hackacode.themepark.exception.ErrorDetails;
+import com.hackacode.themepark.exception.*;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
@@ -40,23 +40,34 @@ public class ControllerExceptionAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
     }
 
-    // Controla excepciones generales
+    // Controla excepciones de datos no encontrados
 
-//    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-//    @ExceptionHandler({Exception.class})
-//    public ResponseEntity<ErrorDetails> generalExceptions(Exception ex) {
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    @ExceptionHandler({IdNotFoundException.class, RoleNotFoundException.class,
+            DniNotFoundException.class, UsernameNotFoundException.class})
+    public ResponseEntity<ErrorDetails> notFoundExceptions(Exception ex) {
+
+        ErrorDetails errorDetails = new ErrorDetails();
+        errorDetails.setStatus(HttpStatus.NOT_FOUND.value() + " NOT_FOUND");
+        errorDetails.setMessage(ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails);
+    }
+
+//    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+//    @ExceptionHandler({IdNotFoundException.class, RoleNotFoundException.class,
+//            DniNotFoundException.class, UsernameNotFoundException.class})
+//    public ResponseEntity<ErrorDetails> notFoundExceptions(Exception ex) {
 //
 //        ErrorDetails errorDetails = new ErrorDetails();
-//        errorDetails.setStatus(HttpStatus.BAD_REQUEST.value() + " BAD_REQUEST");
+//        errorDetails.setStatus(HttpStatus.NOT_FOUND.value() + " NOT_FOUND");
 //        errorDetails.setMessage(ex.getMessage());
 //
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
+//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails);
 //    }
 
-    // Controla excepciones generales
-
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({Exception.class})
+    @ExceptionHandler({Exception.class, })
     public ResponseEntity<ErrorDetails> generalExceptions(Exception ex) {
 
         ErrorDetails errorDetails = new ErrorDetails();

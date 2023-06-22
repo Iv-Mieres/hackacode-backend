@@ -4,6 +4,7 @@ import com.hackacode.themepark.dto.request.GameDTOReq;
 import com.hackacode.themepark.dto.response.GameDTORes;
 import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.exception.IdNotFoundException;
+import com.hackacode.themepark.exception.NameExistsException;
 import com.hackacode.themepark.model.Game;
 import com.hackacode.themepark.model.NormalTicket;
 import com.hackacode.themepark.repository.IGameRepository;
@@ -28,19 +29,18 @@ public class GameService implements IGameService {
 
     //CREA UN JUEGO
     @Override
-    public void saveGame(GameDTOReq gameDTO) throws Exception {
+    public void saveGame(GameDTOReq gameDTO) throws NameExistsException {
         if (gameRepository.existsByName(gameDTO.getName())) {
-            throw new Exception("El nombre " + gameDTO.getName() + " ya existe. Ingrese un nuevo nombre");
+            throw new NameExistsException("El nombre " + gameDTO.getName() + " ya existe. Ingrese un nuevo nombre");
         }
         gameRepository.save(modelMapper.map(gameDTO, Game.class));
     }
 
     //MUESTRA UN JUEGO POR ID
     @Override
-    public GameDTORes getGameById(Long gameId) throws Exception {
-        var gameBD = gameRepository.findById(gameId)
-                .orElseThrow(() -> new IdNotFoundException("El id " + gameId + " no exite. Ingrese un nuevo id"));
-        return modelMapper.map(gameBD, GameDTORes.class);
+    public GameDTORes getGameById(Long gameId) throws IdNotFoundException {
+        return modelMapper.map(gameRepository.findById(gameId)
+                .orElseThrow(() -> new IdNotFoundException("El id " + gameId + " no exite. Ingrese un nuevo id")), GameDTORes.class);
     }
 
     //LISTA JUEGOS PAGINADOS
@@ -62,7 +62,7 @@ public class GameService implements IGameService {
                 .orElseThrow(() -> new IdNotFoundException("El id " + gameDTO + " no existe. Ingrese un nuevo id"));
         //valida que el nombre del juego no exista y si existe que coincida con el juego encontrado
         if (!gameDTO.getName().equals(gameBD.getName()) && gameRepository.existsByName(gameDTO.getName())) {
-            throw new Exception("El nombre " + gameDTO.getName() + " ya existe. Ingrese un nuevo nombre");
+            throw new NameExistsException("El nombre " + gameDTO.getName() + " ya existe. Ingrese un nuevo nombre");
         }
         gameRepository.save(modelMapper.map(gameDTO, Game.class));
     }
