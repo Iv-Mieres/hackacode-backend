@@ -2,6 +2,7 @@ package com.hackacode.themepark.controller;
 
 import com.hackacode.themepark.dto.request.BuyerDTOReq;
 import com.hackacode.themepark.dto.response.BuyerDTORes;
+import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.repository.INormalTicketRepository;
 import com.hackacode.themepark.service.IBuyerService;
 import jakarta.validation.Valid;
@@ -23,13 +24,13 @@ public class BuyerController {
     private INormalTicketRepository normalTicketRepository;
 
     @PostMapping()
-    public ResponseEntity<HttpStatus> saveBuyer(@Valid @RequestBody BuyerDTOReq buyerDTO) throws Exception {
+    public ResponseEntity<HttpStatus> saveBuyer(@Valid @RequestBody BuyerDTOReq buyerDTO) throws IdNotFoundException {
         buyerServer.saveBuyer(buyerDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/{buyerId}")
-    public ResponseEntity<BuyerDTORes> getBuyer(@PathVariable Long buyerId) throws Exception {
+    public ResponseEntity<BuyerDTORes> getBuyer(@PathVariable Long buyerId) throws IdNotFoundException {
         return ResponseEntity.ok(buyerServer.getBuyerById(buyerId));
     }
 
@@ -45,7 +46,7 @@ public class BuyerController {
     }
 
     @DeleteMapping("/{buyerId}")
-    public ResponseEntity<HttpStatus> deleteBuyer(@PathVariable Long buyerId) throws Exception {
+    public ResponseEntity<HttpStatus> deleteBuyer(@PathVariable Long buyerId) throws IdNotFoundException {
         buyerServer.deleteBuyer(buyerId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

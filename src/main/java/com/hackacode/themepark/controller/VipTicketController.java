@@ -2,6 +2,7 @@ package com.hackacode.themepark.controller;
 
 import com.hackacode.themepark.dto.request.VipTicketDTOReq;
 import com.hackacode.themepark.dto.response.VipTicketDTORes;
+import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.VipTicket;
 import com.hackacode.themepark.service.IVipTicketService;
 import jakarta.validation.Valid;
@@ -34,12 +35,12 @@ public class VipTicketController {
     }
 
     @GetMapping("/{vipTicketId}")
-    public ResponseEntity<VipTicketDTORes> getTicketVip(@PathVariable UUID vipTicketId) {
+    public ResponseEntity<VipTicketDTORes> getTicketVip(@PathVariable UUID vipTicketId) throws IdNotFoundException {
         return ResponseEntity.ok(ticketVipService.getTicketVipById(vipTicketId));
     }
 
     @PutMapping()
-    public ResponseEntity<HttpStatus> updateVipTicket(@Valid @RequestBody VipTicketDTOReq vipTicketDTOReq) {
+    public ResponseEntity<HttpStatus> updateVipTicket(@Valid @RequestBody VipTicketDTOReq vipTicketDTOReq) throws IdNotFoundException {
         ticketVipService.updateTicketVip(vipTicketDTOReq);
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -2,6 +2,7 @@ package com.hackacode.themepark.controller;
 
 import com.hackacode.themepark.dto.request.EmployeeDTOReq;
 import com.hackacode.themepark.dto.response.EmployeeDTORes;
+import com.hackacode.themepark.exception.DniNotFoundException;
 import com.hackacode.themepark.service.IEmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,11 @@ public class EmployeeController {
     @GetMapping("/{employee_id}")
     public ResponseEntity<EmployeeDTORes> getEmployee(@PathVariable Long employee_id) throws Exception {
        return ResponseEntity.ok(employeeService.getEmployeeById(employee_id));
+    }
+
+    @GetMapping("/dni/{employeeDni}")
+    public ResponseEntity<EmployeeDTORes> getEmployeeByDni(@PathVariable String employeeDni) throws DniNotFoundException {
+        return ResponseEntity.ok(employeeService.getEmployeeByDni(employeeDni));
     }
 
     @GetMapping()

@@ -4,6 +4,7 @@ import com.hackacode.themepark.dto.request.NormalTicketDTOReq;
 import com.hackacode.themepark.dto.response.BuyerDTORes;
 import com.hackacode.themepark.dto.response.NormalTicketDTORes;
 import com.hackacode.themepark.dto.response.ReportDTORes;
+import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.NormalTicket;
 import com.hackacode.themepark.repository.IGameRepository;
 import com.hackacode.themepark.repository.INormalTicketRepository;
@@ -40,8 +41,9 @@ public class NormalTicketService implements INormalTicketService {
 
     //MUESTRA UN TICKET POR ID
     @Override
-    public NormalTicketDTORes getNormalTicketById(UUID ticketId) {
-        return modelMapper.map(ticketRepository.findById(ticketId), NormalTicketDTORes.class);
+    public NormalTicketDTORes getNormalTicketById(UUID ticketId) throws IdNotFoundException {
+        return modelMapper.map(ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new IdNotFoundException("El id ingresado no existe")), NormalTicketDTORes.class);
     }
 
     //LISTA DTO DE TICKETS
@@ -57,7 +59,10 @@ public class NormalTicketService implements INormalTicketService {
 
     //MODIFICA UN TICKET
     @Override
-    public void updateNormalTicket(NormalTicketDTOReq ticketDTOReq) {
+    public void updateNormalTicket(NormalTicketDTOReq ticketDTOReq) throws IdNotFoundException {
+        if (ticketRepository.existsById(ticketDTOReq.getId())){
+            throw new IdNotFoundException("El id ingresado no existe");
+        }
     ticketRepository.save(modelMapper.map(ticketDTOReq, NormalTicket.class));
     }
 

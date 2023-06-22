@@ -3,6 +3,7 @@ package com.hackacode.themepark.service;
 import com.hackacode.themepark.dto.request.VipTicketDTOReq;
 import com.hackacode.themepark.dto.response.BuyerDTORes;
 import com.hackacode.themepark.dto.response.VipTicketDTORes;
+import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.VipTicket;
 import com.hackacode.themepark.repository.IVipTicketRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +36,9 @@ public class VipTicketService implements IVipTicketService {
 
     //MUESTRA UN TICKET VIP
     @Override
-    public VipTicketDTORes getTicketVipById(UUID ticketVipId) {
-
-        return modelMapper.map(ticketVipRepository.findById(ticketVipId), VipTicketDTORes.class);
+    public VipTicketDTORes getTicketVipById(UUID ticketVipId) throws IdNotFoundException {
+        return modelMapper.map(ticketVipRepository.findById(ticketVipId)
+                .orElseThrow(() -> new IdNotFoundException("El id ingresado no existe")), VipTicketDTORes.class);
     }
 
     //LISTA DTO DE TICKETS VIP
@@ -53,7 +54,10 @@ public class VipTicketService implements IVipTicketService {
 
     //MODIFICA UN TICKET VIP
     @Override
-    public void updateTicketVip(VipTicketDTOReq vipTicketDTOReq) {
+    public void updateTicketVip(VipTicketDTOReq vipTicketDTOReq) throws IdNotFoundException {
+        if (ticketVipRepository.existsById(vipTicketDTOReq.getId())){
+            throw new IdNotFoundException("El id ingresado no existe");
+        }
         ticketVipRepository.save(modelMapper.map(vipTicketDTOReq, VipTicket.class));
     }
 

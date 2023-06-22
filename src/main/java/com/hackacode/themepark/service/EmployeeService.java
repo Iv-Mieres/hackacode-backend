@@ -2,6 +2,8 @@ package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.EmployeeDTOReq;
 import com.hackacode.themepark.dto.response.EmployeeDTORes;
+import com.hackacode.themepark.exception.DniNotFoundException;
+import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.Employee;
 import com.hackacode.themepark.repository.IEmployeeRepository;
 import org.modelmapper.ModelMapper;
@@ -12,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -48,8 +49,15 @@ public class EmployeeService implements IEmployeeService {
     @Override
     public EmployeeDTORes getEmployeeById(Long employeeId) throws Exception {
         var employeeBD = employeeUserRepository.findById(employeeId)
-                .orElseThrow(() -> new Exception("El id " + employeeId + " no existe"));
+                .orElseThrow(() -> new IdNotFoundException("El id " + employeeId + " no existe"));
         return modelMapper.map(employeeBD, EmployeeDTORes.class);
+    }
+
+    //MUESTRA EMPLEADO POR DNI
+    @Override
+    public EmployeeDTORes getEmployeeByDni(String employeeDni) throws DniNotFoundException {
+        return modelMapper.map( employeeUserRepository.findByDni(employeeDni)
+                .orElseThrow(() -> new DniNotFoundException("El dni " + employeeDni + " no existe")), EmployeeDTORes.class);
     }
 
     //LISTA DTO DE EMPLEADOS PAGINADOS
@@ -68,7 +76,7 @@ public class EmployeeService implements IEmployeeService {
     @Override
     public void updateEmployee(EmployeeDTOReq employeeDTO) throws Exception {
         var employeeBD = employeeUserRepository.findById(employeeDTO.getId())
-                .orElseThrow(() -> new Exception("El id" + employeeDTO.getId() + " no existe"));
+                .orElseThrow(() -> new IdNotFoundException("El id" + employeeDTO.getId() + " no existe"));
 
         //valida que el dni y username ingresados no existan en la bd
         //y si existen que solo pertenezacan al empleado encontrado
@@ -84,7 +92,7 @@ public class EmployeeService implements IEmployeeService {
     @Override
     public void deleteEmployee(Long employeeID) throws Exception {
         var employeeBD = employeeUserRepository.findById(employeeID)
-                .orElseThrow(() -> new Exception("El id " + employeeID + " no existe"));
+                .orElseThrow(() -> new IdNotFoundException("El id " + employeeID + " no existe"));
         employeeBD.setEnable(false);
         employeeUserRepository.save(employeeBD);
     }

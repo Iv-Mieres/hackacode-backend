@@ -6,6 +6,7 @@ import com.hackacode.themepark.dto.request.SaleDTOReq;
 import com.hackacode.themepark.dto.request.VipTicketDTOReq;
 import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.dto.response.SaleDTORes;
+import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.Game;
 import com.hackacode.themepark.model.NormalTicket;
 import com.hackacode.themepark.model.Sale;
@@ -39,6 +40,8 @@ public class SaleService implements ISaleService {
     private final IVipTicketRepository vipTicketRepository;
     private final ModelMapper modelMapper;
 
+
+    //CREA UNA VENTA
     @Override
     public void saveSale(SaleDTOReq saleDTOReq) throws Exception {
         //Mapeo del DTO de venta al modelo de venta
@@ -49,12 +52,14 @@ public class SaleService implements ISaleService {
         var saleDB = saleRepository.save(sale);
     }
 
+    //MUESTRA UNA VENTA POR ID
     @Override
-    public SaleDTORes getSaleById(Long saleId) {
-        var saleDB = saleRepository.findById(saleId).orElse(null);
-        return modelMapper.map(saleDB, SaleDTORes.class);
+    public SaleDTORes getSaleById(Long saleId) throws IdNotFoundException {
+        return modelMapper.map(saleRepository.findById(saleId)
+                .orElseThrow(() -> new IdNotFoundException("El id " + saleId + " no existe")), SaleDTORes.class);
     }
 
+    //LISTA DTO DE VENTAS PAGINADAS
     @Override
     public Page<SaleDTORes> getSales(Pageable pageable) {
         var sales = saleRepository.findAll(pageable);
@@ -66,21 +71,28 @@ public class SaleService implements ISaleService {
         return new PageImpl<>(salesDTO, pageable, salesDTO.size());
     }
 
+    //MODIFICA UNA VENTA
     @Override
-    public void updateSale(SaleDTOReq saleDTOReq) throws Exception {
+    public void updateSale(SaleDTOReq saleDTOReq) throws IdNotFoundException {
+        if(saleRepository.existsById(saleDTOReq.getId())){
+            throw new IdNotFoundException("El id " + saleDTOReq.getId() + " no existe");
+        }
         var saleUpdate = modelMapper.map(saleDTOReq, Sale.class);
         saleRepository.save(saleUpdate);
     }
 
+    //ELIMINA UNA VENTA
     @Override
     public void deleteSale(Long saleId) {
         saleRepository.deleteById(saleId);
     }
 
-    public Double calculateTotalPrice(SaleDTOReq saleDTOReq) throws Exception {
-        List<NormalTicket> normalTickets = new ArrayList<>();
-        List<VipTicket> vipTickets = new ArrayList<>();
-        System.out.println(saleDTOReq.getNormalTickets());
+
+    //CALCULA EL PRECIO TOTAL DE LA VENTA REALIZADA
+    public Double calculateTotalPrice(SaleDTOReq saleDTOReq) throws IdNotFoundException {
+        var normalTickets = new ArrayList<NormalTicket>();
+        var vipTickets = new ArrayList<VipTicket>();
+
         if (saleDTOReq.getNormalTickets() != null) {
             for (NormalTicketDTOReq ticket : saleDTOReq.getNormalTickets()) {
                 normalTickets.add(modelMapper.map(ticket, NormalTicket.class));
@@ -97,7 +109,8 @@ public class SaleService implements ISaleService {
         Optional<VipTicket> optionalVipTicket = null;
         if (normalTickets.size() != 0) {
             for (NormalTicket ticket : normalTickets) {
-                optNormalTicket = Optional.ofNullable(normalTicketRepository.findById(ticket.getId()).orElseThrow(() -> new Exception("Id de normal ticket invalido")));
+                optNormalTicket = Optional.ofNullable(normalTicketRepository.findById(ticket.getId())
+                        .orElseThrow(() -> new IdNotFoundException("Id de normal ticket invalido")));
                 game = gameRepository.findById(optNormalTicket.get().getGame().getId());
                 if (game.isPresent()) {
                     totalPrice += game.get().getPrice();
@@ -106,7 +119,8 @@ public class SaleService implements ISaleService {
         }
         if (vipTickets.size() != 0) {
             for (VipTicket ticket : vipTickets) {
-                optionalVipTicket = Optional.ofNullable(vipTicketRepository.findById(ticket.getId()).orElseThrow(() -> new Exception("Id de vip ticket invalido")));
+                optionalVipTicket = Optional.ofNullable(vipTicketRepository.findById(ticket.getId())
+                        .orElseThrow(() -> new IdNotFoundException("Id de vip ticket invalido")));
                 totalPrice += optionalVipTicket.get().getPrice();
             }
         }
@@ -134,12 +148,14 @@ public class SaleService implements ISaleService {
         return this.getReport(salesBD, "month");
     }
 
+    //GENERA UN REPORT DTO
     public ReportDTORes getReport(List<Sale> salesBD, String dayOrmonth) {
 
         double sumTotal = 0.0;
         long totalNormalTicketsSold = 0L;
         long totalVipTicketsSold = 0L;
 
+        //recorre la lista de ventas, suma el total de la ventas y el total de tickets vendidos
         for (Sale sale : salesBD) {
             if (sale.getNormalTickets().isEmpty() && sale.getVipTickets() != null) {
                 sumTotal += sale.getTotalPrice();
@@ -153,6 +169,7 @@ public class SaleService implements ISaleService {
                 totalVipTicketsSold += sale.getVipTickets().size();
             }
         }
+        //crea y retorna un DTO con los datos del dia ingresado
         if (dayOrmonth.equals("day")) {
             return ReportDTORes.builder()
                     .totalAmountSaleDay(sumTotal)
@@ -160,6 +177,7 @@ public class SaleService implements ISaleService {
                     .totalVipTicketsSold(totalVipTicketsSold)
                     .build();
         } else {
+            //crea y retorna un DTO con los datos del año y mes ingesados
             return ReportDTORes.builder()
                     .totalAmountSaleMonthAndYear(sumTotal)
                     .totalNormalTicketsSold(totalNormalTicketsSold)

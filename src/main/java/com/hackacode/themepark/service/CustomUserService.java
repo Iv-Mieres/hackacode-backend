@@ -3,6 +3,7 @@ package com.hackacode.themepark.service;
 import com.hackacode.themepark.dto.request.RoleDTOReq;
 import com.hackacode.themepark.dto.request.UserDTOReq;
 import com.hackacode.themepark.dto.response.UserDTORes;
+import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.CustomUser;
 import com.hackacode.themepark.repository.ICustomUserRepository;
 import com.hackacode.themepark.repository.IEmployeeRepository;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -49,17 +51,16 @@ public class CustomUserService implements ICustomUserService{
     @Override
     public UserDTORes getByUsername(String username) throws Exception{
         var userDB = userRepository.findByUsername(username)
-                .orElseThrow(() -> new Exception("El usuario:" + username + " no existe"));
+                .orElseThrow(() -> new UsernameNotFoundException("El usuario:" + username + " no existe"));
 
         return modelMapper.map(userDB, UserDTORes.class);
     }
 
     //MOSTRAR UN USUARIO POR ID
     @Override
-    public UserDTORes getUserById(Long userId) throws Exception {
-        var userBD = userRepository.findById(userId)
-                .orElseThrow(() -> new Exception("El id " + userId + " no existe"));
-        return modelMapper.map(userBD, UserDTORes.class);
+    public UserDTORes getUserById(Long userId) throws IdNotFoundException {
+        return modelMapper.map(userRepository.findById(userId)
+                .orElseThrow(() -> new IdNotFoundException("El id " + userId + " no existe")), UserDTORes.class);
     }
 
     //LISTAR USUARIOS
@@ -90,7 +91,7 @@ public class CustomUserService implements ICustomUserService{
     @Override
     public void updateUser(UserDTOReq user) throws Exception {
         var userBD = userRepository.findById(user.getId())
-                .orElseThrow(() -> new Exception("El id " + user.getId() + " no existe"));
+                .orElseThrow(() -> new IdNotFoundException("El id " + user.getId() + " no existe"));
 
         this.validateDataBeforeUpdatingUser(user.getUsername(), userBD.getUsername(),
                                             user.getEmployee().getId(), user.getRoles());
@@ -102,9 +103,9 @@ public class CustomUserService implements ICustomUserService{
 
     //ELIMINADO LÓGICO DE USUARIO
     @Override
-    public void deleteUser(Long userId) throws Exception {
+    public void deleteUser(Long userId) throws IdNotFoundException {
         var userBD = userRepository.findById(userId)
-                .orElseThrow(() -> new Exception("El id" + userId + " no existe"));
+                .orElseThrow(() -> new IdNotFoundException("El id" + userId + " no existe"));
         userBD.setEnable(false);
         userRepository.save(userBD);
     }
@@ -116,7 +117,7 @@ public class CustomUserService implements ICustomUserService{
             throw new Exception("El Email " + usernameDTO + " ya existe. Ingrese un nuevo Email");
         }
         if (!employeeRepository.existsById(employeeIdDTO)){
-            throw new Exception("El empleado que intenta ingresar no existe");
+            throw new IdNotFoundException("El empleado que intenta ingresar no existe");
         }
         if(userRepository.existsByEmployee_Id(employeeIdDTO)){
             throw new Exception("El empleado que intenta ingresar ya tiene asignado un usuario");
@@ -131,13 +132,13 @@ public class CustomUserService implements ICustomUserService{
     //VALIDA DATOS ANTES DE MODIFICAR UN USARIO
     public void validateDataBeforeUpdatingUser(String usernameDTO, String usernameBD , Long employeeIdDTO, List<RoleDTOReq> rolesDTO) throws Exception {
         var employeeBD = employeeRepository.findById(employeeIdDTO)
-                .orElseThrow(() -> new Exception("El id " + employeeIdDTO + " no existe"));
+                .orElseThrow(() -> new IdNotFoundException("El id " + employeeIdDTO + " no existe"));
 
         if (!usernameDTO.equals(usernameBD) && userRepository.existsByUsername(usernameDTO)){
             throw new Exception("El Email " + usernameDTO + " ya existe");
         }
         if ( !employeeRepository.existsById(employeeIdDTO)){
-            throw new Exception("El empleado que intenta ingresar no existe");
+            throw new IdNotFoundException("El empleado que intenta ingresar no existe");
         }
         if(!employeeIdDTO.equals(employeeBD.getId()) && employeeRepository.existsById(employeeIdDTO)){
             throw new Exception("El empleado que intenta ingresar ya tiene asignado un usuario");
