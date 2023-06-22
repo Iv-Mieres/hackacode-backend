@@ -8,6 +8,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class RoleService implements IRoleService{
 
@@ -16,6 +19,16 @@ public class RoleService implements IRoleService{
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Override
+    public List<RoleDTORes> gettAll() {
+        List<Role> roles = roleRepository.findAll();
+        List<RoleDTORes> response = new ArrayList<>();
+        roles.forEach(
+                r -> response.add(modelMapper.map(r,RoleDTORes.class))
+        );
+        return response;
+    }
 
     @Override
     public void saveRole(RoleDTOReq role) throws Exception {

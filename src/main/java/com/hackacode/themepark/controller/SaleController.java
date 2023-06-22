@@ -3,6 +3,7 @@ package com.hackacode.themepark.controller;
 import com.hackacode.themepark.dto.request.SaleDTOReq;
 import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.dto.response.SaleDTORes;
+import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.service.ISaleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class SaleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SaleDTORes> getSale(@PathVariable Long id) {
+    public ResponseEntity<SaleDTORes> getSale(@PathVariable Long id) throws IdNotFoundException {
 
         return ResponseEntity.ok(saleService.getSaleById(id));
     }
