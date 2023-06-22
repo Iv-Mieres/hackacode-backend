@@ -7,6 +7,7 @@ import com.hackacode.themepark.exception.DniNotFoundException;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.Employee;
 import com.hackacode.themepark.repository.IEmployeeRepository;
+import com.hackacode.themepark.repository.IGameRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class EmployeeService implements IEmployeeService {
     @Autowired
     private IEmployeeRepository employeeUserRepository;
 
+    @Autowired
+    private IGameRepository gameRepository;
+
     //CREA UN EMPLEADO CON SU ROL Y SU JUEGO ASIGNADO
     @Override
     public void saveEmployee(EmployeeDTOReq employeeDTO) throws Exception {
@@ -35,8 +39,8 @@ public class EmployeeService implements IEmployeeService {
             throw new DniExistsException("El dni " + employeeDTO.getDni() + " ya existe. Ingrese un nuevo dni");
         }
         //valida que el juego no sea nulo y que su id no exista en la BD
-        if (!Objects.isNull(employeeDTO.getGame()) &&
-                !employeeUserRepository.existsByGame_id(employeeDTO.getGame().getId())) {
+        if (employeeDTO.getGame().getId() != null &&
+                !gameRepository.existsById(employeeDTO.getGame().getId())) {
             throw new EntityNotFoundException("El juego que intenta ingresar no existe. Ingrese un juego existente");
         }
         else {

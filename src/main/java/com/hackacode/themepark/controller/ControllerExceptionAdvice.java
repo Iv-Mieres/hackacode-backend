@@ -65,17 +65,6 @@ public class ControllerExceptionAdvice {
         errorDetails.setStatus(HttpStatus.BAD_REQUEST.value() + " BAD_REQUEST");
         errorDetails.setMessage(ex.getMessage());
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails);
-    }
-
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({Exception.class, })
-    public ResponseEntity<ErrorDetails> generalExceptions(Exception ex) {
-
-        ErrorDetails errorDetails = new ErrorDetails();
-        errorDetails.setStatus(HttpStatus.BAD_REQUEST.value() + " BAD_REQUEST");
-        errorDetails.setMessage(ex.getMessage());
-
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
     }
 
