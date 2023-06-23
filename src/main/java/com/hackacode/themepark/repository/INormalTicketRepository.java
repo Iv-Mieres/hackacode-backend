@@ -15,5 +15,6 @@ public interface INormalTicketRepository extends JpaRepository<NormalTicket, UUI
     Long countByPurchaseDateBetween(LocalDateTime startDay, LocalDateTime endDay);
     Long countByPurchaseDateBetweenAndGame_name(LocalDateTime startDay, LocalDateTime endDay, String nameGame);
     NormalTicket findTopByPurchaseDateBetweenOrderByBuyer_idDesc(LocalDateTime startDay, LocalDateTime endDay);
+    NormalTicket findByPurchaseDate(LocalDateTime date);
 
 }

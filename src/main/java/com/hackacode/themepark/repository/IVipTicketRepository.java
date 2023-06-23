@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface IVipTicketRepository extends JpaRepository<VipTicket, UUID> {
     VipTicket findTopByPurchaseDateBetweenOrderByBuyer_idDesc(LocalDateTime startDay, LocalDateTime endDay);
+    VipTicket findByPurchaseDate(LocalDateTime date);
 }

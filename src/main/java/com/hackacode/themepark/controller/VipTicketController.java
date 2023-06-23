@@ -22,9 +22,8 @@ public class VipTicketController {
     private IVipTicketService ticketVipService;
 
     @PostMapping()
-    public ResponseEntity<HttpStatus> saveTicketVip(@Valid @RequestBody VipTicketDTOReq vipTicketDTOReq){
-        ticketVipService.saveTicketVip(vipTicketDTOReq);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<UUID> saveTicketVip(@Valid @RequestBody VipTicketDTOReq vipTicketDTOReq){
+        return ResponseEntity.status(HttpStatus.CREATED).body( ticketVipService.saveTicketVip(vipTicketDTOReq));
     }
 
     @GetMapping("/ver_todos")

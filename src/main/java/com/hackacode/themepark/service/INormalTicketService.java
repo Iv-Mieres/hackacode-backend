@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public interface INormalTicketService {
 
-    void saveNormalTicket(NormalTicketDTOReq Ticket);
+    UUID saveNormalTicket(NormalTicketDTOReq Ticket) throws Exception;
     NormalTicketDTORes getNormalTicketById(UUID TicketId) throws IdNotFoundException;
     Page<NormalTicketDTORes> getNormalTickets(Pageable pageable);
     void updateNormalTicket(NormalTicketDTOReq normalTicketDTOReq) throws IdNotFoundException;

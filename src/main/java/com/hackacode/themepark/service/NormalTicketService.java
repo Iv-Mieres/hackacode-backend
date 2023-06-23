@@ -6,6 +6,7 @@ import com.hackacode.themepark.dto.response.NormalTicketDTORes;
 import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.NormalTicket;
+import com.hackacode.themepark.repository.IBuyerRepository;
 import com.hackacode.themepark.repository.IGameRepository;
 import com.hackacode.themepark.repository.INormalTicketRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,12 +32,29 @@ public class NormalTicketService implements INormalTicketService {
 
     private final INormalTicketRepository ticketRepository;
 
+    private final IBuyerRepository buyerRepository;
+
     private final ModelMapper modelMapper;
 
     //CREA UN TICKET NORMAL
     @Override
-    public void saveNormalTicket(NormalTicketDTOReq ticket) {
-        ticketRepository.save(modelMapper.map(ticket, NormalTicket.class));
+    public UUID saveNormalTicket(NormalTicketDTOReq ticket) throws Exception {
+        var gameBD = gameRepository.findById(ticket.getGame().getId())
+                .orElseThrow(() -> new IdNotFoundException("El juego ingresado no existe"));
+
+        var buyerBD = buyerRepository.findById(ticket.getBuyer().getId())
+                .orElseThrow(() -> new IdNotFoundException("El comprador ingresado no existe"));
+
+        if (!gameBD.validateAge(buyerBD.getBirthdate())){
+            throw new Exception("Acción cancelada : No poseé la edad requerida para ingresar a este juego");
+        }
+        //settea el purchaseDate con LocalDateTime.now()
+        var normalTicket = modelMapper.map(ticket, NormalTicket.class);
+        normalTicket.setPurchaseDate(LocalDateTime.now());
+        //Guarda el NormalTicket
+        ticketRepository.save(normalTicket);
+        //Busca el ticket guardado usando el normalTicket.getPurchaseDate() y retorno el UUID
+        return ticketRepository.findByPurchaseDate(normalTicket.getPurchaseDate()).getId();
     }
 
     //MUESTRA UN TICKET POR ID

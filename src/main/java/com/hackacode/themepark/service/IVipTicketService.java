@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public interface IVipTicketService {
 
-    void saveTicketVip(VipTicketDTOReq vipTicketDTOReq);
+    UUID saveTicketVip(VipTicketDTOReq vipTicketDTOReq);
     VipTicketDTORes getTicketVipById(UUID ticketVipId) throws IdNotFoundException;
     Page<VipTicketDTORes> getTicketVips(Pageable pageable);
     void updateTicketVip(VipTicketDTOReq vipTicketDTOReq) throws IdNotFoundException;

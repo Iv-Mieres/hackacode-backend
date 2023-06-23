@@ -29,9 +29,11 @@ public class VipTicketService implements IVipTicketService {
 
     //CREA UN TICKET VIP
     @Override
-    public void saveTicketVip(VipTicketDTOReq vipTicketDTOReq) {
-
-        ticketVipRepository.save(modelMapper.map(vipTicketDTOReq, VipTicket.class));
+    public UUID saveTicketVip(VipTicketDTOReq vipTicketDTOReq) {
+        var vipTicket = modelMapper.map(vipTicketDTOReq, VipTicket.class);
+        vipTicket.setPurchaseDate(LocalDateTime.now());
+        ticketVipRepository.save(vipTicket);
+        return ticketVipRepository.findByPurchaseDate(vipTicket.getPurchaseDate()).getId();
     }
 
     //MUESTRA UN TICKET VIP

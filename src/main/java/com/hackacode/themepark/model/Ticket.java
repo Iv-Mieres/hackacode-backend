@@ -14,6 +14,5 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @CreationTimestamp
     private LocalDateTime purchaseDate;
 }

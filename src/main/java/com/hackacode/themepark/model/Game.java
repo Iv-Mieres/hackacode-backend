@@ -41,8 +41,8 @@ public class Game {
     @OneToMany(mappedBy = "game")
     private List<NormalTicket> normalTickets;
 
-    //Método para validar si el comprador es menor o mayor a 18 años
-    public boolean validateAge(Buyer buyer){
-        return Period.between(buyer.getBirthdate(), LocalDate.now()).getYears() >= 18;
+    //Método para validar si el comprador cumple con la edad requerida del juego
+    public boolean validateAge(LocalDate birthdate){
+        return Period.between(birthdate, LocalDate.now()).getYears() >= this.requiredAge;
     }
 }

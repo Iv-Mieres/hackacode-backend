@@ -21,9 +21,8 @@ public class NormalTicketController {
     private final INormalTicketService ticketService;
 
     @PostMapping()
-    public ResponseEntity<HttpStatus> saveTicket(@Valid @RequestBody NormalTicketDTOReq ticket){
-        ticketService.saveNormalTicket(ticket);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<UUID> saveTicket(@Valid @RequestBody NormalTicketDTOReq ticket) throws Exception {
+        return ResponseEntity.status(HttpStatus.CREATED).body(ticketService.saveNormalTicket(ticket));
     }
 
     @GetMapping("/ver_todos")
