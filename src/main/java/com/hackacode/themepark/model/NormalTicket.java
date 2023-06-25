@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "normals")
+@Entity(name = "normalTickets")
 public class NormalTicket extends Ticket{
 
     private boolean used;

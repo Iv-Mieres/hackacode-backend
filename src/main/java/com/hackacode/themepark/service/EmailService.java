@@ -13,13 +13,13 @@ public class EmailService implements IEmailService{
     private JavaMailSender javaMailSender;
 
     @Override
-    public void sendEmail(RecoverPasswordDTOReq user) {
+    public void sendEmail(String token, String username) {
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(user.getUsername());
+        mailMessage.setTo(username);
         mailMessage.setFrom("mieres.iv@gmail.com");
         mailMessage.setSubject("Recuperación de contraseña");
-//        mailMessage.setText(token);
+        mailMessage.setText("www.localhost:4200/recuperar_pass/" + token);
 
         javaMailSender.send(mailMessage);
     }

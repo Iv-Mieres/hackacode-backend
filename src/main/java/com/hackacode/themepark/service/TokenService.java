@@ -7,8 +7,11 @@ import com.hackacode.themepark.repository.ITokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.UUID;
+
 @Service
-public class TokenService implements ITokenService{
+public class TokenService implements ITokenService {
 
     @Autowired
     private ITokenRepository tokenRepository;
@@ -18,11 +21,17 @@ public class TokenService implements ITokenService{
 
 
     @Override
-    public Token saveToken(Token token, String username) throws UsernameNotFoundException {
-       var userBD = userRepository.findByUsername(username)
-               .orElseThrow(() -> new UsernameNotFoundException("El username ingresado no existe"));
-       token.setUser(userBD);
-       return tokenRepository.save(token);
+    public Token saveToken(String username) throws UsernameNotFoundException {
+
+        var userBD = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("El username ingresado no existe"));
+
+        String generateToken = UUID.randomUUID().toString();
+        var token = new Token();
+        token.setToken(generateToken);
+        token.setExpirationTime(new Date(System.currentTimeMillis() + (1000 * 60 * 15)));
+        token.setUser(userBD);
+        return tokenRepository.save(token);
     }
 
     @Override
@@ -40,7 +49,7 @@ public class TokenService implements ITokenService{
         tokenRepository.deleteById(tokenId);
     }
 
-    public String validateToken(String token){
+    public String validateToken(String token) {
         String tokenBD = tokenRepository.findByToken(token).getToken();
         return null;
     }

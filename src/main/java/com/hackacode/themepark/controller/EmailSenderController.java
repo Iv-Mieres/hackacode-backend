@@ -14,11 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/token")
@@ -32,13 +29,16 @@ public class EmailSenderController {
 
     @PostMapping("/recuperar_pass")
     public ResponseEntity<Map<String, Object>> sendEmail(@Valid @RequestBody RecoverPasswordDTOReq user) throws UsernameNotFoundException {
-        String generateToken = UUID.randomUUID().toString();
-        Token token= new Token();
-        token.setToken(generateToken);
-        token.setExpirationTime(new Date(System.currentTimeMillis() + (1000 * 60 * 15)));
 
+        //guardar token en BD
+        var token = tokenService.saveToken(user.getUsername());
+
+        //Map para devolver la respuesta al cliente
         Map<String, Object> response = new HashMap<>();
-        response.put("token" , tokenService.saveToken(token,  user.getUsername()));
+        response.put("token" , token);
+
+        //método de envio de email junto con el token
+        emailService.sendEmail(token.getToken() , user.getUsername());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

@@ -8,7 +8,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "vips")
+@Entity(name = "vipTickets")
 public class VipTicket extends Ticket {
 
     @OneToOne

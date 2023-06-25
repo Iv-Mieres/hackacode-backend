@@ -10,6 +10,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity(name = "tokens")
 public class Token {
 
     @Id
@@ -17,7 +18,7 @@ public class Token {
     private Long id;
     private String token;
     private Date expirationTime;
-    private final int EXPIRATION_TIME = 15;
+    private static final int EXPIRATION_TIME = 15;
 
     @OneToOne
     @JoinColumn(name = "fkUser")
