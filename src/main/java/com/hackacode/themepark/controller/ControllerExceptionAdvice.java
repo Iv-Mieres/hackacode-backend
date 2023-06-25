@@ -7,6 +7,7 @@ import jakarta.validation.Path;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -18,8 +19,18 @@ import java.util.Map;
 @RestControllerAdvice
 public class ControllerExceptionAdvice {
 
-    // Controla excepciones de Spring Validation
+    //Controla excepciones de tipo - "MethodArgumentNotValidException"
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> validException(MethodArgumentNotValidException ex) {
+        Map<String, String> errorDetails = new HashMap<>();
+        ex.getBindingResult()
+                .getFieldErrors()
+                .forEach(error -> errorDetails.put(error.getField(), error.getDefaultMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
+    }
 
+    // Controla excepciones de tipo - "ConstraintViolationException"
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler({ConstraintViolationException.class})
     public ResponseEntity<Map<Path, String>> constraintViolationException(ConstraintViolationException ex) {

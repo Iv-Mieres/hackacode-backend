@@ -55,6 +55,7 @@ public class MySecurityFilterChain {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/token").permitAll()
+                            .requestMatchers("/token/recuperar_pass").permitAll()
                             .requestMatchers("/**").permitAll()
                             .requestMatchers("/api/compradores", "/api/empleados",
                                     "/api/roles", "/api/usuarios").hasRole("ADMINISTRADOR")

@@ -1,5 +1,6 @@
 package com.hackacode.themepark.service;
 
+import com.hackacode.themepark.dto.request.RecoverPasswordDTOReq;
 import com.hackacode.themepark.dto.request.RoleDTOReq;
 import com.hackacode.themepark.dto.request.UserDTOReq;
 import com.hackacode.themepark.dto.response.UserDTORes;
@@ -100,6 +101,9 @@ public class CustomUserService implements ICustomUserService{
         saveUser.setEnable(true);
         saveUser.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(saveUser);
+    }
+
+    public void recoverPassword(RecoverPasswordDTOReq recoverPasswordDTO){
     }
 
     //ELIMINADO LÓGICO DE USUARIO
