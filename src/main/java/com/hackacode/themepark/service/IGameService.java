@@ -22,4 +22,6 @@ public interface IGameService {
 
     //MUESTRA JUEGO CON LA MAYOR CANTIDAD DE TICKETS VENDIDOS EN DETERMINADO DIA
     ReportDTORes gameWithTheMostTicketsSold(LocalDateTime date);
+
+    double sumPriceAllGames();
 }

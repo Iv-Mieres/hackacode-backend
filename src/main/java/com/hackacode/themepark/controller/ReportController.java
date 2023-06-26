@@ -19,10 +19,7 @@ import java.time.LocalDateTime;
 public class ReportController {
 
     @Autowired
-    private INormalTicketService ticketService;
-
-    @Autowired
-    private IVipTicketService vipTicketService;
+    private ITicketService ticketService;
 
     @Autowired
     private IGameService gameService;
@@ -73,10 +70,10 @@ public class ReportController {
     }
 
     //MUESTRA AL COMPRADOR QUE MÁS ENTRADAS VIPS COMPRÓ EN UN DETERMINADO MES Y AÑO
-    @GetMapping("/comprador_vip/con_mas_entradas_vedidas_al_mes")
-    public ResponseEntity<BuyerDTORes> getBuyerWithMoreVipTicketsPerMonthAndYear(@RequestParam int year, int month) throws Exception {
-        return ResponseEntity.ok(vipTicketService.buyerWithTheMostNormalTicketsSoldInTheMonth(year, month));
-    }
+//    @GetMapping("/comprador_vip/con_mas_entradas_vedidas_al_mes")
+//    public ResponseEntity<BuyerDTORes> getBuyerWithMoreVipTicketsPerMonthAndYear(@RequestParam int year, int month) throws Exception {
+//        return ResponseEntity.ok(vipTicketService.buyerWithTheMostNormalTicketsSoldInTheMonth(year, month));
+//    }
 
     //VER JUEGO CON LA MAYOR CANTIDAD DE ENTRADAS VENDIDAS HASTA LA FECHA SELECCIONADA
     @GetMapping("/juego/con_mas_entradas_vendidas_hasta")

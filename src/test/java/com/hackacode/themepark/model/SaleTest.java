@@ -5,18 +5,16 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class SaleTest {
 
     private Game game;
     private Sale sale;
-    private NormalTicket normalTicket;
+    private Ticket ticket;
 
     @BeforeEach
     void setUp() {
         game = new Game();
-        normalTicket = new NormalTicket();
+        ticket = new Ticket();
         sale = new Sale();
     }
 
@@ -26,11 +24,11 @@ class SaleTest {
         game.setPrice(2000.0);
 
         //se settea el juego en ticket
-        normalTicket.setGame(game);
+        ticket.setGame(game);
 
         //se guarda el ticket en una lista
-        var normalTickets = new ArrayList<NormalTicket>();
-        normalTickets.add(normalTicket);
+        var normalTickets = new ArrayList<Ticket>();
+        normalTickets.add(ticket);
 
         //se crean tickets vips
         VipTicket vipTicket1 = new VipTicket();
@@ -44,7 +42,7 @@ class SaleTest {
         vips.add(vipTicket2);
 
         //se settean los tickets de Sale con las listas de tickets creadas
-        sale.setNormalTickets(normalTickets);
+        sale.setTickets(normalTickets);
         sale.setVipTickets(vips);
 
         //assertEquals(12000.0, sale.calculateTotalPrice());

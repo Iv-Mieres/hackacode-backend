@@ -11,6 +11,5 @@ import java.util.List;
 @NoArgsConstructor
 public class SaleDTOReq {
     private Long id;
-    private List<VipTicketDTOReq> vipTickets;
-    private List<NormalTicketDTOReq> normalTickets;
+    private List<TicketDTOReq> normalTickets;
 }

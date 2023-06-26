@@ -10,11 +10,11 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NormalTicketDTORes {
+public class TicketDTORes {
 
     private UUID id;
     private LocalDateTime dateTime;
-    private boolean used;
+    private double price;
     private GameDTORes game;
     private BuyerDTORes buyer;
 }

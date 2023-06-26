@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 
 @Service
@@ -18,6 +20,9 @@ public class BuyerService implements IBuyerService {
 
     @Autowired
     private IBuyerRepository buyerRepository;
+
+    @Autowired
+    private ITicketService normalTicketService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -35,8 +40,11 @@ public class BuyerService implements IBuyerService {
     //BUSCA COMPRADOR POR ID
     @Override
     public BuyerDTORes getBuyerById(Long buyerId) throws IdNotFoundException {
-        return modelMapper.map(buyerRepository.findById(buyerId)
+        var buyerDTO = modelMapper.map( buyerRepository.findById(buyerId)
                 .orElseThrow(() -> new IdNotFoundException("El id " + buyerId + " no existe")), BuyerDTORes.class);
+        buyerDTO.setLastVisit(normalTicketService.lastVisit(buyerId));
+        buyerDTO.setAge(Period.between(buyerDTO.getBirthdate(), LocalDate.now()).getYears());
+        return buyerDTO;
     }
 
     //LISTA DTO DE COMPRADORES PAGINADOS
@@ -46,7 +54,10 @@ public class BuyerService implements IBuyerService {
         var buyersDTO = new ArrayList<BuyerDTORes>();
         for (Buyer buyer:  buyerRepository.findAll(pageable)) {
             //convierte el comprador a DTO y lo guarda en la List
-            buyersDTO.add(modelMapper.map(buyer, BuyerDTORes.class));
+            var buyerDTO = modelMapper.map(buyer, BuyerDTORes.class);
+            buyerDTO.setLastVisit(normalTicketService.lastVisit(buyer.getId()));
+            buyerDTO.setAge(Period.between(buyerDTO.getBirthdate(), LocalDate.now()).getYears());
+            buyersDTO.add(buyerDTO);
         }
         return new PageImpl<>(buyersDTO, pageable, buyersDTO.size()) ;
     }

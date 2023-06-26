@@ -9,9 +9,9 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VipTicketDTOReq {
+public class TicketDTOReq {
 
     private UUID id;
-    private double price;
+    private GameDTOReq game;
     private BuyerDTOReq buyer;
 }

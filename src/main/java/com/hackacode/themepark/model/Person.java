@@ -18,10 +18,10 @@ public class Person {
     @Size(min = 8, max = 8, message = "Debe contener 8 caracteres")
     private String dni;
     @NotNull(message = "No puede estar vacio")
-    @Size(min = 3, max = 10, message = "Debe contener un mínimo de 4 y un máximo de 8 caracteres")
+    @Size(min = 3, max = 25, message = "Debe contener un mínimo de 3 y un máximo de 25 caracteres")
     private String name;
     @NotNull(message = "No puede estar vacio")
-    @Size(min = 3, max = 20, message = "Debe contener un mínimo de 4 y un máximo de 20 caracteres")
+    @Size(min = 3, max = 50, message = "Debe contener un mínimo de 4 y un máximo de 50 caracteres")
     private String surname;
     @Temporal(TemporalType.DATE)
     @NotNull(message = "No puede estar vacio")

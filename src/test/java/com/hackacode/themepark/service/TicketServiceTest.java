@@ -1,7 +1,6 @@
 package com.hackacode.themepark.service;
 
-import com.hackacode.themepark.model.NormalTicket;
-import com.hackacode.themepark.repository.INormalTicketRepository;
+import com.hackacode.themepark.repository.ITicketRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,19 +10,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class NormalTicketServiceTest {
+class TicketServiceTest {
 
     @Mock
-    private INormalTicketRepository normalTicketRepository;
+    private ITicketRepository normalTicketRepository;
 
     @InjectMocks
-    private NormalTicketService normalTicketService;
+    private TicketService normalTicketService;
 
     @Test
     void calculateTotalNormalTicketsSoldOnAGivenDate(){

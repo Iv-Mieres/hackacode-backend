@@ -23,8 +23,9 @@ public class Sale {
     @CreationTimestamp
     private LocalDateTime purchaseDate;
     @OneToMany
-    private List<VipTicket> vipTickets;
-    @OneToMany
-    private List<NormalTicket> normalTickets;
+    private List<TicketDetail> ticketDetail;
+    @OneToOne
+    @JoinColumn(name = "fkGame")
+    private Game game;
 
 }
