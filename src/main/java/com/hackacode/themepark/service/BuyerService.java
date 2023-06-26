@@ -22,7 +22,7 @@ public class BuyerService implements IBuyerService {
     private IBuyerRepository buyerRepository;
 
     @Autowired
-    private ITicketService normalTicketService;
+    private ITicketDetailService ticketDetailService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -42,7 +42,7 @@ public class BuyerService implements IBuyerService {
     public BuyerDTORes getBuyerById(Long buyerId) throws IdNotFoundException {
         var buyerDTO = modelMapper.map( buyerRepository.findById(buyerId)
                 .orElseThrow(() -> new IdNotFoundException("El id " + buyerId + " no existe")), BuyerDTORes.class);
-        buyerDTO.setLastVisit(normalTicketService.lastVisit(buyerId));
+        buyerDTO.setLastVisit(ticketDetailService.lastVisit(buyerId));
         buyerDTO.setAge(Period.between(buyerDTO.getBirthdate(), LocalDate.now()).getYears());
         return buyerDTO;
     }
@@ -55,7 +55,7 @@ public class BuyerService implements IBuyerService {
         for (Buyer buyer:  buyerRepository.findAll(pageable)) {
             //convierte el comprador a DTO y lo guarda en la List
             var buyerDTO = modelMapper.map(buyer, BuyerDTORes.class);
-            buyerDTO.setLastVisit(normalTicketService.lastVisit(buyer.getId()));
+            buyerDTO.setLastVisit(ticketDetailService.lastVisit(buyer.getId()));
             buyerDTO.setAge(Period.between(buyerDTO.getBirthdate(), LocalDate.now()).getYears());
             buyersDTO.add(buyerDTO);
         }

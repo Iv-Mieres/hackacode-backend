@@ -10,19 +10,16 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "normalTickets")
+@Entity(name = "tickets")
 public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @CreationTimestamp
-    private LocalDateTime purchaseDate;
     @DecimalMin(value = "0.0", message = "El valor mínimo ingresado debe ser de 0.0")
     private double price;
     @Size(min = 4, max = 60, message =  "debe tener un mínimo 4 y un máximo de 60 caracteres")

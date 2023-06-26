@@ -6,9 +6,8 @@ import com.hackacode.themepark.dto.response.TicketDTORes;
 import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.Ticket;
-import com.hackacode.themepark.repository.IBuyerRepository;
-import com.hackacode.themepark.repository.IGameRepository;
-import com.hackacode.themepark.repository.ITicketRepository;
+import com.hackacode.themepark.model.TicketDetail;
+import com.hackacode.themepark.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -21,130 +20,112 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
 @Service
 @RequiredArgsConstructor
-public class TicketService {
+public class TicketService implements ITicketService{
 
     private final IGameRepository gameRepository;
 
     private final ITicketRepository ticketRepository;
+    private final ITicketDetailRepository ticketDetailRepository;
 
     private final IBuyerRepository buyerRepository;
+    private final ISaleRepository saleRepository;
 
     private final ModelMapper modelMapper;
 
-    //CREA UN TICKET NORMAL
-//    @Override
-//    public UUID saveNormalTicket(TicketDTOReq ticket) throws Exception {
-//        var gameBD = gameRepository.findById(ticket.getGame().getId())
-//                .orElseThrow(() -> new IdNotFoundException("El juego ingresado no existe"));
-//
-//        var buyerBD = buyerRepository.findById(ticket.getBuyer().getId())
-//                .orElseThrow(() -> new IdNotFoundException("El comprador ingresado no existe"));
-//
-//        if (!gameBD.validateAge(buyerBD.getBirthdate())){
-//            throw new Exception("Acción cancelada : No poseé la edad requerida para ingresar a este juego");
-//        }
-//        //settea el purchaseDate con LocalDateTime.now()
-//        var normalTicket = modelMapper.map(ticket, Ticket.class);
-//        normalTicket.setPurchaseDate(LocalDateTime.now());
-//        normalTicket.setPrice(gameBD.getPrice());
-//        //Guarda el NormalTicket
-//        ticketRepository.save(normalTicket);
-//        //Busca el ticket guardado usando el normalTicket.getPurchaseDate() y retorno el UUID
-//        return ticketRepository.findByPurchaseDate(normalTicket.getPurchaseDate()).getId();
-//    }
-//
-//    //MUESTRA UN TICKET POR ID
-//    @Override
-//    public TicketDTORes getNormalTicketById(UUID ticketId) throws IdNotFoundException {
-//        return modelMapper.map(ticketRepository.findById(ticketId)
-//                .orElseThrow(() -> new IdNotFoundException("El id ingresado no existe")), TicketDTORes.class);
-//    }
-//
-//    //LISTA DTO DE TICKETS
-//    @Override
-//    public Page<TicketDTORes> getNormalTickets(Pageable pageable) {
-//        var normalTicketsDb = ticketRepository.findAll(pageable);
-//        var normalTicketsDTO = new ArrayList<TicketDTORes>();
-//        for(Ticket ticket: normalTicketsDb) {
-//            normalTicketsDTO.add(modelMapper.map(ticket, TicketDTORes.class));
-//        }
-//        return new PageImpl<>(normalTicketsDTO, pageable, normalTicketsDTO.size());
-//    }
-//
-//    //MODIFICA UN TICKET
-//    @Override
-//    public void updateNormalTicket(TicketDTOReq ticketDTOReq) throws IdNotFoundException {
-//        var normalTicketBD = ticketRepository.findById(ticketDTOReq.getId())
-//                .orElseThrow(() -> new IdNotFoundException("El id ingresado no existe"));
-//
-//        var normalTicket = modelMapper.map(ticketDTOReq, Ticket.class);
-//        normalTicket.setPrice(normalTicketBD.getPrice());
-//
-//        ticketRepository.save(normalTicket);
-//    }
-//
-//    //ELIMINA UN TICKET
-//    @Override
-//    public void deleteNormalTicket(UUID ticketId) {
-//        ticketRepository.deleteById(ticketId);
-//    }
-//
-//
-//    // CANTIDAD DE ENTRADAS VENDIDAS DE TODOS LOS JUEGOS EN UNA FECHA DETERMINADA
-//    @Override
-//    public ReportDTORes totalNormalTicketsSoldOnAGivenDate(LocalDate date) {
-//        LocalDateTime start = LocalDateTime.of(date, LocalTime.MIN);
-//        LocalDateTime end = LocalDateTime.of(date, LocalTime.MAX);
-//
-//        Long totalnormalTickets = ticketRepository.countByPurchaseDateBetween(start, end);
-//        var reportDTORes = ReportDTORes.builder().totalNormalTicketsSold(totalnormalTickets).build();
-//
-//        return reportDTORes;
-//    }
-//
-//    // CANTIDAD DE ENTRADAS VENDIDAS DE UN JUEGO EN UNA FECHA DETERMINADA
-//    @Override
-//    public ReportDTORes totalNormalTicketsSoldOfOneGameOnAGivenDate(LocalDate date, String gameName){
-//        LocalDateTime start = LocalDateTime.of(date, LocalTime.MIN);
-//        LocalDateTime end = LocalDateTime.of(date, LocalTime.MAX);
-//
-//        Long totalNormalTickets = ticketRepository.countByPurchaseDateBetweenAndGame_name(start, end, gameName);
-//        var reportDTOres = ReportDTORes.builder()
-//                .totalNormalTicketsSold(totalNormalTickets)
-//                .gameName(gameName)
-//                .build();
-//
-//        return reportDTOres;
-//    }
-//
-//    //MUESTRA AL COMPRADOR QUE MÁS ENTRADAS NORMALES COMPRÓ EN UN DETERMINADO MES
-//    @Override
-//    public BuyerDTORes buyerWithTheMostNormalTicketsSoldInTheMonth(int year, int month) throws Exception {
-//        LocalDateTime start = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).minLength()), LocalTime.MIN);
-//        LocalDateTime end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).maxLength()), LocalTime.MAX);
-//
-//        var normaTicketBD = ticketRepository.findTopByPurchaseDateBetweenOrderByBuyer_idDesc(start, end);
-//        if(normaTicketBD.getBuyer() == null){
-//            throw new Exception("La fecha ingresada no contiene ventas");
-//        }
-//        return modelMapper.map(normaTicketBD.getBuyer(), BuyerDTORes.class);
-//    }
-//
-//    @Override
-//    public String lastVisit(Long buyerId){
-//
-//      var normalTicket = ticketRepository.findTopByBuyer_idOrderByBuyer_idDesc(buyerId);
-//      if (normalTicket == null){
-//          return "Sin visitas";
-//      }
-//      else {
-//         return normalTicket.getPurchaseDate().toLocalDate().toString();
-//      }
-//    }
+    //CREA UN TICKET
+    @Override
+    public Long saveTicket(TicketDTOReq request) throws Exception {
+
+        Ticket ticket = modelMapper.map(request, Ticket.class);
+
+        //Guarda el Ticket y retorno el ID
+        return ticketRepository.save(ticket).getId();
+    }
+
+    //MUESTRA UN TICKET POR ID
+    @Override
+    public TicketDTORes getTicketById(Long ticketId) throws IdNotFoundException {
+        return modelMapper.map(ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new IdNotFoundException("El id ingresado no existe")), TicketDTORes.class);
+    }
+
+    //LISTA DTO DE TICKETS
+    @Override
+    public Page<TicketDTORes> getTickets(Pageable pageable) {
+        var TicketsDb = ticketRepository.findAll(pageable);
+        List<TicketDTORes> TicketsDTO = new ArrayList<>();
+        for(Ticket ticket: TicketsDb) {
+            TicketsDTO.add(modelMapper.map(ticket, TicketDTORes.class));
+        }
+        return new PageImpl<>(TicketsDTO, pageable, TicketsDTO.size());
+    }
+
+    //MODIFICA UN TICKET
+    @Override
+    public void updateTicket(TicketDTOReq ticketDTOReq) throws IdNotFoundException {
+        var normalTicketBD = ticketRepository.findById(ticketDTOReq.getId())
+                .orElseThrow(() -> new IdNotFoundException("El id ingresado no existe"));
+
+        var normalTicket = modelMapper.map(ticketDTOReq, Ticket.class);
+        normalTicket.setPrice(normalTicketBD.getPrice());
+
+        ticketRepository.save(normalTicket);
+    }
+
+    //ELIMINA UN TICKET
+    @Override
+    public void deleteTicket(Long ticketId) throws IdNotFoundException {
+        ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new IdNotFoundException("El id ingresado no existe"));
+        ticketRepository.deleteById(ticketId);
+    }
+
+
+    // CANTIDAD DE ENTRADAS VENDIDAS DE TODOS LOS JUEGOS EN UNA FECHA DETERMINADA
+    @Override
+    public ReportDTORes totalTicketsSoldOnAGivenDate(LocalDate date) {
+        LocalDateTime start = LocalDateTime.of(date, LocalTime.MIN);
+        LocalDateTime end = LocalDateTime.of(date, LocalTime.MAX);
+
+        Long totalTickets = ticketDetailRepository.countByPurchaseDateBetween(start, end);
+        return ReportDTORes.builder().totalTicketsSold(totalTickets).build();
+
+    }
+
+    // CANTIDAD DE ENTRADAS VENDIDAS DE UN JUEGO EN UNA FECHA DETERMINADA
+    @Override
+    public ReportDTORes totalTicketsSoldOfOneGameOnAGivenDate(LocalDate date, String gameName){
+        LocalDateTime start = LocalDateTime.of(date, LocalTime.MIN);
+        LocalDateTime end = LocalDateTime.of(date, LocalTime.MAX);
+
+        Long totalTickets = saleRepository.countByPurchaseDateBetweenAndGame_name(start, end, gameName);
+        return ReportDTORes.builder()
+                .totalTicketsSold(totalTickets)
+                .gameName(gameName)
+                .build();
+
+    }
+
+    //MUESTRA AL COMPRADOR QUE MÁS ENTRADAS COMPRÓ EN UN DETERMINADO MES
+    @Override
+    public BuyerDTORes buyerWithTheMostTicketsSoldInTheMonth(int year, int month) throws Exception {
+        LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
+        LocalDateTime end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).maxLength()), LocalTime.MAX);
+
+        TicketDetail ticketDetail = ticketDetailRepository.findTopByPurchaseDateBetweenOrderByBuyer_IdDesc(start, end);
+        if(ticketDetail == null || ticketDetail.getBuyer() == null){
+            throw new Exception("La fecha ingresada no contiene ventas");
+        }
+
+        return modelMapper.map(ticketDetail.getBuyer(), BuyerDTORes.class);
+
+    }
+
 
 }

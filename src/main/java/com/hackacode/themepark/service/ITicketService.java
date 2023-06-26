@@ -13,19 +13,18 @@ import java.util.UUID;
 
 public interface ITicketService {
 
-    UUID saveNormalTicket(TicketDTOReq Ticket) throws Exception;
-    TicketDTORes getNormalTicketById(UUID TicketId) throws IdNotFoundException;
-    Page<TicketDTORes> getNormalTickets(Pageable pageable);
-    void updateNormalTicket(TicketDTOReq normalTicketDTOReq) throws IdNotFoundException;
-    void deleteNormalTicket(UUID TicketId);
+    Long saveTicket(TicketDTOReq Ticket) throws Exception;
+    TicketDTORes getTicketById(Long TicketId) throws IdNotFoundException;
+    Page<TicketDTORes> getTickets(Pageable pageable);
+    void updateTicket(TicketDTOReq normalTicketDTOReq) throws IdNotFoundException;
+    void deleteTicket(Long TicketId) throws IdNotFoundException;
 
-    ReportDTORes totalNormalTicketsSoldOnAGivenDate(LocalDate date);
+    ReportDTORes totalTicketsSoldOnAGivenDate(LocalDate date);
 
     // CANTIDAD DE ENTRADAS VENDIDAS DE UN JUEGO EN UNA FECHA DETERMINADA
-    ReportDTORes totalNormalTicketsSoldOfOneGameOnAGivenDate(LocalDate date, String gameName);
+    ReportDTORes totalTicketsSoldOfOneGameOnAGivenDate(LocalDate date, String gameName);
 
     //MUESTRA AL COMPRADOR QUE MÁS ENTRADAS NORMALES COMPRÓ EN UN DETERMINADO MES
-    BuyerDTORes buyerWithTheMostNormalTicketsSoldInTheMonth(int year, int month) throws Exception;
+    BuyerDTORes buyerWithTheMostTicketsSoldInTheMonth(int year, int month) throws Exception;
 
-    String lastVisit(Long buyerId);
 }

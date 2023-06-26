@@ -30,7 +30,7 @@ class TicketServiceTest {
         LocalDateTime end = LocalDateTime.of(LocalDate.of(2010,4,5), LocalTime.MAX);
 
         when(normalTicketRepository.countByPurchaseDateBetween(start, end)).thenReturn(4L);
-        var result = normalTicketService.totalNormalTicketsSoldOnAGivenDate(LocalDate.of(2010,4,5));
+        var result = normalTicketService.totalTicketsSoldOnAGivenDate(LocalDate.of(2010,4,5));
 
         assertEquals(4, result.getTotalNormalTicketsSold());
     }
@@ -44,9 +44,9 @@ class TicketServiceTest {
         LocalDateTime end = LocalDateTime.of(LocalDate.of(2010,4,5), LocalTime.MAX);
 
         when(normalTicketRepository.countByPurchaseDateBetweenAndGame_name(start, end, gameName)).thenReturn(4L);
-        var result = normalTicketService.totalNormalTicketsSoldOfOneGameOnAGivenDate(LocalDate.of(2010,4,5), "Montaña Rusa");
+        var result = normalTicketService.totalTicketsSoldOfOneGameOnAGivenDate(LocalDate.of(2010,4,5), "Montaña Rusa");
 
-        assertEquals(4, result.getTotalNormalTicketsSold());
+        assertEquals(4, result.getTotalTicketsSold());
     }
 
 }

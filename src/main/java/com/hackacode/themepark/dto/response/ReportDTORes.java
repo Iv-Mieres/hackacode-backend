@@ -13,8 +13,7 @@ import java.util.List;
 @Builder
 public class ReportDTORes {
 
-    private Long totalNormalTicketsSold;
-    private Long totalVipTicketsSold;
+    private Long totalTicketsSold;
     private Double totalAmountSaleDay;
     private Double totalAmountSaleMonthAndYear;
     private Double totalAmountSaleYear;

@@ -21,7 +21,6 @@ public interface IGameService {
     void deleteGame(Long gameID);
 
     //MUESTRA JUEGO CON LA MAYOR CANTIDAD DE TICKETS VENDIDOS EN DETERMINADO DIA
-    ReportDTORes gameWithTheMostTicketsSold(LocalDateTime date);
+    ReportDTORes gameWithTheMostTicketsSold(LocalDate date);
 
-    double sumPriceAllGames();
 }

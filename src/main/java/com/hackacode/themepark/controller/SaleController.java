@@ -36,7 +36,7 @@ public class SaleController {
         return ResponseEntity.ok(saleService.getSaleById(id));
     }
 
-    @GetMapping("/ver_todos")
+    @GetMapping
     public ResponseEntity<Page<SaleDTORes>> getAllSales(Pageable pageable) {
         return ResponseEntity.ok(saleService.getSales(pageable));
     }

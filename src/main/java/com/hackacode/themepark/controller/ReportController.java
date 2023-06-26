@@ -34,14 +34,14 @@ public class ReportController {
     //VER CANTIDAD DE ENTRADAS VENDIDAS DE TODOS LOS JUEGOS POR UNA FECHA DETERMINADA
     @GetMapping("/entradas/totales_vendidas_en")
     public ResponseEntity<ReportDTORes> getTicketsSoldByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return ResponseEntity.ok(ticketService.totalNormalTicketsSoldOnAGivenDate(date));
+        return ResponseEntity.ok(ticketService.totalTicketsSoldOnAGivenDate(date));
     }
 
     //VER CANTIDAD DE ENTRADAS VENDIDAS DE UN JUEGO POR UNA FECHA DETERMINADA
     @GetMapping("/entradas/vendidas_por_fecha_y_juego")
     public ResponseEntity<ReportDTORes> getTicketsSoldOfOneGameByDateAndGameName(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, String gameName) {
-        return ResponseEntity.ok(ticketService.totalNormalTicketsSoldOfOneGameOnAGivenDate(date, gameName));
+        return ResponseEntity.ok(ticketService.totalTicketsSoldOfOneGameOnAGivenDate(date, gameName));
     }
 
     //MONTO TOTAL DE VENTAS POR UN DETERMINADO DÍA
@@ -58,15 +58,15 @@ public class ReportController {
     }
 
     //LISTA DE EMPLEADOS CON SU RESPECTIVO ROLE Y JUEGO ASIGNADO
-    @GetMapping("/empleados/con_role/{role}")
+    @GetMapping("/empleados/con_role")
     public ResponseEntity<Page<UserDTORes>> getAllEmployeesByRole(Pageable pageable, @RequestParam String role) throws Exception {
         return ResponseEntity.ok(userService.getAllUsersPerRole(pageable, role));
     }
 
     //MUESTRA AL COMPRADOR QUE MÁS ENTRADAS NORMALES COMPRÓ EN UN DETERMINADO MES Y AÑO
-    @GetMapping("/comprador_normal/con_mas_entradas_vedidas_al_mes")
+    @GetMapping("/comprador/con_mas_entradas_vedidas_al_mes")
     public ResponseEntity<BuyerDTORes> getBuyerWithMoreNormalTicketsPerMonthAndYear(@RequestParam int year, int month) throws Exception {
-        return ResponseEntity.ok(ticketService.buyerWithTheMostNormalTicketsSoldInTheMonth(year, month));
+        return ResponseEntity.ok(ticketService.buyerWithTheMostTicketsSoldInTheMonth(year, month));
     }
 
     //MUESTRA AL COMPRADOR QUE MÁS ENTRADAS VIPS COMPRÓ EN UN DETERMINADO MES Y AÑO
@@ -77,8 +77,7 @@ public class ReportController {
 
     //VER JUEGO CON LA MAYOR CANTIDAD DE ENTRADAS VENDIDAS HASTA LA FECHA SELECCIONADA
     @GetMapping("/juego/con_mas_entradas_vendidas_hasta")
-    public ResponseEntity<ReportDTORes> getGameWithTheMostTicketsSold(@RequestParam
-                                                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime date) throws Exception {
+    public ResponseEntity<ReportDTORes> getGameWithTheMostTicketsSold(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) throws Exception {
         return ResponseEntity.ok(gameService.gameWithTheMostTicketsSold(date));
     }
 

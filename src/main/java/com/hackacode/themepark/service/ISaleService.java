@@ -18,7 +18,7 @@ public interface ISaleService {
     SaleDTORes getSaleById(Long saleId) throws IdNotFoundException;
     Page<SaleDTORes> getSales(Pageable pageable);
     void updateSale(SaleDTOReq saleDTOReq) throws IdNotFoundException;
-    void deleteSale(Long saleId);
+    void deleteSale(Long saleId) throws IdNotFoundException;
 
     ReportDTORes sumTotalAmountOfAGivenDay(LocalDate date);
 

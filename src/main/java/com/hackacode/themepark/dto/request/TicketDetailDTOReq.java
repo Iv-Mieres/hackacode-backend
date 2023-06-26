@@ -4,13 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SaleDTOReq {
-    private Long id;
-    private List<TicketDetailDTOReq> ticketsDetail;
-    private GameDTOReq game;
+public class TicketDetailDTOReq {
+
+    private UUID id;
+    private TicketDTOReq ticket;
+    private BuyerDTOReq buyer;
 }

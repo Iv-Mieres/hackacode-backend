@@ -13,7 +13,8 @@ public class SaleDTORes {
 
     private Long id;
     private double totalPrice;
-    private List<TicketDTORes> normalTickets;
+    private List<TicketDetailDTORes> ticketsDetail;
+    private GameDTORes game;
 
 
 }

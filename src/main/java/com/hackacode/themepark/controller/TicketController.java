@@ -21,29 +21,29 @@ public class TicketController {
     private final ITicketService ticketService;
 
     @PostMapping()
-    public ResponseEntity<UUID> saveTicket(@Valid @RequestBody TicketDTOReq ticket) throws Exception {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ticketService.saveNormalTicket(ticket));
+    public ResponseEntity<Long> saveTicket(@Valid @RequestBody TicketDTOReq ticket) throws Exception {
+        return ResponseEntity.status(HttpStatus.CREATED).body(ticketService.saveTicket(ticket));
     }
 
-    @GetMapping("/ver_todos")
+    @GetMapping
     public ResponseEntity<Page<TicketDTORes>> getTicketsVip(Pageable pageable){
-        return ResponseEntity.ok(ticketService.getNormalTickets(pageable));
+        return ResponseEntity.ok(ticketService.getTickets(pageable));
     }
 
     @GetMapping("/{normalTicketId}")
-    public ResponseEntity<TicketDTORes> getNormalTicket(@PathVariable UUID normalTicketId) throws IdNotFoundException {
-        return ResponseEntity.ok(ticketService.getNormalTicketById(normalTicketId));
+    public ResponseEntity<TicketDTORes> getNormalTicket(@PathVariable Long normalTicketId) throws IdNotFoundException {
+        return ResponseEntity.ok(ticketService.getTicketById(normalTicketId));
     }
 
     @PutMapping()
     public ResponseEntity<HttpStatus> updateNormalTicket(@Valid @RequestBody TicketDTOReq normalTicketDTOReq) throws IdNotFoundException {
-        ticketService.updateNormalTicket(normalTicketDTOReq);
+        ticketService.updateTicket(normalTicketDTOReq);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{normalTicketId}")
-    public ResponseEntity<HttpStatus> deleteVipTicket(@PathVariable UUID normalTicketId) {
-        ticketService.deleteNormalTicket(normalTicketId);
+    public ResponseEntity<HttpStatus> deleteVipTicket(@PathVariable Long normalTicketId) throws IdNotFoundException {
+        ticketService.deleteTicket(normalTicketId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
