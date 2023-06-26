@@ -1,13 +1,15 @@
 package com.hackacode.themepark.service;
 
+import com.hackacode.themepark.dto.request.ResetPasswordDTOReq;
 import com.hackacode.themepark.exception.UsernameNotFoundException;
 import com.hackacode.themepark.model.Token;
 import com.hackacode.themepark.repository.ICustomUserRepository;
 import com.hackacode.themepark.repository.ITokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -29,17 +31,19 @@ public class TokenService implements ITokenService {
         String generateToken = UUID.randomUUID().toString();
         var token = new Token();
         token.setToken(generateToken);
-        token.setExpirationTime(new Date(System.currentTimeMillis() + (1000 * 60 * 15)));
+        token.setExpirationTime(LocalDateTime.now().plusMinutes(15));
         token.setUser(userBD);
         return tokenRepository.save(token);
     }
 
     @Override
-    public Token getToken(String token) {
-        return tokenRepository.findByToken(token);
+    public Token getToken(String token) throws Exception {
+        return tokenRepository.findByToken(token)
+                .orElseThrow(() -> new Exception("El token no fue encotrado"));
     }
 
     @Override
+    @Transactional
     public void deleteByToken(String token) {
         tokenRepository.deleteByToken(token);
     }
@@ -49,9 +53,5 @@ public class TokenService implements ITokenService {
         tokenRepository.deleteById(tokenId);
     }
 
-    public String validateToken(String token) {
-        String tokenBD = tokenRepository.findByToken(token).getToken();
-        return null;
-    }
 
 }

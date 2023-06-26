@@ -34,19 +34,24 @@ public class EmployeeService implements IEmployeeService {
     //CREA UN EMPLEADO CON SU ROL Y SU JUEGO ASIGNADO
     @Override
     public void saveEmployee(EmployeeDTOReq employeeDTO) throws Exception {
+        //convierte el DTO a Entity y lo guarda
+        var employee = modelMapper.map(employeeDTO, Employee.class);
+        employee.setEnable(true);
+
         //valida que el dni sea único
         if (employeeUserRepository.existsByDni(employeeDTO.getDni())) {
             throw new DniExistsException("El dni " + employeeDTO.getDni() + " ya existe. Ingrese un nuevo dni");
         }
-        //valida que el juego no sea nulo y que su id no exista en la BD
-        if (employeeDTO.getGame().getId() != null &&
+        //Permite guardar un empleado sin juego
+        if (employeeDTO.getGame() == null){
+            employeeUserRepository.save(employee);
+        }
+        //valida si el id del juego existe en la BD
+        else if (employeeDTO.getGame().getId() == null ||
                 !gameRepository.existsById(employeeDTO.getGame().getId())) {
             throw new EntityNotFoundException("El juego que intenta ingresar no existe. Ingrese un juego existente");
         }
         else {
-            //convierte el DTO a Entity y lo guarda
-            var employee = modelMapper.map(employeeDTO, Employee.class);
-            employee.setEnable(true);
             employeeUserRepository.save(employee);
         }
     }
