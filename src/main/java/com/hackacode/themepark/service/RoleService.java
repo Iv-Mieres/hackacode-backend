@@ -18,17 +18,20 @@ public class RoleService implements IRoleService{
 
     @Autowired
     private IRoleRepository roleRepository;
-
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private IWordsConverter wordsConverter;
 
     //CREA UN ROL
     @Override
-    public void saveRole(RoleDTOReq role) throws RoleExistsException {
-        if (roleRepository.existsByRole(role.getRole())){
-            throw new RoleExistsException("El rol " + role.getRole() + " ya existe");
+    public void saveRole(RoleDTOReq roleDTO) throws RoleExistsException {
+        if (roleRepository.existsByRole(roleDTO.getRole())){
+            throw new RoleExistsException("El rol " + roleDTO.getRole() + " ya existe");
         }
-        roleRepository.save(modelMapper.map(role, Role.class));
+        //convierte la primer letra de cada palabra en mayúscula
+        roleDTO.setRole(wordsConverter.capitalizeWords(roleDTO.getRole()));
+        roleRepository.save(modelMapper.map(roleDTO, Role.class));
     }
 
     //MUESTRA UN ROL POR ID
@@ -57,6 +60,8 @@ public class RoleService implements IRoleService{
         if (!roleDTO.getRole().equals(saveRole.getRole()) && roleRepository.existsById(roleDTO.getId())){
             throw new RoleExistsException("El rol " + roleDTO.getRole() + " ya existe");
         }
+        //convierte la primer letra de cada palabra en mayúscula
+        roleDTO.setRole(wordsConverter.capitalizeWords(roleDTO.getRole()));
         roleRepository.save(modelMapper.map(roleDTO, Role.class));
     }
 

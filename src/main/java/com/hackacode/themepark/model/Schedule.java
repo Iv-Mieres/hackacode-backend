@@ -20,10 +20,8 @@ public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull(message = "No puede estar vacio")
     @Temporal(TemporalType.TIME)
     private LocalTime startTime;
-    @NotNull(message = "No puede estar vacio")
     @Temporal(TemporalType.TIME)
     private LocalTime endTime;
     @OneToMany(mappedBy = "schedule")

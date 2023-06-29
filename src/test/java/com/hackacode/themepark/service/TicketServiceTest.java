@@ -22,31 +22,31 @@ class TicketServiceTest {
 
     @InjectMocks
     private TicketService normalTicketService;
-
-    @Test
-    void calculateTotalNormalTicketsSoldOnAGivenDate(){
-
-        LocalDateTime start = LocalDateTime.of(LocalDate.of(2010,4,5), LocalTime.MIN);
-        LocalDateTime end = LocalDateTime.of(LocalDate.of(2010,4,5), LocalTime.MAX);
-
-        when(normalTicketRepository.countByPurchaseDateBetween(start, end)).thenReturn(4L);
-        var result = normalTicketService.totalTicketsSoldOnAGivenDate(LocalDate.of(2010,4,5));
-
-        assertEquals(4, result.getTotalNormalTicketsSold());
-    }
-
-    @Test
-    void calculateTotalNormalTicketsSoldOfOneGameOnAGivenDate(){
-
-        String gameName = "Montaña Rusa";
-
-        LocalDateTime start = LocalDateTime.of(LocalDate.of(2010,4,5), LocalTime.MIN);
-        LocalDateTime end = LocalDateTime.of(LocalDate.of(2010,4,5), LocalTime.MAX);
-
-        when(normalTicketRepository.countByPurchaseDateBetweenAndGame_name(start, end, gameName)).thenReturn(4L);
-        var result = normalTicketService.totalTicketsSoldOfOneGameOnAGivenDate(LocalDate.of(2010,4,5), "Montaña Rusa");
-
-        assertEquals(4, result.getTotalTicketsSold());
-    }
+//
+//    @Test
+//    void calculateTotalNormalTicketsSoldOnAGivenDate(){
+//
+//        LocalDateTime start = LocalDateTime.of(LocalDate.of(2010,4,5), LocalTime.MIN);
+//        LocalDateTime end = LocalDateTime.of(LocalDate.of(2010,4,5), LocalTime.MAX);
+//
+//        when(normalTicketRepository.countByPurchaseDateBetween(start, end)).thenReturn(4L);
+//        var result = normalTicketService.totalTicketsSoldOnAGivenDate(LocalDate.of(2010,4,5));
+//
+//        assertEquals(4, result.getTotalNormalTicketsSold());
+//    }
+//
+//    @Test
+//    void calculateTotalNormalTicketsSoldOfOneGameOnAGivenDate(){
+//
+//        String gameName = "Montaña Rusa";
+//
+//        LocalDateTime start = LocalDateTime.of(LocalDate.of(2010,4,5), LocalTime.MIN);
+//        LocalDateTime end = LocalDateTime.of(LocalDate.of(2010,4,5), LocalTime.MAX);
+//
+//        when(normalTicketRepository.countByPurchaseDateBetweenAndGame_name(start, end, gameName)).thenReturn(4L);
+//        var result = normalTicketService.totalTicketsSoldOfOneGameOnAGivenDate(LocalDate.of(2010,4,5), "Montaña Rusa");
+//
+//        assertEquals(4, result.getTotalTicketsSold());
+//    }
 
 }

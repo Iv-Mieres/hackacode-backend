@@ -1,5 +1,6 @@
 package com.hackacode.themepark.dto.response;
 
+import com.hackacode.themepark.model.TicketDetail;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,5 +20,6 @@ public class BuyerDTORes {
     private LocalDate birthdate;
     private int age;
     private String lastVisit;
+    private TicketDetail ticketDetail;
 
 }

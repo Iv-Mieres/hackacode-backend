@@ -2,6 +2,7 @@ package com.hackacode.themepark.controller;
 
 import com.hackacode.themepark.dto.request.TicketDTOReq;
 import com.hackacode.themepark.dto.response.TicketDTORes;
+import com.hackacode.themepark.exception.DescriptionExistsException;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.service.ITicketService;
 import jakarta.validation.Valid;
@@ -21,7 +22,7 @@ public class TicketController {
     private final ITicketService ticketService;
 
     @PostMapping()
-    public ResponseEntity<Long> saveTicket(@Valid @RequestBody TicketDTOReq ticket) throws Exception {
+    public ResponseEntity<Long> saveTicket(@Valid @RequestBody TicketDTOReq ticket) throws DescriptionExistsException {
         return ResponseEntity.status(HttpStatus.CREATED).body(ticketService.saveTicket(ticket));
     }
 

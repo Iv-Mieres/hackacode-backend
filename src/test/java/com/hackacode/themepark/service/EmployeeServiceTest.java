@@ -61,11 +61,16 @@ class EmployeeServiceTest {
     void throwAnExceptionIfExistsByDniIsTrue() throws Exception {
 
         EmployeeDTOReq employeeDTOReq = new EmployeeDTOReq();
-        employeeDTOReq.setDni("23456778");
+        employeeDTOReq.setDni("34845347");
 
+        when(modelMapper.map(employeeDTOReq, Employee.class)).thenReturn(this.employee);
         when(employeeUserRepository.existsByDni(employeeDTOReq.getDni())).thenReturn(true);
-        assertThrows(Exception.class,
+        Exception expected =  assertThrows(Exception.class,
                 () -> employeeService.saveEmployee(employeeDTOReq));
+
+        assertEquals(expected.getMessage(), "El dni " + this.employee.getDni() + " ya existe. Ingrese un nuevo dni");
+
+
     }
 
     @Test
@@ -84,6 +89,22 @@ class EmployeeServiceTest {
         verify(employeeUserRepository).findById(1L);
 
     }
+
+    @Test
+    void getEmployeeByDni() throws Exception {
+
+        var employeeDTORes = new EmployeeDTORes(1L,  "Diego", "Sosa","34845347",
+                LocalDate.of(1989, 3,1),null);
+
+        when(employeeUserRepository.findByDni(this.employee.getDni())).thenReturn(Optional.ofNullable(this.employee));
+        when(modelMapper.map(this.employee, EmployeeDTORes.class)).thenReturn(employeeDTORes);
+        var result =  employeeService.getEmployeeByDni(this.employee.getDni());
+
+        assertEquals(this.employee.getDni(), result.getDni());
+        verify(employeeUserRepository).findByDni(this.employee.getDni());
+
+    }
+
 
     @Test
     void findAllEmployeesPageable(){

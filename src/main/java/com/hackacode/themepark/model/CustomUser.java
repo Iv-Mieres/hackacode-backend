@@ -2,10 +2,7 @@ package com.hackacode.themepark.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,11 +23,7 @@ public class CustomUser implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotEmpty(message = "No puede estar vacio")
-    @Email(message = "Debe ingresar un formato de tipo email")
     private String username;
-    @NotNull(message = "Do puede estar vacio")
-    @Size(min = 6, message = "Debe contener un mínimo de 6 caracteres")
     private String password;
     private boolean isEnable;
 
@@ -40,7 +33,6 @@ public class CustomUser implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "fkRole")
     )
     @JsonIgnoreProperties("users")
-//    @NotNull(message = "Debe asignar un rol")
     private Set<Role> roles;
 
     @OneToOne

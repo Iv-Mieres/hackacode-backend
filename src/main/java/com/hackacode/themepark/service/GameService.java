@@ -30,7 +30,8 @@ public class GameService implements IGameService{
     private IGameRepository gameRepository;
     @Autowired
     private ISaleRepository saleRepository;
-
+    @Autowired
+    private IWordsConverter wordsConverter;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -40,6 +41,9 @@ public class GameService implements IGameService{
         if (gameRepository.existsByName(gameDTO.getName())) {
             throw new NameExistsException("El nombre " + gameDTO.getName() + " ya existe. Ingrese un nuevo nombre");
         }
+        //convierte la primer letra de cada palabra en mayúscula
+        gameDTO.setName(wordsConverter.capitalizeWords(gameDTO.getName()));
+
         gameRepository.save(modelMapper.map(gameDTO, Game.class));
     }
 
@@ -71,6 +75,8 @@ public class GameService implements IGameService{
         if (!gameDTO.getName().equals(gameBD.getName()) && gameRepository.existsByName(gameDTO.getName())) {
             throw new NameExistsException("El nombre " + gameDTO.getName() + " ya existe. Ingrese un nuevo nombre");
         }
+        //convierte la primer letra de cada palabra en mayúscula
+        gameDTO.setName(wordsConverter.capitalizeWords(gameDTO.getName()));
         gameRepository.save(modelMapper.map(gameDTO, Game.class));
     }
 

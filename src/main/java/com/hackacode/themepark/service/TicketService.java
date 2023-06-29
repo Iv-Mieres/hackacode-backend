@@ -4,6 +4,7 @@ import com.hackacode.themepark.dto.request.TicketDTOReq;
 import com.hackacode.themepark.dto.response.BuyerDTORes;
 import com.hackacode.themepark.dto.response.TicketDTORes;
 import com.hackacode.themepark.dto.response.ReportDTORes;
+import com.hackacode.themepark.exception.DescriptionExistsException;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.Ticket;
 import com.hackacode.themepark.model.TicketDetail;
@@ -40,8 +41,12 @@ public class TicketService implements ITicketService{
 
     //CREA UN TICKET
     @Override
-    public Long saveTicket(TicketDTOReq request) throws Exception {
+    public Long saveTicket(TicketDTOReq request) throws DescriptionExistsException {
 
+        if (ticketRepository.existsByDescription(request.getDescription())){
+            throw new DescriptionExistsException("Ya existe un ticket con la descripción ingresada. " +
+                    "Ingrese una nueva descripción");
+        }
         Ticket ticket = modelMapper.map(request, Ticket.class);
 
         //Guarda el Ticket y retorno el ID

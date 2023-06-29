@@ -9,4 +9,6 @@ import java.util.UUID;
 
 public interface ITicketRepository extends JpaRepository<Ticket, Long> {
 
+    boolean existsByDescription(String description);
+
 }

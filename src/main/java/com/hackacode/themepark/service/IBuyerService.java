@@ -12,6 +12,6 @@ public interface IBuyerService {
     void saveBuyer(BuyerDTOReq buyerDTO) throws DniExistsException;
     BuyerDTORes getBuyerById(Long buyerId) throws IdNotFoundException;
     Page<BuyerDTORes> getAllBuyers(Pageable pageable);
-    void updateBuyer(BuyerDTORes buyerDTO) throws Exception;
+    void updateBuyer(BuyerDTOReq buyerDTO) throws IdNotFoundException, DniExistsException;
     void deleteBuyer(Long buyerID) throws IdNotFoundException;
 }

@@ -41,7 +41,7 @@ public class BuyerController {
     }
 
     @PutMapping()
-    public ResponseEntity<HttpStatus> updateBuyer(@Valid @RequestBody BuyerDTORes buyerDTO) throws Exception {
+    public ResponseEntity<HttpStatus> updateBuyer(@Valid @RequestBody BuyerDTOReq buyerDTO) throws IdNotFoundException, DniExistsException {
         buyerServer.updateBuyer(buyerDTO);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

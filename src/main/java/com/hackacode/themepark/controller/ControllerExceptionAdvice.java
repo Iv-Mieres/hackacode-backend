@@ -1,12 +1,9 @@
 package com.hackacode.themepark.controller;
 
 import com.hackacode.themepark.exception.*;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Path;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -31,25 +28,25 @@ public class ControllerExceptionAdvice {
     }
 
     // Controla excepciones de tipo - "ConstraintViolationException"
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({ConstraintViolationException.class})
-    public ResponseEntity<Map<Path, String>> constraintViolationException(ConstraintViolationException ex) {
-
-        Map<Path, String> errorDetails = new HashMap<>();
-
-        Path campo = ex.getConstraintViolations()
-                .stream()
-                .findFirst()
-                .map(ConstraintViolation::getPropertyPath).get();
-
-        String mj =  ex.getConstraintViolations()
-                .stream()
-                .findFirst()
-                .map(ConstraintViolation::getMessage).get();
-
-        errorDetails.put(campo, mj);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
-    }
+//    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+//    @ExceptionHandler({ConstraintViolationException.class})
+//    public ResponseEntity<Map<Path, String>> constraintViolationException(ConstraintViolationException ex) {
+//
+//        Map<Path, String> errorDetails = new HashMap<>();
+//
+//        Path campo = ex.getConstraintViolations()
+//                .stream()
+//                .findFirst()
+//                .map(ConstraintViolation::getPropertyPath).get();
+//
+//        String mj =  ex.getConstraintViolations()
+//                .stream()
+//                .findFirst()
+//                .map(ConstraintViolation::getMessage).get();
+//
+//        errorDetails.put(campo, mj);
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
+//    }
 
     // Controla excepciones de datos no encontrados
 
@@ -63,6 +60,19 @@ public class ControllerExceptionAdvice {
         errorDetails.setMessage(ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails);
+    }
+
+    // Controla excepciones de formatos mal ingresados
+
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({ HttpMessageNotReadableException.class})
+    public ResponseEntity<ErrorDetails> badRequestFormatExceptions() {
+
+        ErrorDetails errorDetails = new ErrorDetails();
+        errorDetails.setStatus(HttpStatus.BAD_REQUEST.value() + " BAD_REQUEST");
+        errorDetails.setMessage("El tipo de formato ingresado es incorrecto");
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
     }
 
     // Controla Bad Requests y excepciones generales

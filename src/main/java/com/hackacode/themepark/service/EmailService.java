@@ -83,7 +83,7 @@ public class EmailService implements IEmailService{
 
     }
 
-
+    //Template para el envio de email
     public String createMessage(String link, String employeName){
         return
                 "\n" +
@@ -112,7 +112,7 @@ public class EmailService implements IEmailService{
                         "                    </tr>\n" +
                         "                    <tr>\n" +
                         "                        <td style=\"text-align:center;\">\n" +
-                        "                          <a href=\"https://ibb.co/PNq355p\"><img src=\"https://i.ibb.co/kxNkhhn/Logo.png\" alt=\"Logo\" width=\"200\" border=\"0\"></a>\n" +
+                        "                          <a href=\"https://ibb.co/3fpKR9C\"><img src=\"https://i.ibb.co/B4ykn5C/logo2.png\" alt=\"logo2\" border=\"0\"></a>\n" +
                         "                        </td>\n" +
                         "                    </tr>\n" +
                         "                    <tr>\n" +

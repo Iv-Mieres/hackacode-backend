@@ -31,9 +31,18 @@ public class EmployeeService implements IEmployeeService {
     @Autowired
     private IGameRepository gameRepository;
 
+    @Autowired
+    private IWordsConverter wordsConverter;
+
+
     //CREA UN EMPLEADO CON SU ROL Y SU JUEGO ASIGNADO
     @Override
     public void saveEmployee(EmployeeDTOReq employeeDTO) throws Exception {
+
+        //convierte la primer letra de cada palabra en mayúscula
+        employeeDTO.setName(wordsConverter.capitalizeWords(employeeDTO.getName()));
+        employeeDTO.setSurname(wordsConverter.capitalizeWords(employeeDTO.getSurname()));
+
         //convierte el DTO a Entity y lo guarda
         var employee = modelMapper.map(employeeDTO, Employee.class);
         employee.setEnable(true);
@@ -92,6 +101,10 @@ public class EmployeeService implements IEmployeeService {
         //valida que el dni y username ingresados no existan en la bd
         //y si existen que solo pertenezacan al empleado encontrado
         this.validateIfExistsByDni(employeeDTO.getDni(), employeeBD.getDni());
+
+        //convierte la primer letra de cada palabra en mayúscula
+        employeeDTO.setName(wordsConverter.capitalizeWords(employeeDTO.getName()));
+        employeeDTO.setSurname(wordsConverter.capitalizeWords(employeeDTO.getSurname()));
 
         //asigna los nuevos datos y guarda el empleado
         var saveEmployee = modelMapper.map(employeeDTO, Employee.class);
