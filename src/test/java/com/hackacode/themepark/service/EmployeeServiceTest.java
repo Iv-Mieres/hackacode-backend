@@ -4,9 +4,13 @@ import com.hackacode.themepark.dto.request.EmployeeDTOReq;
 import com.hackacode.themepark.dto.request.GameDTOReq;
 import com.hackacode.themepark.dto.response.EmployeeDTORes;
 import com.hackacode.themepark.exception.IdNotFoundException;
+import com.hackacode.themepark.model.CustomUser;
 import com.hackacode.themepark.model.Employee;
 import com.hackacode.themepark.model.Game;
+import com.hackacode.themepark.repository.ICustomUserRepository;
 import com.hackacode.themepark.repository.IEmployeeRepository;
+import com.hackacode.themepark.repository.IGameRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +36,10 @@ class EmployeeServiceTest {
 
     @Mock
     private IEmployeeRepository employeeUserRepository;
+    @Mock
+    private ICustomUserRepository userRepository;
+    @Mock
+    private IGameRepository gameRepository;
     @Mock
     private IWordsConverter wordsConverter;
     @Mock
@@ -60,21 +68,39 @@ class EmployeeServiceTest {
         verify(employeeUserRepository).save(this.employee);
     }
 
-    @DisplayName("comprueba excepción si el juego ya existe en la BD o el gameId ingresado es nulo")
+    @DisplayName("comprueba excepción si el juego es nulo")
     @Test
-    void throwsAnExceptionIfTheGameIdIsNullOrTheGameDoesNotExistsInTheDataBase() throws Exception {
+    void throwsAnExceptionIfTheGameIsNull() throws Exception {
+        String expected = "El juego que intenta ingresar no existe. Ingrese un juego existente";
         var game = new GameDTOReq();
         game.setId(1L);
         game.setName("Montaña Rusa");
-
         var employeeDTO = EmployeeDTOReq.builder().id(1L).name("diego").game(game).build();
 
         when(employeeUserRepository.existsByDni(employeeDTO.getDni())).thenReturn(false);
         when(wordsConverter.capitalizeWords(employeeDTO.getName())).thenReturn("Diego");
         when(modelMapper.map(employeeDTO, Employee.class)).thenReturn(this.employee);
-        employeeService.saveEmployee(employeeDTO);
-        assertEquals(employeeDTO.getName(), "Diego");
-        verify(employeeUserRepository).save(this.employee);
+        when(gameRepository.existsById(game.getId())).thenReturn(false);
+
+        Exception cuerrentError =  assertThrows(EntityNotFoundException.class,
+                () -> employeeService.saveEmployee(employeeDTO));
+        assertEquals(expected, cuerrentError.getMessage());
+    }
+
+    @DisplayName("comprueba excepción si el id del juego ingresado es nulo")
+    @Test
+    void throwsAnExceptionIfTheGameIdIsNull() throws Exception {
+        String expected = "El juego que intenta ingresar no existe. Ingrese un juego existente";
+        var game = new GameDTOReq();
+        var employeeDTO = EmployeeDTOReq.builder().id(1L).name("diego").game(game).build();
+
+        when(employeeUserRepository.existsByDni(employeeDTO.getDni())).thenReturn(false);
+        when(wordsConverter.capitalizeWords(employeeDTO.getName())).thenReturn("Diego");
+        when(modelMapper.map(employeeDTO, Employee.class)).thenReturn(this.employee);
+
+        Exception cuerrentError =  assertThrows(EntityNotFoundException.class,
+                () -> employeeService.saveEmployee(employeeDTO));
+        assertEquals(expected, cuerrentError.getMessage());
     }
 
     @DisplayName("comprueba que lance una excepción si el dni ya está registrado al guardar un empleado")
@@ -117,7 +143,7 @@ class EmployeeServiceTest {
     void getEmployeeByDni() throws Exception {
 
         var employeeDTORes = new EmployeeDTORes(1L,  "Diego", "Sosa","34845347",
-                LocalDate.of(1989, 3,1),null);
+                LocalDate.of(1989, 3,1), true,null);
 
         when(employeeUserRepository.findByDni(this.employee.getDni())).thenReturn(Optional.ofNullable(this.employee));
         when(modelMapper.map(this.employee, EmployeeDTORes.class)).thenReturn(employeeDTORes);
@@ -200,14 +226,20 @@ class EmployeeServiceTest {
         verify(employeeUserRepository, never()).save(this.employee);
     }
 
-    @DisplayName("comprueba que se elimine un empleado de forma lógica")
+    @DisplayName("comprueba que se elimine un empleado de forma lógica junto con us usuario")
     @Test
     void deleteEmployeeById() throws Exception {
         this.employee.setEnable(false);
+        var user = new CustomUser();
 
         when(employeeUserRepository.findById(1L)).thenReturn(Optional.ofNullable(this.employee));
+        when(userRepository.findByEmployee_Id(this.employee.getId())).thenReturn(user);
         employeeService.deleteEmployee(1L);
+
+        assertFalse(user.isEnabled());
         assertFalse(this.employee.isEnable());
+
+        verify(userRepository).save(user);
         verify(employeeUserRepository).save(this.employee);
     }
 

@@ -20,6 +20,7 @@ public class BuyerDTORes {
     private LocalDate birthdate;
     private int age;
     private String lastVisit;
+    private boolean isBanned;
     private TicketDetail ticketDetail;
 
 }

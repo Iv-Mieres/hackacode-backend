@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface ICustomUserRepository extends JpaRepository<CustomUser, Long> {
     boolean existsByUsername(String username);
     Optional<CustomUser> findByUsername(String username);
-    Optional<CustomUser> findByEmployee_Id(Long id);
+    CustomUser findByEmployee_Id(Long id);
     boolean existsByEmployee_Id(Long id);
     Page<CustomUser> findByRoles_role(Pageable pageable, String role);
 }

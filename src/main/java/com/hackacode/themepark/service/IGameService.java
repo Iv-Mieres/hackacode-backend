@@ -17,7 +17,7 @@ public interface IGameService {
     GameDTORes getGameById(Long gameId) throws IdNotFoundException;
 
     Page<GameDTORes> getAllGames(Pageable pageable);
-    void updateGame(GameDTOReq gameDTO) throws Exception;
+    void updateGame(GameDTOReq gameDTO) throws IdNotFoundException, NameExistsException;
     void deleteGame(Long gameID);
 
     //MUESTRA JUEGO CON LA MAYOR CANTIDAD DE TICKETS VENDIDOS EN DETERMINADO DIA

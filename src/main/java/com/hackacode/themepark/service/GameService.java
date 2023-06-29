@@ -68,7 +68,7 @@ public class GameService implements IGameService{
 
     //ACTUALIZA UN JUEGO
     @Override
-    public void updateGame(GameDTOReq gameDTO) throws Exception {
+    public void updateGame(GameDTOReq gameDTO) throws IdNotFoundException, NameExistsException {
         var gameBD = gameRepository.findById(gameDTO.getId())
                 .orElseThrow(() -> new IdNotFoundException("El id " + gameDTO + " no existe. Ingrese un nuevo id"));
         //valida que el nombre del juego no exista y si existe que coincida con el juego encontrado

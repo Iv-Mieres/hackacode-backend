@@ -37,7 +37,8 @@ public class GameController {
     }
 
     @PutMapping()
-    public ResponseEntity<HttpStatus> updateGame(@Valid @RequestBody GameDTOReq gameDTO) throws Exception {
+    public ResponseEntity<HttpStatus> updateGame(@Valid @RequestBody GameDTOReq gameDTO) throws IdNotFoundException,
+            NameExistsException {
         gameService.updateGame(gameDTO);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

@@ -6,6 +6,7 @@ import com.hackacode.themepark.exception.DniExistsException;
 import com.hackacode.themepark.exception.DniNotFoundException;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.Employee;
+import com.hackacode.themepark.repository.ICustomUserRepository;
 import com.hackacode.themepark.repository.IEmployeeRepository;
 import com.hackacode.themepark.repository.IGameRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 @Service
 public class EmployeeService implements IEmployeeService {
@@ -27,6 +27,9 @@ public class EmployeeService implements IEmployeeService {
 
     @Autowired
     private IEmployeeRepository employeeUserRepository;
+
+    @Autowired
+    private ICustomUserRepository userRepository;
 
     @Autowired
     private IGameRepository gameRepository;
@@ -118,6 +121,12 @@ public class EmployeeService implements IEmployeeService {
         var employeeBD = employeeUserRepository.findById(employeeID)
                 .orElseThrow(() -> new IdNotFoundException("El id " + employeeID + " no existe"));
         employeeBD.setEnable(false);
+
+        //Da de baja el usuario del empleado eliminado
+        var user = userRepository.findByEmployee_Id(employeeID);
+        user.setEnable(false);
+
+        userRepository.save(user);
         employeeUserRepository.save(employeeBD);
     }
 
