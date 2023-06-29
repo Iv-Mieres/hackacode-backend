@@ -1,10 +1,14 @@
 package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.EmployeeDTOReq;
+import com.hackacode.themepark.dto.request.GameDTOReq;
 import com.hackacode.themepark.dto.response.EmployeeDTORes;
+import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.Employee;
+import com.hackacode.themepark.model.Game;
 import com.hackacode.themepark.repository.IEmployeeRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,18 +22,18 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class EmployeeServiceTest {
 
-    @Mock
-    private IEmployeeRepository employeeUserRepository;
-
     @InjectMocks
     private EmployeeService employeeService;
 
+    @Mock
+    private IEmployeeRepository employeeUserRepository;
+    @Mock
+    private IWordsConverter wordsConverter;
     @Mock
     private ModelMapper modelMapper;
 
@@ -38,25 +42,42 @@ class EmployeeServiceTest {
     @BeforeEach
     void setUp() {
 
-        this.employee = new Employee(1L, "34845347", "Diego", "Sosa",
+        this.employee = new Employee(1L, "34845347", "diego", "Sosa",
                 LocalDate.of(1989, 3,1), true,null);
-
     }
 
+    @DisplayName("comprueba que se guarde un empleado")
     @Test
     void saveEmployee() throws Exception {
 
-        EmployeeDTOReq employeeDTO = EmployeeDTOReq.builder()
-                .id(1L)
-                .build();
+        var employeeDTO = EmployeeDTOReq.builder().id(1L).name("diego").build();
 
         when(employeeUserRepository.existsByDni(employeeDTO.getDni())).thenReturn(false);
+        when(wordsConverter.capitalizeWords(employeeDTO.getName())).thenReturn("Diego");
         when(modelMapper.map(employeeDTO, Employee.class)).thenReturn(this.employee);
         employeeService.saveEmployee(employeeDTO);
+        assertEquals(employeeDTO.getName(), "Diego");
         verify(employeeUserRepository).save(this.employee);
     }
 
+    @DisplayName("comprueba excepción si el juego ya existe en la BD o el gameId ingresado es nulo")
+    @Test
+    void throwsAnExceptionIfTheGameIdIsNullOrTheGameDoesNotExistsInTheDataBase() throws Exception {
+        var game = new GameDTOReq();
+        game.setId(1L);
+        game.setName("Montaña Rusa");
 
+        var employeeDTO = EmployeeDTOReq.builder().id(1L).name("diego").game(game).build();
+
+        when(employeeUserRepository.existsByDni(employeeDTO.getDni())).thenReturn(false);
+        when(wordsConverter.capitalizeWords(employeeDTO.getName())).thenReturn("Diego");
+        when(modelMapper.map(employeeDTO, Employee.class)).thenReturn(this.employee);
+        employeeService.saveEmployee(employeeDTO);
+        assertEquals(employeeDTO.getName(), "Diego");
+        verify(employeeUserRepository).save(this.employee);
+    }
+
+    @DisplayName("comprueba que lance una excepción si el dni ya está registrado al guardar un empleado")
     @Test
     void throwAnExceptionIfExistsByDniIsTrue() throws Exception {
 
@@ -73,6 +94,7 @@ class EmployeeServiceTest {
 
     }
 
+    @DisplayName("comprueba que se devuelva un empleado al buscar por id")
     @Test
     void getEmployeeById() throws Exception {
         this.employee.setId(1L);
@@ -90,6 +112,7 @@ class EmployeeServiceTest {
 
     }
 
+    @DisplayName("comprueba que se devuelva un empleado al buscar por dni")
     @Test
     void getEmployeeByDni() throws Exception {
 
@@ -105,7 +128,7 @@ class EmployeeServiceTest {
 
     }
 
-
+    @DisplayName("comprueba el paginado juento con el page y el size al llamar a todos lo empleados")
     @Test
     void findAllEmployeesPageable(){
         int page = 0;
@@ -130,14 +153,14 @@ class EmployeeServiceTest {
         assertEquals(employeeDTORes, result.getContent().get(0));
 
         //verifica que el paginado devuelva la cantidad de elementos y el total de paginas correctas
-        assertEquals(employees.size(), result.getTotalElements());
+        assertEquals(2, result.getTotalElements());
         assertEquals(0, result.getNumber());
         assertEquals(1, result.getTotalPages());
 
         verify(employeeUserRepository).findAllByIsEnable(true, pageable);
 
     }
-
+    @DisplayName("comprueba excepción al llamar al método para validar si el dni existe")
     @Test
     void ifWhenValidatingTheDniItIsNotUniqueToThrowAnException() throws Exception {
             String dniDTO = "24845347";
@@ -150,6 +173,7 @@ class EmployeeServiceTest {
 
     }
 
+    @DisplayName("comprueba que se modifique un empleado")
     @Test
     void updateEmployeeIfDniDoesNotExistInTheDataBase() throws Exception {
 
@@ -164,13 +188,26 @@ class EmployeeServiceTest {
         verify(employeeUserRepository).save(this.employee);
     }
 
+    @DisplayName("comprueba excepción si el id del empleado no está registrado")
+    @Test
+    void deleteNonExistingBuyerById() {
+        when(employeeUserRepository.findById(1L)).thenReturn(Optional.empty());
+        String expected = "El id 1 no existe";
+
+        Exception currentError = assertThrows(IdNotFoundException.class,
+                () -> employeeService.deleteEmployee(this.employee.getId()));
+        assertEquals(expected, currentError.getMessage());
+        verify(employeeUserRepository, never()).save(this.employee);
+    }
+
+    @DisplayName("comprueba que se elimine un empleado de forma lógica")
     @Test
     void deleteEmployeeById() throws Exception {
         this.employee.setEnable(false);
 
         when(employeeUserRepository.findById(1L)).thenReturn(Optional.ofNullable(this.employee));
         employeeService.deleteEmployee(1L);
-
+        assertFalse(this.employee.isEnable());
         verify(employeeUserRepository).save(this.employee);
     }
 

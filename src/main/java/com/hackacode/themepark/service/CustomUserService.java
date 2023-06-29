@@ -3,6 +3,7 @@ package com.hackacode.themepark.service;
 import com.hackacode.themepark.dto.request.RecoverPasswordDTOReq;
 import com.hackacode.themepark.dto.request.RoleDTOReq;
 import com.hackacode.themepark.dto.request.UserDTOReq;
+import com.hackacode.themepark.dto.request.UserUpdateDTOReq;
 import com.hackacode.themepark.dto.response.UserDTORes;
 import com.hackacode.themepark.exception.EmailExistsException;
 import com.hackacode.themepark.exception.IdNotFoundException;
@@ -44,8 +45,11 @@ public class CustomUserService implements ICustomUserService{
 
     //CREAR USUARIO
     @Override
-    public void saveUser(UserDTOReq user) throws Exception {
-        this.validateDataBeforeSavingUser(user.getUsername(), user.getEmployee().getId(), user.getRoles());
+    public void saveUser(UserDTOReq user) throws EmailExistsException,
+            IdNotFoundException, RoleNotFoundException {
+        this.validateDataBeforeSavingUser(user.getUsername(),
+                                          user.getEmployee().getId(),
+                                          user.getRoles());
         var saveUser = modelMapper.map(user, CustomUser.class);
         saveUser.setEnable(true);
         saveUser.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -91,12 +95,15 @@ public class CustomUserService implements ICustomUserService{
 
     //MODIFICAR USUARIO
     @Override
-    public void updateUser(UserDTOReq user) throws Exception {
+    public void updateUser(UserUpdateDTOReq user) throws EntityExistsException, RoleNotFoundException,
+            EmailExistsException, IdNotFoundException {
         var userBD = userRepository.findById(user.getId())
                 .orElseThrow(() -> new IdNotFoundException("El id " + user.getId() + " no se encuentra registrado"));
 
-        this.validateDataBeforeUpdatingUser(user.getUsername(), userBD.getUsername(),
-                                            user.getEmployee().getId(), user.getRoles());
+        this.validateDataBeforeUpdatingUser(user.getUsername(),
+                                            userBD.getUsername(),
+                                            user.getEmployee().getId(),
+                                            user.getRoles());
         var saveUser = modelMapper.map(user, CustomUser.class);
         saveUser.setEnable(true);
         saveUser.setPassword(passwordEncoder.encode(userBD.getPassword()));
@@ -114,7 +121,9 @@ public class CustomUserService implements ICustomUserService{
 
 
     //VALIDA DATOS ANTES DE GUARDAR UN USARIO
-    public void validateDataBeforeSavingUser(String usernameDTO, Long employeeIdDTO, List<RoleDTOReq> rolesDTO) throws Exception {
+    public void validateDataBeforeSavingUser(String usernameDTO, Long employeeIdDTO,
+                                             List<RoleDTOReq> rolesDTO) throws EmailExistsException,
+            IdNotFoundException, RoleNotFoundException{
         if (userRepository.existsByUsername(usernameDTO)){
             throw new EmailExistsException("El Email " + usernameDTO + " ya existe. Ingrese un nuevo Email");
         }
@@ -132,7 +141,9 @@ public class CustomUserService implements ICustomUserService{
     }
 
     //VALIDA DATOS ANTES DE MODIFICAR UN USARIO
-    public void validateDataBeforeUpdatingUser(String usernameDTO, String usernameBD , Long employeeIdDTO, List<RoleDTOReq> rolesDTO) throws Exception {
+    public void validateDataBeforeUpdatingUser(String usernameDTO, String usernameBD ,
+                                               Long employeeIdDTO, List<RoleDTOReq> rolesDTO) throws IdNotFoundException,
+            EmailExistsException, EntityExistsException, RoleNotFoundException {
         var employeeBD = employeeRepository.findById(employeeIdDTO)
                 .orElseThrow(() -> new IdNotFoundException("El id " + employeeIdDTO + " no se encuentra registrado"));
 

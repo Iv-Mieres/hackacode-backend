@@ -10,7 +10,6 @@ public class WordsConverter implements IWordsConverter {
     public String capitalizeWords(String phrase) {
 
             String[] words = phrase.toLowerCase().split(" ");
-
             var result = new StringBuilder();
             for (String word : words) {
                 if (!word.isEmpty()) {

@@ -59,13 +59,13 @@ public class BuyerService implements IBuyerService {
     public Page<BuyerDTORes> getAllBuyers(Pageable pageable) {
         //recorre la lista de compradores, los convierte a DTO y los guarda en la List buyersDTO
         var buyersDTO = new ArrayList<BuyerDTORes>();
+
+        //convierte el comprador a DTO y lo guarda en la lista
         for (Buyer buyer : buyerRepository.findAll(pageable)) {
-            //convierte el comprador a DTO y lo guarda en la lista
             var buyerDTO = modelMapper.map(buyer, BuyerDTORes.class);
-//            convierte la fecha de nacimiento en edad y la settea
-            buyerDTO.setAge(Period.between(buyerDTO.getBirthdate(), LocalDate.now()).getYears());
-            buyerDTO.setLastVisit(ticketDetailService.lastVisit(buyer.getId()));
-            buyersDTO.add(buyerDTO);
+                buyerDTO.setAge(Period.between(buyerDTO.getBirthdate(), LocalDate.now()).getYears());
+                buyerDTO.setLastVisit(ticketDetailService.lastVisit(buyer.getId()));
+                buyersDTO.add(buyerDTO);
         }
         return new PageImpl<>(buyersDTO, pageable, buyersDTO.size());
     }
