@@ -124,10 +124,14 @@ public class EmployeeService implements IEmployeeService {
 
         //Da de baja el usuario del empleado eliminado
         var user = userRepository.findByEmployee_Id(employeeID);
-        user.setEnable(false);
-
-        userRepository.save(user);
-        employeeUserRepository.save(employeeBD);
+        if (user == null){
+            employeeUserRepository.save(employeeBD);
+        }
+        else {
+            user.setEnable(false);
+            userRepository.save(user);
+            employeeUserRepository.save(employeeBD);
+        }
     }
 
     // Validación de DNI para el método UPDATE

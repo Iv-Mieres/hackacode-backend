@@ -24,4 +24,6 @@ public interface ISaleService {
 
     //SUMA DE MONTO TOTAL DE UN DETERMINADO DÍA - SIN TERMINAR
     ReportDTORes sumTotalAmountOfAGivenMonth(int year , int month);
+
+    ReportDTORes gameWithMoreTicketsSold(LocalDate date);
 }

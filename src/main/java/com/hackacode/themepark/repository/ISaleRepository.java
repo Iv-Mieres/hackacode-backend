@@ -11,9 +11,9 @@ import java.util.List;
 
 public interface ISaleRepository extends JpaRepository<Sale, Long> {
 
+    List<Sale> findAllByPurchaseDateBetweenOrderByGame_idDesc(LocalDateTime normalStartDay, LocalDateTime normalEndDay);
     List<Sale> findAllByPurchaseDateBetween(LocalDateTime normalStartDay, LocalDateTime normalEndDay);
-    List<Sale> findByPurchaseDateBetween(LocalDateTime normalStartDay, LocalDateTime normalEndDay);
-
+    List<Sale> findAllByGame_id(Long gameId);
     Long countByPurchaseDateBetweenAndGame_name(LocalDateTime startDay, LocalDateTime endDay, String nameGame);
 
     Sale findTopByPurchaseDateBeforeOrderByGame_idDesc(LocalDateTime date);

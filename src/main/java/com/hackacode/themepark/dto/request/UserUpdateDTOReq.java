@@ -23,4 +23,5 @@ public class UserUpdateDTOReq {
     private EmployeeDTOReq employee;
     @NotNull(message = "No puede estar vacio")
     private List<RoleDTOReq> roles;
+    private boolean isEnable;
 }

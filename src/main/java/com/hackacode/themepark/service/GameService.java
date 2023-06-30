@@ -101,5 +101,33 @@ public class GameService implements IGameService{
                 .build();
     }
 
+//        public ReportDTORes oneGameWithTheMostTicketsSold(LocalDateTime date){
+//
+//        var games = gameRepository.findAll();
+//        String gameName = null;
+//        long totalNormalTicketsSold = 0L;
+//
+//        //recorre la lista de juegos
+//        for (Game game : games) {
+//            int totalTickets = 0;
+//            //recorre la lista de tickets normal del juego y comprueba que la
+//            //fecha de los tickets sea anterior o igual a la ingresada y lo guarda en un contador
+//            for (Ticket ticket : game.getTickets()) {
+//                if (ticket.getPurchaseDate().isBefore(date) || ticket.getPurchaseDate().equals(date)) {
+//                    totalTickets++;
+//                }
+//            }
+//            //compara si el contador del siguiente juego es mayor a la cantidad de tickets guardada
+//            if (totalTickets > totalNormalTicketsSold) {
+//                totalNormalTicketsSold= totalTickets;
+//                gameName = game.getName();
+//            }
+//        }
+//        return ReportDTORes.builder()
+//                .totalNormalTicketsSold(totalNormalTicketsSold)
+//                .gameName(gameName)
+//                .build();
+//    }
+
 
 }
