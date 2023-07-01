@@ -41,16 +41,13 @@ public class TicketService implements ITicketService {
 
     //CREA UN TICKET
     @Override
-    public Long saveTicket(TicketDTOReq request) throws DescriptionExistsException {
+    public void saveTicket(TicketDTOReq request) throws DescriptionExistsException {
 
         if (ticketRepository.existsByDescription(request.getDescription())) {
             throw new DescriptionExistsException("Ya existe un ticket con la descripción ingresada. " +
                     "Ingrese una nueva descripción");
         }
-        Ticket ticket = modelMapper.map(request, Ticket.class);
-
-        //Guarda el Ticket y retorno el ID
-        return ticketRepository.save(ticket).getId();
+        ticketRepository.save(modelMapper.map(request, Ticket.class));
     }
 
     //MUESTRA UN TICKET POR ID
@@ -73,21 +70,22 @@ public class TicketService implements ITicketService {
 
     //MODIFICA UN TICKET
     @Override
-    public void updateTicket(TicketDTOReq ticketDTOReq) throws IdNotFoundException {
-        var normalTicketBD = ticketRepository.findById(ticketDTOReq.getId())
+    public void updateTicket(TicketDTOReq ticketDTOReq) throws IdNotFoundException, DescriptionExistsException {
+        var ticketBD = ticketRepository.findById(ticketDTOReq.getId())
                 .orElseThrow(() -> new IdNotFoundException("El id ingresado no existe"));
 
-        var normalTicket = modelMapper.map(ticketDTOReq, Ticket.class);
-        normalTicket.setPrice(normalTicketBD.getPrice());
-
-        ticketRepository.save(normalTicket);
+        if (!ticketDTOReq.getDescription().equals(ticketBD.getDescription())
+                && ticketRepository.existsByDescription(ticketDTOReq.getDescription())) {
+            throw new DescriptionExistsException("Ya existe un ticket con la descripción ingresada. " +
+                    "Ingrese una nueva descripción");
+        }
+        var ticket = modelMapper.map(ticketDTOReq, Ticket.class);
+        ticket.setPrice(ticketBD.getPrice());
+        ticketRepository.save(ticket);
     }
-
     //ELIMINA UN TICKET
     @Override
-    public void deleteTicket(Long ticketId) throws IdNotFoundException {
-        ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new IdNotFoundException("El id ingresado no existe"));
+    public void deleteTicket(Long ticketId) {
         ticketRepository.deleteById(ticketId);
     }
 }

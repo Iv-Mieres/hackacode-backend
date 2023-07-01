@@ -112,6 +112,7 @@ class GameServiceTest {
         assertEquals(this.gameDTORes, gameDTOResult);
     }
 
+    @DisplayName("comprueba que se muestre una lista de juegos paginada")
     @Test
     void getAllGamesPageable(){
 
@@ -149,6 +150,7 @@ class GameServiceTest {
 
     }
 
+    @DisplayName("comprueba que se actualice un juego")
     @Test
     void updateGame() throws Exception {
 

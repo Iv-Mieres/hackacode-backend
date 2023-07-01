@@ -20,17 +20,14 @@ public class RoleService implements IRoleService{
     private IRoleRepository roleRepository;
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private IWordsConverter wordsConverter;
 
     //CREA UN ROL
     @Override
     public void saveRole(RoleDTOReq roleDTO) throws RoleExistsException {
         if (roleRepository.existsByRole(roleDTO.getRole())){
-            throw new RoleExistsException("El rol " + roleDTO.getRole() + " ya existe");
+            throw new RoleExistsException("El rol " + roleDTO.getRole() + " ya se encuentra registrado");
         }
-        //convierte la primer letra de cada palabra en mayúscula
-        roleDTO.setRole(wordsConverter.capitalizeWords(roleDTO.getRole()));
+        roleDTO.setRole(roleDTO.getRole().toUpperCase());
         roleRepository.save(modelMapper.map(roleDTO, Role.class));
     }
 
@@ -38,7 +35,7 @@ public class RoleService implements IRoleService{
     @Override
     public RoleDTORes getRoleById(Long roleId) throws IdNotFoundException {
         return modelMapper.map(roleRepository.findById(roleId)
-                .orElseThrow(() -> new IdNotFoundException("El id " + roleId + " no existe")), RoleDTORes.class);
+                .orElseThrow(() -> new IdNotFoundException("El id " + roleId + " no se encuentra registrado")), RoleDTORes.class);
     }
 
     //LISTA DTO DE ROLES
@@ -56,12 +53,12 @@ public class RoleService implements IRoleService{
     //MODIFICA UN ROL
     @Override
     public void updateRole(RoleDTOReq roleDTO) throws IdNotFoundException, RoleExistsException {
-       var saveRole = this.getRoleById(roleDTO.getId());
-        if (!roleDTO.getRole().equals(saveRole.getRole()) && roleRepository.existsById(roleDTO.getId())){
-            throw new RoleExistsException("El rol " + roleDTO.getRole() + " ya existe");
+       var saveRole = roleRepository.findById(roleDTO.getId())
+               .orElseThrow(() -> new IdNotFoundException("El id " + roleDTO.getId() + " no se encuentra registrado"));
+        if (!roleDTO.getRole().equals(saveRole.getRole()) && roleRepository.existsByRole(saveRole.getRole())){
+            throw new RoleExistsException("El rol " + roleDTO.getRole() + " ya se encuentra registrado");
         }
-        //convierte la primer letra de cada palabra en mayúscula
-        roleDTO.setRole(wordsConverter.capitalizeWords(roleDTO.getRole()));
+        roleDTO.setRole(roleDTO.getRole().toUpperCase());
         roleRepository.save(modelMapper.map(roleDTO, Role.class));
     }
 

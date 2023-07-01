@@ -3,11 +3,13 @@ package com.hackacode.themepark.service;
 import com.hackacode.themepark.dto.request.EmployeeDTOReq;
 import com.hackacode.themepark.dto.request.RoleDTOReq;
 import com.hackacode.themepark.dto.request.UserDTOReq;
+import com.hackacode.themepark.dto.request.UserUpdateDTOReq;
 import com.hackacode.themepark.dto.response.UserDTORes;
 import com.hackacode.themepark.exception.EmailExistsException;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.exception.RoleNotFoundException;
 import com.hackacode.themepark.model.CustomUser;
+import com.hackacode.themepark.model.Employee;
 import com.hackacode.themepark.model.Role;
 import com.hackacode.themepark.repository.ICustomUserRepository;
 import com.hackacode.themepark.repository.IEmployeeRepository;
@@ -54,6 +56,7 @@ class CustomUserServiceTest {
 
     private UserDTOReq userDTOReq;
     private CustomUser user;
+    private RoleDTOReq roleDTO;
 
     @BeforeEach
     void setUp() {
@@ -61,9 +64,9 @@ class CustomUserServiceTest {
         role.setId(1L);
         role.setRole("ADMINISTRADOR");
 
-        var roleDTO = new RoleDTOReq();
-        roleDTO.setId(1L);
-        roleDTO.setRole("ADMINISTRADOR");
+        this.roleDTO = new RoleDTOReq();
+        this.roleDTO.setId(1L);
+        this.roleDTO.setRole("ADMINISTRADOR");
 
         this.user = new CustomUser();
         this.user.setRoles(Set.of(role));
@@ -86,7 +89,6 @@ class CustomUserServiceTest {
 
         when(customUserRepository.existsByUsername(this.userDTOReq.getUsername())).thenReturn(false);
         when(customUserRepository.existsByEmployee_Id(this.userDTOReq.getEmployee().getId())).thenReturn(false);
-        when(customUserRepository.existsByUsername(this.userDTOReq.getUsername())).thenReturn(false);
         when(employeeRepository.existsById(this.userDTOReq.getEmployee().getId())).thenReturn(true);
         when(roleRepository.existsById(this.userDTOReq.getRoles().get(0).getId())).thenReturn(true);
         when(modelMapper.map(this.userDTOReq, CustomUser.class)).thenReturn(this.user);
@@ -146,6 +148,7 @@ class CustomUserServiceTest {
 
     }
 
+    @DisplayName("comprueba que retorne una lista de usuarios paginados por role")
     @Test
     void getAllUsersPerRole() {
         int page = 0;
@@ -175,10 +178,33 @@ class CustomUserServiceTest {
         verify(customUserRepository).findByRoles_role(pageable,this.userDTOReq.getRoles().get(0).getRole() );
     }
 
+    @DisplayName("comprueba que se modifique un usuario")
     @Test
-    void updateUser() {
+    void updateUser() throws RoleNotFoundException, EmailExistsException, IdNotFoundException {
+
+        var employee = new Employee();
+        employee.setId(1L);
+
+        var updateDTO = new UserUpdateDTOReq();
+        updateDTO.setId(1L);
+        updateDTO.setEnable(true);
+        updateDTO.setUsername("ivan@gmail.com");
+        updateDTO.setRoles(List.of(this.roleDTO));
+        updateDTO.setEmployee(new EmployeeDTOReq(1L, "20394857", "Pablo", "Pedroso",
+                LocalDate.of(2000,11,23), null));
+
+        when(customUserRepository.findById(updateDTO.getId())).thenReturn(Optional.ofNullable(this.user));
+        when(employeeRepository.findById(updateDTO.getEmployee().getId())).thenReturn(Optional.of(employee));
+        when(customUserRepository.existsByUsername(updateDTO.getUsername())).thenReturn(false);
+        when(roleRepository.existsById(updateDTO.getRoles().get(0).getId())).thenReturn(true);
+        when(modelMapper.map(updateDTO, CustomUser.class)).thenReturn(this.user);
+        when(passwordEncoder.encode(this.user.getPassword())).thenReturn(this.user.getPassword());
+        customUserService.updateUser(updateDTO);
+        verify(customUserRepository).save(this.user);
+
     }
 
+    @DisplayName("comprueba que se elimine un usuario")
     @Test
     void deleteUser() throws IdNotFoundException {
         this.user.setEnable(true);

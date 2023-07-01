@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class CustomUserService implements ICustomUserService{
+public class CustomUserService implements ICustomUserService {
 
     @Autowired
     private ICustomUserRepository userRepository;
@@ -48,8 +48,8 @@ public class CustomUserService implements ICustomUserService{
     public void saveUser(UserDTOReq user) throws EmailExistsException,
             IdNotFoundException, RoleNotFoundException {
         this.validateDataBeforeSavingUser(user.getUsername(),
-                                          user.getEmployee().getId(),
-                                          user.getRoles());
+                user.getEmployee().getId(),
+                user.getRoles());
         var saveUser = modelMapper.map(user, CustomUser.class);
         saveUser.setEnable(true);
         saveUser.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -57,7 +57,7 @@ public class CustomUserService implements ICustomUserService{
     }
 
     @Override
-    public UserDTORes getByUsername(String username) throws UsernameNotFoundException{
+    public UserDTORes getByUsername(String username) throws UsernameNotFoundException {
         return modelMapper.map(userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("El usuario:" + username + " no se encuentra registrado")), UserDTORes.class);
     }
@@ -75,7 +75,7 @@ public class CustomUserService implements ICustomUserService{
         var usersBD = userRepository.findAll(pageable);
         var usersDTO = new ArrayList<UserDTORes>();
 
-        for (CustomUser user: usersBD) {
+        for (CustomUser user : usersBD) {
             usersDTO.add(modelMapper.map(user, UserDTORes.class));
         }
         return new PageImpl<>(usersDTO, pageable, usersDTO.size());
@@ -87,7 +87,7 @@ public class CustomUserService implements ICustomUserService{
         var usersBD = userRepository.findByRoles_role(pageable, role);
         var usersDTO = new ArrayList<UserDTORes>();
 
-        for (CustomUser user: usersBD) {
+        for (CustomUser user : usersBD) {
             usersDTO.add(modelMapper.map(user, UserDTORes.class));
         }
         return new PageImpl<>(usersDTO, pageable, usersDTO.size());
@@ -101,9 +101,9 @@ public class CustomUserService implements ICustomUserService{
                 .orElseThrow(() -> new IdNotFoundException("El id " + user.getId() + " no se encuentra registrado"));
 
         this.validateDataBeforeUpdatingUser(user.getUsername(),
-                                            userBD.getUsername(),
-                                            user.getEmployee().getId(),
-                                            user.getRoles());
+                userBD.getUsername(),
+                user.getEmployee().getId(),
+                user.getRoles());
         var saveUser = modelMapper.map(user, CustomUser.class);
         saveUser.setEnable(true);
         saveUser.setPassword(passwordEncoder.encode(userBD.getPassword()));
@@ -123,41 +123,38 @@ public class CustomUserService implements ICustomUserService{
     //VALIDA DATOS ANTES DE GUARDAR UN USARIO
     public void validateDataBeforeSavingUser(String usernameDTO, Long employeeIdDTO,
                                              List<RoleDTOReq> rolesDTO) throws EmailExistsException,
-            IdNotFoundException, RoleNotFoundException{
-        if (userRepository.existsByUsername(usernameDTO)){
+            IdNotFoundException, RoleNotFoundException {
+        if (userRepository.existsByUsername(usernameDTO)) {
             throw new EmailExistsException("El Email " + usernameDTO + " ya existe. Ingrese un nuevo Email");
         }
-        if (!employeeRepository.existsById(employeeIdDTO)){
+        if (!employeeRepository.existsById(employeeIdDTO)) {
             throw new IdNotFoundException("El empleado que intenta ingresar no se encuentra registrado");
         }
-        if(userRepository.existsByEmployee_Id(employeeIdDTO)){
+        if (userRepository.existsByEmployee_Id(employeeIdDTO)) {
             throw new EntityExistsException("El empleado que intenta ingresar ya tiene asignado un usuario");
         }
-        for (RoleDTOReq roleDTO: rolesDTO) {
-            if (!roleRepository.existsById(roleDTO.getId())){
+        for (RoleDTOReq roleDTO : rolesDTO) {
+            if (!roleRepository.existsById(roleDTO.getId())) {
                 throw new RoleNotFoundException("El rol que intenta ingresar no se encuentra registrado");
             }
         }
     }
 
     //VALIDA DATOS ANTES DE MODIFICAR UN USARIO
-    public void validateDataBeforeUpdatingUser(String usernameDTO, String usernameBD ,
+    public void validateDataBeforeUpdatingUser(String usernameDTO, String usernameBD,
                                                Long employeeIdDTO, List<RoleDTOReq> rolesDTO) throws IdNotFoundException,
             EmailExistsException, EntityExistsException, RoleNotFoundException {
         var employeeBD = employeeRepository.findById(employeeIdDTO)
-                .orElseThrow(() -> new IdNotFoundException("El id " + employeeIdDTO + " no se encuentra registrado"));
+                .orElseThrow(() -> new IdNotFoundException("El empleado que intenta ingresar no se encuentra registrado"));
 
-        if (!usernameDTO.equals(usernameBD) && userRepository.existsByUsername(usernameDTO)){
+        if (!usernameDTO.equals(usernameBD) && userRepository.existsByUsername(usernameDTO)) {
             throw new EmailExistsException("El Email " + usernameDTO + " ya se encuentra registrado");
         }
-        if ( !employeeRepository.existsById(employeeIdDTO)){
-            throw new IdNotFoundException("El empleado que intenta ingresar no se encuentra registrado");
-        }
-        if(!employeeIdDTO.equals(employeeBD.getId()) && employeeRepository.existsById(employeeIdDTO)){
+        if (!employeeIdDTO.equals(employeeBD.getId()) && employeeRepository.existsById(employeeIdDTO)) {
             throw new EntityExistsException("El empleado que intenta ingresar ya tiene asignado un usuario");
         }
-        for (RoleDTOReq roleDTO: rolesDTO) {
-            if (!roleRepository.existsById(roleDTO.getId())){
+        for (RoleDTOReq roleDTO : rolesDTO) {
+            if (!roleRepository.existsById(roleDTO.getId())) {
                 throw new RoleNotFoundException("El rol que intenta ingresar no se encuentra registrado");
             }
         }

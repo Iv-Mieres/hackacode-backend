@@ -14,10 +14,10 @@ import java.util.UUID;
 
 public interface ITicketService {
 
-    Long saveTicket(TicketDTOReq Ticket) throws DescriptionExistsException;
+    void saveTicket(TicketDTOReq Ticket) throws DescriptionExistsException;
     TicketDTORes getTicketById(Long TicketId) throws IdNotFoundException;
     Page<TicketDTORes> getTickets(Pageable pageable);
-    void updateTicket(TicketDTOReq normalTicketDTOReq) throws IdNotFoundException;
-    void deleteTicket(Long TicketId) throws IdNotFoundException;
+    void updateTicket(TicketDTOReq normalTicketDTOReq) throws IdNotFoundException, DescriptionExistsException;
+    void deleteTicket(Long TicketId);
 
 }

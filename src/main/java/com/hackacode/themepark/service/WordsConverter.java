@@ -22,4 +22,5 @@ public class WordsConverter implements IWordsConverter {
         }
         return result.toString().trim();
     }
+
 }

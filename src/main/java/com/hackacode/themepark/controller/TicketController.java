@@ -22,8 +22,9 @@ public class TicketController {
     private final ITicketService ticketService;
 
     @PostMapping()
-    public ResponseEntity<Long> saveTicket(@Valid @RequestBody TicketDTOReq ticket) throws DescriptionExistsException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ticketService.saveTicket(ticket));
+    public ResponseEntity<HttpStatus> saveTicket(@Valid @RequestBody TicketDTOReq ticket) throws DescriptionExistsException {
+        ticketService.saveTicket(ticket);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -32,19 +33,20 @@ public class TicketController {
     }
 
     @GetMapping("/{normalTicketId}")
-    public ResponseEntity<TicketDTORes> getNormalTicket(@PathVariable Long normalTicketId) throws IdNotFoundException {
-        return ResponseEntity.ok(ticketService.getTicketById(normalTicketId));
+    public ResponseEntity<TicketDTORes> getNormalTicket(@PathVariable Long ticketId) throws IdNotFoundException {
+        return ResponseEntity.ok(ticketService.getTicketById(ticketId));
     }
 
     @PutMapping()
-    public ResponseEntity<HttpStatus> updateNormalTicket(@Valid @RequestBody TicketDTOReq normalTicketDTOReq) throws IdNotFoundException {
-        ticketService.updateTicket(normalTicketDTOReq);
+    public ResponseEntity<HttpStatus> updateNormalTicket(@Valid @RequestBody TicketDTOReq ticketDTOReq)
+            throws IdNotFoundException, DescriptionExistsException {
+        ticketService.updateTicket(ticketDTOReq);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{normalTicketId}")
-    public ResponseEntity<HttpStatus> deleteVipTicket(@PathVariable Long normalTicketId) throws IdNotFoundException {
-        ticketService.deleteTicket(normalTicketId);
+    public ResponseEntity<HttpStatus> deleteVipTicket(@PathVariable Long ticketId) {
+        ticketService.deleteTicket(ticketId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

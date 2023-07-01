@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -16,4 +17,5 @@ public class SaleDTOReq {
     private List<TicketDetailDTOReq> ticketsDetail;
     @NotNull(message = "Debe asignar un juego")
     private GameDTOReq game;
+    private LocalDateTime purchaseDate;
 }
