@@ -53,14 +53,14 @@ public class SaleController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/monto_total_por_dia")
-    public ResponseEntity<ReportDTORes> getAllSalesPerDay(@RequestParam
-                                                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return ResponseEntity.ok(saleService.sumTotalAmountOfAGivenDay(date));
-    }
-
-    @GetMapping("/monto_total_por_mes")
-    public ResponseEntity<ReportDTORes> getAllSalesPerMonth(@RequestParam int year, int month) {
-        return ResponseEntity.ok(saleService.sumTotalAmountOfAGivenMonth(year, month));
-    }
+//    @GetMapping("/monto_total_por_dia")
+//    public ResponseEntity<ReportDTORes> getAllSalesPerDay(@RequestParam
+//                                                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+//        return ResponseEntity.ok(saleService.sumTotalAmountOfAGivenDay(date));
+//    }
+//
+//    @GetMapping("/monto_total_por_mes")
+//    public ResponseEntity<ReportDTORes> getAllSalesPerMonth(@RequestParam int year, int month) {
+//        return ResponseEntity.ok(saleService.sumTotalAmountOfAGivenMonth(year, month));
+//    }
 }

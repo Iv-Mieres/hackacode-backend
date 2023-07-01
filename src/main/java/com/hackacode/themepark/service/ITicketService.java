@@ -20,12 +20,4 @@ public interface ITicketService {
     void updateTicket(TicketDTOReq normalTicketDTOReq) throws IdNotFoundException;
     void deleteTicket(Long TicketId) throws IdNotFoundException;
 
-    ReportDTORes totalTicketsSoldOnAGivenDate(LocalDate date);
-
-    // CANTIDAD DE ENTRADAS VENDIDAS DE UN JUEGO EN UNA FECHA DETERMINADA
-    ReportDTORes totalTicketsSoldOfOneGameOnAGivenDate(LocalDate date, String gameName);
-
-    //MUESTRA AL COMPRADOR QUE MÁS ENTRADAS NORMALES COMPRÓ EN UN DETERMINADO MES
-    BuyerDTORes buyerWithTheMostTicketsSoldInTheMonth(int year, int month) throws Exception;
-
 }

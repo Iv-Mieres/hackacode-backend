@@ -20,10 +20,4 @@ public interface ISaleService {
     void updateSale(SaleDTOReq saleDTOReq) throws IdNotFoundException;
     void deleteSale(Long saleId) throws IdNotFoundException;
 
-    ReportDTORes sumTotalAmountOfAGivenDay(LocalDate date);
-
-    //SUMA DE MONTO TOTAL DE UN DETERMINADO DÍA - SIN TERMINAR
-    ReportDTORes sumTotalAmountOfAGivenMonth(int year , int month);
-
-    ReportDTORes gameWithMoreTicketsSold(LocalDate date);
 }

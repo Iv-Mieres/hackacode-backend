@@ -17,7 +17,7 @@ public class TicketDTOReq {
     @DecimalMin(value = "0.0", message = "El valor mínimo ingresado debe ser 0.0")
     @NotNull(message = "No puede estar vacio")
     private Double price;
-    @Pattern(regexp = "[A-Za-zÑñ ]+", message = "Debe contener solo letras y espacios")
+    @Pattern(regexp = "[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ ]*", message = "Debe contener solo letras y espacios")
     @Size(min = 4, max = 60, message =  "debe tener un mínimo 4 y un máximo de 60 caracteres")
     @NotNull(message = "No puede estar vacio")
     private String description;

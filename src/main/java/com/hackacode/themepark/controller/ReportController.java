@@ -1,6 +1,7 @@
 package com.hackacode.themepark.controller;
 
 import com.hackacode.themepark.dto.response.BuyerDTORes;
+import com.hackacode.themepark.dto.response.EmployeeDTORes;
 import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.dto.response.UserDTORes;
 import com.hackacode.themepark.service.*;
@@ -19,6 +20,9 @@ import java.time.LocalDateTime;
 public class ReportController {
 
     @Autowired
+    private IReportService reportService;
+
+    @Autowired
     private ITicketService ticketService;
 
     @Autowired
@@ -31,55 +35,58 @@ public class ReportController {
     private ICustomUserService userService;
 
 
-    //VER CANTIDAD DE ENTRADAS VENDIDAS DE TODOS LOS JUEGOS POR UNA FECHA DETERMINADA
+    // Cantidad de entradas vendidas en todos los juegos en una fecha determinada
     @GetMapping("/entradas/totales_vendidas_en")
     public ResponseEntity<ReportDTORes> getTicketsSoldByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return ResponseEntity.ok(ticketService.totalTicketsSoldOnAGivenDate(date));
+        return ResponseEntity.ok(reportService.totalTicketsSoldOnAGivenDateOfTotalGames(date));
     }
 
-    //VER CANTIDAD DE ENTRADAS VENDIDAS DE UN JUEGO POR UNA FECHA DETERMINADA
+    // Cantidad de entradas vendidas para un determinado juego, en una fecha particular
     @GetMapping("/entradas/vendidas_por_fecha_y_juego")
     public ResponseEntity<ReportDTORes> getTicketsSoldOfOneGameByDateAndGameName(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, String gameName) {
-        return ResponseEntity.ok(ticketService.totalTicketsSoldOfOneGameOnAGivenDate(date, gameName));
+        return ResponseEntity.ok(reportService.nameOfTheGameWithTheHighestNumberOfTicketsSoldOnASpecificDate(date, gameName));
     }
 
-    //MONTO TOTAL DE VENTAS POR UN DETERMINADO DÍA
+    // Sumatoria total de los montos de ventas en un determinado día
     @GetMapping("/ventas/totales_por_dia")
     public ResponseEntity<ReportDTORes> getTotalAmountOfAGivenDay(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return ResponseEntity.ok(saleService.sumTotalAmountOfAGivenDay(date));
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) throws Exception {
+        return ResponseEntity.ok(reportService.sumTotalAmountOfAGivenDay(date));
     }
 
-    //MONTO TOTAL DE VENTAS POR UN DETERMINADO MES Y AÑO
+    // Sumatoria total de los montos de ventas en un determinado mes y año
     @GetMapping("/ventas/totales_por_mes")
-    public ResponseEntity<ReportDTORes> getTotalAmountOfAGivenMonthAndYear(@RequestParam int year, int month) {
-        return ResponseEntity.ok(saleService.sumTotalAmountOfAGivenMonth(year, month));
+    public ResponseEntity<ReportDTORes> getTotalAmountOfAGivenMonthAndYear(@RequestParam int year, int month) throws Exception {
+        return ResponseEntity.ok(reportService.sumTotalAmountOfAGivenMonth(year, month));
     }
 
-    //LISTA DE EMPLEADOS CON SU RESPECTIVO ROLE Y JUEGO ASIGNADO
-    @GetMapping("/empleados/con_role")
-    public ResponseEntity<Page<UserDTORes>> getAllEmployeesByRole(Pageable pageable, @RequestParam String role) throws Exception {
-        return ResponseEntity.ok(userService.getAllUsersPerRole(pageable, role));
+    //Lista de empleados encargados de juegos con su juego asignado
+    @GetMapping("/empleados/con_juego_asignado")
+    public ResponseEntity<Page<EmployeeDTORes>> getAllEmployeesByRole(Pageable pageable) {
+        return ResponseEntity.ok(reportService.getAllEmployeesWithTheirAssignedGame(pageable));
     }
 
-    //MUESTRA AL COMPRADOR QUE MÁS ENTRADAS NORMALES COMPRÓ EN UN DETERMINADO MES Y AÑO
+    //Comprador que más entradas compró en un determinado mes y año
     @GetMapping("/comprador/con_mas_entradas_vedidas_al_mes")
     public ResponseEntity<BuyerDTORes> getBuyerWithMoreNormalTicketsPerMonthAndYear(@RequestParam int year, int month) throws Exception {
-        return ResponseEntity.ok(ticketService.buyerWithTheMostTicketsSoldInTheMonth(year, month));
+        return ResponseEntity.ok(reportService.buyerWithTheMostTicketsSoldInTheMonth(year, month));
     }
 
-    //MUESTRA AL COMPRADOR QUE MÁS ENTRADAS VIPS COMPRÓ EN UN DETERMINADO MES Y AÑO
-//    @GetMapping("/comprador_vip/con_mas_entradas_vedidas_al_mes")
-//    public ResponseEntity<BuyerDTORes> getBuyerWithMoreVipTicketsPerMonthAndYear(@RequestParam int year, int month) throws Exception {
-//        return ResponseEntity.ok(vipTicketService.buyerWithTheMostNormalTicketsSoldInTheMonth(year, month));
-//    }
-
-    //VER JUEGO CON LA MAYOR CANTIDAD DE ENTRADAS VENDIDAS HASTA LA FECHA SELECCIONADA
+    //Juego con la mayor cantidad de entradas vendidas hasta el día en que se lleve a cabo la consulta
     @GetMapping("/juego/con_mas_entradas_vendidas_hasta")
-    public ResponseEntity<ReportDTORes> getGameWithTheMostTicketsSold(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) throws Exception {
-        return ResponseEntity.ok(gameService.gameWithTheMostTicketsSold(date));
+    public ResponseEntity<ReportDTORes> getGameWithTheMostTicketsSold(@RequestParam
+                                                                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                                                                          LocalDate date) throws Exception {
+        return ResponseEntity.ok(reportService.gameWithTheHighestNumberOfTicketsSoldSoFar(date));
     }
 
+    // Historico - Número total de entradas vendidas más sus ingresos hasta la fecha
+    @GetMapping("/historico/ventas_monto")
+    public ResponseEntity<ReportDTORes> totalNumberOfTicketsSoldPlusTheirRevenueToDate(@RequestParam
+                                                                                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                                                                                           LocalDate date){
+        return ResponseEntity.ok(reportService.totalNumberOfTicketsSoldPlusTheirRevenueToDate(date));
+    }
 
 }

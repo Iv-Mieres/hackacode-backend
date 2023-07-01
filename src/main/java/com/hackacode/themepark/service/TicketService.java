@@ -27,7 +27,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class TicketService implements ITicketService{
+public class TicketService implements ITicketService {
 
     private final IGameRepository gameRepository;
 
@@ -43,7 +43,7 @@ public class TicketService implements ITicketService{
     @Override
     public Long saveTicket(TicketDTOReq request) throws DescriptionExistsException {
 
-        if (ticketRepository.existsByDescription(request.getDescription())){
+        if (ticketRepository.existsByDescription(request.getDescription())) {
             throw new DescriptionExistsException("Ya existe un ticket con la descripción ingresada. " +
                     "Ingrese una nueva descripción");
         }
@@ -65,7 +65,7 @@ public class TicketService implements ITicketService{
     public Page<TicketDTORes> getTickets(Pageable pageable) {
         var TicketsDb = ticketRepository.findAll(pageable);
         List<TicketDTORes> TicketsDTO = new ArrayList<>();
-        for(Ticket ticket: TicketsDb) {
+        for (Ticket ticket : TicketsDb) {
             TicketsDTO.add(modelMapper.map(ticket, TicketDTORes.class));
         }
         return new PageImpl<>(TicketsDTO, pageable, TicketsDTO.size());
@@ -90,47 +90,4 @@ public class TicketService implements ITicketService{
                 .orElseThrow(() -> new IdNotFoundException("El id ingresado no existe"));
         ticketRepository.deleteById(ticketId);
     }
-
-
-    // CANTIDAD DE ENTRADAS VENDIDAS DE TODOS LOS JUEGOS EN UNA FECHA DETERMINADA
-    @Override
-    public ReportDTORes totalTicketsSoldOnAGivenDate(LocalDate date) {
-        LocalDateTime start = LocalDateTime.of(date, LocalTime.MIN);
-        LocalDateTime end = LocalDateTime.of(date, LocalTime.MAX);
-
-        Long totalTickets = ticketDetailRepository.countByPurchaseDateBetween(start, end);
-        return ReportDTORes.builder().totalTicketsSold(totalTickets).build();
-
-    }
-
-    // CANTIDAD DE ENTRADAS VENDIDAS DE UN JUEGO EN UNA FECHA DETERMINADA
-    @Override
-    public ReportDTORes totalTicketsSoldOfOneGameOnAGivenDate(LocalDate date, String gameName){
-        LocalDateTime start = LocalDateTime.of(date, LocalTime.MIN);
-        LocalDateTime end = LocalDateTime.of(date, LocalTime.MAX);
-
-        Long totalTickets = saleRepository.countByPurchaseDateBetweenAndGame_name(start, end, gameName);
-        return ReportDTORes.builder()
-                .totalTicketsSold(totalTickets)
-                .gameName(gameName)
-                .build();
-
-    }
-
-    //MUESTRA AL COMPRADOR QUE MÁS ENTRADAS COMPRÓ EN UN DETERMINADO MES
-    @Override
-    public BuyerDTORes buyerWithTheMostTicketsSoldInTheMonth(int year, int month) throws Exception {
-        LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
-        LocalDateTime end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).maxLength()), LocalTime.MAX);
-
-        TicketDetail ticketDetail = ticketDetailRepository.findTopByPurchaseDateBetweenOrderByBuyer_IdDesc(start, end);
-        if(ticketDetail == null || ticketDetail.getBuyer() == null){
-            throw new Exception("La fecha ingresada no contiene ventas");
-        }
-
-        return modelMapper.map(ticketDetail.getBuyer(), BuyerDTORes.class);
-
-    }
-
-
 }

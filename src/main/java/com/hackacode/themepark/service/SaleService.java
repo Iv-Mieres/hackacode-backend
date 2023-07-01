@@ -74,30 +74,7 @@ public class SaleService implements ISaleService {
         saleRepository.deleteById(id);
     }
 
-    //SUMA DE MONTO TOTAL DE UN DETERMINADO DÍA
-    @Override
-    public ReportDTORes sumTotalAmountOfAGivenDay(LocalDate date) {
-        LocalDateTime start = LocalDateTime.of(date, LocalTime.MIN);
-        LocalDateTime end = LocalDateTime.of(date, LocalTime.MAX);
-
-        List<Sale> sales = saleRepository.findAllByPurchaseDateBetween(start, end);
-        return this.getReport(sales, "day");
-    }
-
-    //SUMA DE MONTO TOTAL DE UN DETERMINADO MES
-    @Override
-    public ReportDTORes sumTotalAmountOfAGivenMonth(int year, int month) {
-        LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
-        LocalDateTime end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).maxLength()), LocalTime.MAX);
-
-        List<Sale> salesBD = saleRepository.findAllByPurchaseDateBetween(start, end);
-        return this.getReport(salesBD, "month");
-    }
-
-
     //CALCULA EL PRECIO TOTAL DE LA VENTA REALIZADA
-
-
     public Double calculateTotalPrice(SaleDTOReq saleDTOReq) throws IdNotFoundException {
         if (saleDTOReq.getTicketsDetail() == null) {
             return 0.0;
@@ -117,82 +94,6 @@ public class SaleService implements ISaleService {
 
         return totalPrice;
     }
-
-
-    //GENERA UN REPORT DTO
-    public ReportDTORes getReport(List<Sale> salesBD, String dayOrmonth) {
-
-        double sumTotal = 0.0;
-        long totalTicketsSold = 0L;
-
-        //recorre la lista de ventas, suma el total de la ventas y el total de tickets vendidos
-        for (Sale sale : salesBD) {
-
-            sumTotal += sale.getTotalPrice();
-            totalTicketsSold += sale.getTicketsDetail().size();
-
-        }
-        if (dayOrmonth.equals("day")) {
-            return ReportDTORes.builder()
-                    .totalAmountSaleDay(sumTotal)
-                    .totalTicketsSold(totalTicketsSold)
-                    .build();
-        } else {
-            return ReportDTORes.builder()
-                    .totalAmountSaleMonthAndYear(sumTotal)
-                    .totalTicketsSold(totalTicketsSold)
-                    .build();
-
-        }
-    }
-//        return switch (dayOrmonth) {
-//            case "day" ->
-//                //crea y retorna un DTO con los datos del dia ingresado
-//                    ReportDTORes.builder()
-//                            .totalAmountSaleDay(sumTotal)
-//                            .totalTicketsSold(totalTicketsSold)
-//                            .build();
-//            case "month" ->
-//                //crea y retorna un DTO con los datos del año y mes ingesados
-//                    ReportDTORes.builder()
-//                            .totalAmountSaleMonthAndYear(sumTotal)
-//                            .totalTicketsSold(totalTicketsSold)
-//                            .build();
-//
-
-    @Override
-    public ReportDTORes gameWithMoreTicketsSold(LocalDate date) {
-        LocalDateTime start = LocalDateTime.of(date, LocalTime.MIN);
-        LocalDateTime end = LocalDateTime.of(date, LocalTime.MAX);
-
-        Game game = new Game();
-        String name = "";
-        long totalTicketsSold = 0;
-
-        var sales = saleRepository.findAllByPurchaseDateBetweenOrderByGame_idDesc(start, end);
-
-        for (Sale sale : sales) {
-            game =sale.getGame();
-            var salesByGame = saleRepository.findAllByGame_id(game.getId());
-            long totalTickets = 0;
-            for (Sale gameSale : salesByGame){
-                totalTickets += gameSale.getTicketsDetail().size();
-                if (totalTickets > totalTicketsSold) {
-                    name = sale.getGame().getName();
-                    totalTicketsSold = totalTickets;
-                }
-            }
-        }
-        return ReportDTORes.builder()
-                .totalTicketsSold(totalTicketsSold)
-                .gameName(name)
-                .build();
-    }
-
-
-
-
-
-    }
+}
 
 
