@@ -55,13 +55,13 @@ public class MySecurityFilterChain {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/token").permitAll()
+                            .requestMatchers("/token/recuperar_pass").permitAll()
                             .requestMatchers("/**").permitAll()
                             .requestMatchers("/api/compradores", "/api/empleados",
                                     "/api/roles", "/api/usuarios").hasRole("ADMINISTRADOR")
-                            .requestMatchers("/api/juegos", "/api/horarios").hasRole("JUEGOS")
                             .requestMatchers("/api/ventas", "/api/tickets",
-                                    "/api/ticketsvip").hasRole("VENTAS")
-                            .requestMatchers("/api/reportes").hasRole("GERENTE");
+                                    "/api/ticketsvip", "/api/juegos", "/api/horarios").hasRole("VENTAS")
+                            .requestMatchers("/api/informes").hasRole("GERENTE");
 
 
                 })

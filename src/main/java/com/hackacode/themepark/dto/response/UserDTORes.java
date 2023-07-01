@@ -15,4 +15,5 @@ public class UserDTORes {
     private String username;
     private EmployeeDTORes employee;
     private Set<RoleDTORes> roles;
+    private boolean isEnable;
 }

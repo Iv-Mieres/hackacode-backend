@@ -16,6 +16,7 @@ public class EmployeeDTORes {
     private String surname;
     private String dni;
     private LocalDate birthdate;
+    private boolean isEnable;
     private GameDTORes game;
 
 }

@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -18,19 +20,12 @@ public class Sale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private double totalPrice;
+    @CreationTimestamp
+    private LocalDateTime purchaseDate;
     @OneToMany
-    private List<VipTicket> vipTickets;
-    @OneToMany
-    private List<NormalTicket> normalTickets;
+    private List<TicketDetail> ticketsDetail;
+    @OneToOne
+    @JoinColumn(name = "fkGame")
+    private Game game;
 
-//    public double calculateTotalPrice(){
-//        double sum = 0.0;
-//        for (NormalTicket normalTicket: normalTickets) {
-//          sum += normalTicket.getGame().getPrice();
-//        }
-//        for (VipTicket vipTicket : vipTickets) {
-//            sum += vipTicket.getPrice();
-//        }
-//        return sum;
-//    }
 }

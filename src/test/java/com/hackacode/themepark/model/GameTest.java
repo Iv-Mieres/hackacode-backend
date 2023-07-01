@@ -19,29 +19,31 @@ class GameTest {
     }
 
     @Test
-    void validateAgeGreater18ThenTrue(){
+    void ifTheAgeOfTheBuyerMeetsTheRequiredAgeOfTheGameThenTrue(){
         buyer.setBirthdate(LocalDate.of(2005, 6, 3));
         game.setRequiredAge(18);
 
-        assertTrue(game.validateAge(buyer));
-
+        var expectedTrue = game.validateAge(buyer.getBirthdate());
+        assertTrue(expectedTrue);
     }
 
     @Test
-    void validateAgeUnder18ThenTrue(){
+    void ifTheAgeOfTheBuyerDoesNotMeetsTheRequiredAgeOfTheGameThenTrue(){
         buyer.setBirthdate(LocalDate.of(LocalDate.now().getYear()-10, 6, 5));
         game.setRequiredAge(18);
 
-        assertFalse(game.validateAge(buyer));
+        var expectedFalse = game.validateAge(buyer.getBirthdate());
+        assertFalse(expectedFalse);
     }
 
     @Test
-    void ValidateAgeIsEqualsThenTrue(){
+    void ifTheAgeOfTheBuyerIsEqualsToTheRequiredAgeOfTheGameThenTrue(){
 
         buyer.setBirthdate(LocalDate.of(LocalDate.now().getYear()-18, 6, 4));
         game.setRequiredAge(18);
 
-        assertTrue(game.validateAge(buyer));
+        var expectedTrue = game.validateAge(buyer.getBirthdate());
+        assertTrue(expectedTrue);
     }
 
 

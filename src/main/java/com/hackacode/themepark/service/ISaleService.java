@@ -1,19 +1,23 @@
 package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.SaleDTOReq;
+import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.dto.response.SaleDTORes;
+import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.Sale;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 public interface ISaleService {
 
-    SaleDTORes saveSale(SaleDTOReq saleDTOReq) throws Exception;
-    SaleDTORes getSaleById(Long saleId);
+    void saveSale(SaleDTOReq saleDTOReq) throws Exception;
+    SaleDTORes getSaleById(Long saleId) throws IdNotFoundException;
     Page<SaleDTORes> getSales(Pageable pageable);
-    void updateSale(SaleDTOReq saleDTOReq) throws Exception;
-    void deleteSale(Long saleId);
+    void updateSale(SaleDTOReq saleDTOReq) throws IdNotFoundException;
+    void deleteSale(Long saleId) throws IdNotFoundException;
 
 }

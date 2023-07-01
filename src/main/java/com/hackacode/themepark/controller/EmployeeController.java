@@ -2,6 +2,7 @@ package com.hackacode.themepark.controller;
 
 import com.hackacode.themepark.dto.request.EmployeeDTOReq;
 import com.hackacode.themepark.dto.response.EmployeeDTORes;
+import com.hackacode.themepark.exception.DniNotFoundException;
 import com.hackacode.themepark.service.IEmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,6 +30,11 @@ public class EmployeeController {
        return ResponseEntity.ok(employeeService.getEmployeeById(employee_id));
     }
 
+    @GetMapping("/dni/{employeeDni}")
+    public ResponseEntity<EmployeeDTORes> getEmployeeByDni(@PathVariable String employeeDni) throws DniNotFoundException {
+        return ResponseEntity.ok(employeeService.getEmployeeByDni(employeeDni));
+    }
+
     @GetMapping()
     public ResponseEntity<Page<EmployeeDTORes>> getAllEmployees(Pageable pageable){
         return ResponseEntity.ok(employeeService.getAllEmployees(pageable));
@@ -38,13 +43,13 @@ public class EmployeeController {
     @PutMapping()
     public ResponseEntity<HttpStatus> updateEmployee(@Valid @RequestBody EmployeeDTOReq employeeDTORes) throws Exception {
         employeeService.updateEmployee(employeeDTORes);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{employeeId}")
     public ResponseEntity<HttpStatus> deleteEmployee(@PathVariable Long employeeId) throws Exception {
         employeeService.deleteEmployee(employeeId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

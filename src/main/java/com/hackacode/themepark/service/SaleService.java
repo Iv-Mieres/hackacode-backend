@@ -1,61 +1,56 @@
 package com.hackacode.themepark.service;
 
 
-import com.hackacode.themepark.dto.request.NormalTicketDTOReq;
 import com.hackacode.themepark.dto.request.SaleDTOReq;
-import com.hackacode.themepark.dto.request.VipTicketDTOReq;
+import com.hackacode.themepark.dto.request.TicketDetailDTOReq;
+import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.dto.response.SaleDTORes;
+import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.Game;
-import com.hackacode.themepark.model.NormalTicket;
 import com.hackacode.themepark.model.Sale;
-import com.hackacode.themepark.model.VipTicket;
-import com.hackacode.themepark.repository.IGameRepository;
-import com.hackacode.themepark.repository.INormalTicketRepository;
-import com.hackacode.themepark.repository.ISaleRepository;
-import com.hackacode.themepark.repository.IVipTicketRepository;
+import com.hackacode.themepark.model.TicketDetail;
+import com.hackacode.themepark.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SaleService implements ISaleService {
 
     private final ISaleRepository saleRepository;
-    private final IGameRepository gameRepository;
-    private final INormalTicketRepository normalTicketRepository;
-    private final IVipTicketRepository vipTicketRepository;
+    private final ITicketDetailRepository ticketDetailRepository;
     private final ModelMapper modelMapper;
 
     @Override
-    public SaleDTORes saveSale(SaleDTOReq saleDTOReq) throws Exception {
-        //Mapeo del DTO de venta al modelo de venta
-        var sale = modelMapper.map(saleDTOReq, Sale.class);
-        //Calcular y setear precio
-        sale.setTotalPrice(calculateTotalPrice(saleDTOReq));
-        //Guardo la venta
-        var saleDB = saleRepository.save(sale);
-        //Devuelvo la respuesta
-        return modelMapper.map(saleDB, SaleDTORes.class);
+    public void saveSale(SaleDTOReq request) throws Exception {
+        Sale sale = modelMapper.map(request, Sale.class);
+        sale.setTotalPrice(calculateTotalPrice(request));
+
+        saleRepository.save(sale);
+
     }
 
     @Override
-    public SaleDTORes getSaleById(Long saleId) {
-        var saleDB = saleRepository.findById(saleId).orElse(null);
-        return modelMapper.map(saleDB, SaleDTORes.class);
+    public SaleDTORes getSaleById(Long id) throws IdNotFoundException {
+        return modelMapper.map(saleRepository.findById(id)
+                .orElseThrow(() -> new IdNotFoundException("El id " + id + " no existe")), SaleDTORes.class);
     }
 
     @Override
     public Page<SaleDTORes> getSales(Pageable pageable) {
-        var sales = saleRepository.findAll(pageable);
-        var salesDTO = new ArrayList<SaleDTORes>();
+        Page<Sale> sales = saleRepository.findAll(pageable);
+        List<SaleDTORes> salesDTO = new ArrayList<>();
 
         for (Sale sale : sales) {
             salesDTO.add(modelMapper.map(sale, SaleDTORes.class));
@@ -64,50 +59,41 @@ public class SaleService implements ISaleService {
     }
 
     @Override
-    public void updateSale(SaleDTOReq saleDTOReq) throws Exception {
+    public void updateSale(SaleDTOReq saleDTOReq) throws IdNotFoundException {
+        if (saleRepository.existsById(saleDTOReq.getId())) {
+            throw new IdNotFoundException("El id " + saleDTOReq.getId() + " no existe");
+        }
         var saleUpdate = modelMapper.map(saleDTOReq, Sale.class);
         saleRepository.save(saleUpdate);
     }
 
     @Override
-    public void deleteSale(Long saleId) {
-        saleRepository.deleteById(saleId);
+    public void deleteSale(Long id) throws IdNotFoundException {
+        Sale sale = saleRepository.findById(id).orElseThrow(
+                () -> new IdNotFoundException("La venta con el id ingresado no existe"));
+        saleRepository.deleteById(id);
     }
 
-    public Double calculateTotalPrice(SaleDTOReq saleDTOReq) throws Exception {
-        List<NormalTicket> normalTickets = new ArrayList<>();
-        List<VipTicket> vipTickets = new ArrayList<>();
-        System.out.println(saleDTOReq.getNormalTickets());
-        if (saleDTOReq.getNormalTickets() != null) {
-            for (NormalTicketDTOReq ticket : saleDTOReq.getNormalTickets()) {
-                normalTickets.add(modelMapper.map(ticket, NormalTicket.class));
-            }
+    //CALCULA EL PRECIO TOTAL DE LA VENTA REALIZADA
+    public Double calculateTotalPrice(SaleDTOReq saleDTOReq) throws IdNotFoundException {
+        if (saleDTOReq.getTicketsDetail() == null) {
+            return 0.0;
         }
-        if (saleDTOReq.getVipTickets() != null) {
-            for (VipTicketDTOReq ticket : saleDTOReq.getVipTickets()) {
-                vipTickets.add(modelMapper.map(ticket, VipTicket.class));
+        List<TicketDetailDTOReq> ticketsDetail = saleDTOReq.getTicketsDetail();
+        double totalPrice = 0.0;
+        for (TicketDetailDTOReq dtoReq : ticketsDetail) {
+            UUID ticketDetailID = dtoReq.getId();
+            TicketDetail ticket = ticketDetailRepository.findById(ticketDetailID).orElseThrow(
+                    () -> new IdNotFoundException("No se encontro el ticket")
+            );
+            if (ticket != null) {
+                totalPrice += ticket.getTicket().getPrice();
             }
-        }
-        Optional<Game> game;
-        Double totalPrice = 0.0;
-        Optional<NormalTicket> optNormalTicket = null;
-        Optional<VipTicket> optionalVipTicket = null;
-        if (normalTickets.size() != 0) {
-            for (NormalTicket ticket : normalTickets) {
-                optNormalTicket = Optional.ofNullable(normalTicketRepository.findById(ticket.getId()).orElseThrow(() -> new Exception("Id de ticket invalido")));
-                game = gameRepository.findById(optNormalTicket.get().getGame().getId());
-                if (game.isPresent()) {
-                    totalPrice += game.get().getPrice();
-                }
-            }
-        }
-        if (vipTickets.size() != 0) {
-            for (VipTicket ticket : vipTickets) {
-                optionalVipTicket = Optional.ofNullable(vipTicketRepository.findById(ticket.getId()).orElseThrow(() -> new Exception("Id de ticket invalido")));
-                totalPrice += optionalVipTicket.get().getPrice();
-            }
+
         }
 
         return totalPrice;
     }
 }
+
+

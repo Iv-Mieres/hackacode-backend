@@ -1,5 +1,6 @@
 package com.hackacode.themepark.dto.response;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,11 +11,10 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NormalTicketDTORes {
+public class TicketDetailDTORes {
 
     private UUID id;
-    private LocalDateTime dateTime;
-    private boolean used;
-    private GameDTORes game;
+    private LocalDateTime purchaseDate;
+    private TicketDTORes ticket;
     private BuyerDTORes buyer;
 }

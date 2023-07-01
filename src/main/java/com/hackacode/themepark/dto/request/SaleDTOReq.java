@@ -1,9 +1,11 @@
 package com.hackacode.themepark.dto.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -11,6 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 public class SaleDTOReq {
     private Long id;
-    private List<VipTicketDTOReq> vipTickets;
-    private List<NormalTicketDTOReq> normalTickets;
+    @NotNull(message = "Debe asignar un ticket detallado")
+    private List<TicketDetailDTOReq> ticketsDetail;
+    @NotNull(message = "Debe asignar un juego")
+    private GameDTOReq game;
 }

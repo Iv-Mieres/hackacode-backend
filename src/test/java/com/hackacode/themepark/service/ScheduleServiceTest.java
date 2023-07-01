@@ -6,6 +6,7 @@ import com.hackacode.themepark.model.Schedule;
 import com.hackacode.themepark.repository.IScheduleRepository;
 import org.aspectj.asm.IModelFilter;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -51,6 +52,7 @@ class ScheduleServiceTest {
         this.scheduleDTORes = new ScheduleDTORes();
     }
 
+    @DisplayName("comprueba que se guarden horarios")
     @Test
     void saveSchedule() throws Exception {
 
@@ -59,6 +61,7 @@ class ScheduleServiceTest {
         verify(scheduleRepository).save(this.schedule);
     }
 
+    @DisplayName("comprueba que se lance una excepción si los horarios ya existen al hacer un guardado")
     @Test
     void ifStartTimeAndEndTimeExistsThenThrowAnException() throws Exception {
 
@@ -71,6 +74,7 @@ class ScheduleServiceTest {
         assertEquals(espectedMjError, currentMjError.getMessage());
     }
 
+    @DisplayName("comprueba que se muestre un horario por id")
     @Test
     void getScheduleById() throws Exception {
 
@@ -86,6 +90,7 @@ class ScheduleServiceTest {
         assertEquals(this.scheduleDTORes, result);
     }
 
+    @DisplayName("comprueba que se elimine un horario")
     @Test
     void deleteScheduleById(){
         doNothing().when(scheduleRepository).deleteById(1L);
@@ -93,6 +98,7 @@ class ScheduleServiceTest {
         verify(scheduleRepository).deleteById(1L);
     }
 
+    @DisplayName("comprueba el método que lanza una exception si los horarios ya existen")
     @Test
     void validateIfEndAndStartTimeDoesNotExistInBD() throws Exception {
 
@@ -114,6 +120,7 @@ class ScheduleServiceTest {
         assertEquals(espectedMjError, cuerrentMjError.getMessage());
     }
 
+    @DisplayName("comprueba qu se actualice un horario")
     @Test
     void updateSchedule() throws Exception {
 
@@ -132,6 +139,8 @@ class ScheduleServiceTest {
         verify(scheduleRepository).save(this.schedule);
     }
 
+
+    @DisplayName("comprueba que se muestre una lista de horarios paginada")
     @Test
     void getAllSchedulesPageable(){
 

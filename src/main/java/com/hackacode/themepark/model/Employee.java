@@ -20,6 +20,8 @@ public class Employee extends Person {
     @JsonIgnoreProperties("employee")
     private Game game;
 
+
+
     public Employee() {
         super();
     }

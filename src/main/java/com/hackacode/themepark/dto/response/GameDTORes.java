@@ -11,7 +11,6 @@ public class GameDTORes {
 
     private Long id;
     private String name;
-    private double price;
     private int requiredAge;
     private ScheduleDTORes schedule;
 

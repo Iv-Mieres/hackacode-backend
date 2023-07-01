@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,12 +37,12 @@ public class ScheduleController {
     @PutMapping()
     public ResponseEntity<HttpStatus> updateSchedule(@Valid @RequestBody ScheduleDTORes scheduleDTO) throws Exception {
         scheduleService.updateSchedule(scheduleDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{scheduleId}")
-    public ResponseEntity<HttpStatus> deleteSchedule(@PathVariable Long scheduleId) throws Exception {
+    public ResponseEntity<HttpStatus> deleteSchedule(@PathVariable Long scheduleId){
         scheduleService.deleteSchedule(scheduleId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

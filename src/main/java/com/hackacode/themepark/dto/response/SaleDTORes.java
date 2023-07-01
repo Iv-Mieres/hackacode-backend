@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -13,7 +14,8 @@ public class SaleDTORes {
 
     private Long id;
     private double totalPrice;
-    private List<NormalTicketDTORes> normalTickets;
-    private List<VipTicketDTORes> vipTickets;
+    private List<TicketDetailDTORes> ticketsDetail;
+    private GameDTORes game;
+    private LocalDateTime purchaseDate;
 
 }

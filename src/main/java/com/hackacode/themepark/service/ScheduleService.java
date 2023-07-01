@@ -2,6 +2,8 @@ package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.ScheduleDTOReq;
 import com.hackacode.themepark.dto.response.ScheduleDTORes;
+import com.hackacode.themepark.exception.HoursExistsException;
+import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.Schedule;
 import com.hackacode.themepark.repository.IScheduleRepository;
 import org.modelmapper.ModelMapper;
@@ -26,20 +28,19 @@ public class ScheduleService implements IScheduleService {
 
     //CREA UN HORARIO
     @Override
-    public void saveSchedule(ScheduleDTOReq scheduleDTO) throws Exception {
+    public void saveSchedule(ScheduleDTOReq scheduleDTO) throws HoursExistsException {
         if(scheduleRepository.existsByStartTime(scheduleDTO.getStartTime())
          && scheduleRepository.existsByEndTime(scheduleDTO.getEndTime())){
-            throw new Exception("Los horarios ingresados ya existen. Ingrese nuevos horarios");
+            throw new HoursExistsException("Los horarios ingresados ya existen. Ingrese nuevos horarios");
         }
         scheduleRepository.save(modelMapper.map(scheduleDTO, Schedule.class));
     }
 
     //MUESTRA UN HORARIO POR ID
     @Override
-    public ScheduleDTORes getScheduleById(Long scheduleId) throws Exception {
-        var scheduleBD = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new Exception("El id ingresado no se encuentra en la base de datos"));
-        return modelMapper.map(scheduleBD, ScheduleDTORes.class);
+    public ScheduleDTORes getScheduleById(Long scheduleId) throws IdNotFoundException {
+        return modelMapper.map(scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new IdNotFoundException("El id " + scheduleId + " no existe")), ScheduleDTORes.class);
     }
 
     //LISTA DTO DE HORARIOS PAGINADOS
@@ -73,10 +74,10 @@ public class ScheduleService implements IScheduleService {
 
     //VALIDA DATOS AL HACER UNA MODIFICACIÓN
     public void validateIfEndAndStartTimeDoesNotExistInBD(LocalTime startTimeDTO, LocalTime startTimeBD,
-                                                          LocalTime endTimeDTO, LocalTime endTimeBD) throws Exception {
+                                                          LocalTime endTimeDTO, LocalTime endTimeBD) throws HoursExistsException {
         if((!startTimeDTO.equals(startTimeBD) && scheduleRepository.existsByStartTime(startTimeDTO))
                 && (!endTimeDTO.equals(endTimeBD) && scheduleRepository.existsByEndTime(endTimeDTO))){
-            throw new Exception("Los horarios ingresados ya existen. Ingrese nuevos horarios");
+            throw new HoursExistsException("Los horarios ingresados ya existen. Ingrese nuevos horarios");
         }
     }
 

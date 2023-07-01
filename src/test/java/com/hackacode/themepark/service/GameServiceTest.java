@@ -5,12 +5,14 @@ import com.hackacode.themepark.dto.request.GameDTOReq;
 import com.hackacode.themepark.dto.request.ScheduleDTOReq;
 import com.hackacode.themepark.dto.response.GameDTORes;
 import com.hackacode.themepark.dto.response.ScheduleDTORes;
+import com.hackacode.themepark.exception.NameExistsException;
 import com.hackacode.themepark.model.Employee;
 import com.hackacode.themepark.model.Game;
 import com.hackacode.themepark.model.Role;
 import com.hackacode.themepark.model.Schedule;
 import com.hackacode.themepark.repository.IGameRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,9 +38,11 @@ class GameServiceTest {
 
     @InjectMocks
     private GameService gameService;
+
     @Mock
     private IGameRepository gameRepository;
-
+    @Mock
+    private IWordsConverter wordsConverter;
     @Mock
     private ModelMapper modelMapper;
 
@@ -50,39 +54,53 @@ class GameServiceTest {
 
     @BeforeEach
     void setUp() {
+        var schedule = new ScheduleDTOReq();
+        schedule.setId(1L);
+        schedule.setStartTime(LocalTime.of(8,00));
+        schedule.setEndTime(LocalTime.of(14,30));
 
-        this.game = new Game();
+        this.game = Game.builder()
+                .id(1L)
+                .name("montaña rusa")
+                .requiredAge(18).build();
+
         this.gameDTOReq = new GameDTOReq();
+        this.gameDTOReq.setName("montaña rusa");
+        this.gameDTOReq.setId(1L);
+        this.gameDTOReq.setRequiredAge(18);
+        this.gameDTOReq.setSchedule(schedule);
+
         this.gameDTORes = new GameDTORes();
     }
 
+    @DisplayName("comprueba que se guarde un juego con su horario")
     @Test
     void saveGame() throws Exception {
-        var schedule = new ScheduleDTOReq();
-        schedule.setId(1L);
-        schedule.setStartTime(LocalTime.of(2,00));
 
-        this.gameDTOReq.setSchedule(schedule);
-
-        when(gameRepository.existsBySchedule_id(1L)).thenReturn(true);
         when(modelMapper.map(this.gameDTOReq, Game.class)).thenReturn(this.game);
+        when(wordsConverter.capitalizeWords(this.game.getName())).thenReturn("Montaña Rusa");
+
         gameService.saveGame(this.gameDTOReq);
+
+        assertEquals( "Montaña Rusa", this.gameDTOReq.getName());
         verify(gameRepository).save(this.game);
     }
 
+    @DisplayName("comprueba que no se guarde un juego si el nombre ya existe")
     @Test
-    void ifExistsByIdThenThrowAnException() throws Exception {
+    void ifExistsByIdThenThrowAnException() throws NameExistsException {
         String name = "Montaña Rusa";
         this.gameDTOReq.setName(name);
-        String espectedMjError = "El nombre " + name + " ya existe. Ingrese un nuevo nombre";
+        String expected = "El nombre " + name + " ya existe. Ingrese un nuevo nombre";
 
         when(gameRepository.existsByName(name)).thenReturn(true);
-        Exception currentMjError = assertThrows(Exception.class,
+        Exception currentError = assertThrows(NameExistsException.class,
                 () -> gameService.saveGame(this.gameDTOReq));
 
-        assertEquals(espectedMjError, currentMjError.getMessage());
+        assertEquals(expected, currentError.getMessage());
     }
 
+    @DisplayName("comprueba que muestre un juego por su id")
     @Test
     void getGameById() throws Exception {
 
@@ -94,6 +112,7 @@ class GameServiceTest {
         assertEquals(this.gameDTORes, gameDTOResult);
     }
 
+    @DisplayName("comprueba que se muestre una lista de juegos paginada")
     @Test
     void getAllGamesPageable(){
 
@@ -105,14 +124,12 @@ class GameServiceTest {
 
         var game1 = Game.builder()
                 .id(1L)
-                .price(3000.0)
                 .requiredAge(18)
                 .schedule(schedule)
                 .build();
         var game2 = Game.builder().id(2L).build();
 
         this.gameDTORes.setId(1L);
-        this.gameDTORes.setPrice(3000.0);
         this.gameDTORes.setRequiredAge(18);
         this.gameDTORes.setSchedule(modelMapper.map(schedule, ScheduleDTORes.class));
 
@@ -133,45 +150,36 @@ class GameServiceTest {
 
     }
 
+    @DisplayName("comprueba que se actualice un juego")
     @Test
     void updateGame() throws Exception {
 
         this.game.setId(1L);
-        var schedule = new Schedule();
-        schedule.setId(4L);
-
-        this.gameDTOReq.setId(1L);
-        this.gameDTOReq.setName("Montaña Rusa");
-        this.gameDTOReq.setPrice(3000.0);
-        this.gameDTOReq.setRequiredAge(18);
-        this.gameDTOReq.setSchedule(modelMapper.map(schedule, ScheduleDTOReq.class));
 
         when(gameRepository.findById(1L)).thenReturn(Optional.ofNullable(this.game));
-        when(gameRepository.existsByName(this.gameDTOReq.getName())).thenReturn(false);
+        when(wordsConverter.capitalizeWords(this.gameDTOReq.getName())).thenReturn("Montaña Rusa");
         when(modelMapper.map(this.gameDTOReq, Game.class)).thenReturn(this.game);
+
         gameService.updateGame(this.gameDTOReq);
+        assertEquals("Montaña Rusa", this.gameDTOReq.getName());
         verify(gameRepository).save(this.game);
     }
 
+    @DisplayName("comprueba que no se guarda el juego si el nombre ya existe y no pertenece al juego ingresado")
     @Test
     void ifWhenUpdatingAGameTheNameExistsThrowAnException() throws Exception {
-
-        String name = "Montaña Rusa";
-        this.gameDTOReq.setId(1L);
-        this.gameDTOReq.setName(name);
-        this.game.setId(1L);
-        this.game.setName("Calesita");
-        String espectedMjError = "El nombre " + this.gameDTOReq.getName() + " ya existe. Ingrese un nuevo nombre";
+        this.game.setName("Zamba");
+        String expected = "El nombre " + this.gameDTOReq.getName() + " ya existe. Ingrese un nuevo nombre";
 
         when(gameRepository.findById(this.gameDTOReq.getId())).thenReturn(Optional.ofNullable(this.game));
         when(gameRepository.existsByName(this.gameDTOReq.getName())).thenReturn(true);
 
-        Exception currentMjError = assertThrows(Exception.class,
-                () -> gameService.updateGame(this.gameDTOReq));
+        Exception currentError = assertThrows(Exception.class, () -> gameService.updateGame(this.gameDTOReq));
 
-        assertEquals(espectedMjError, currentMjError.getMessage());
+        assertEquals(expected, currentError.getMessage());
     }
 
+    @DisplayName("comprueba que se elimine un juego por id")
     @Test
     void deleteGameById(){
         doNothing().when(gameRepository).deleteById(1L);
