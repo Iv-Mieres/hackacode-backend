@@ -112,44 +112,42 @@ class GameServiceTest {
         assertEquals(this.gameDTORes, gameDTOResult);
     }
 
-//    @Test
-//    void getAllGamesPageable(){
-//
-//        int page = 0;
-//        int size = 2;
-//
-//        var schedule = new Schedule();
-//        schedule.setId(4L);
-//
-//        var game1 = Game.builder()
-//                .id(1L)
-//                .price(3000.0)
-//                .requiredAge(18)
-//                .schedule(schedule)
-//                .build();
-//        var game2 = Game.builder().id(2L).build();
-//
-//        this.gameDTORes.setId(1L);
-//        this.gameDTORes.setPrice(3000.0);
-//        this.gameDTORes.setRequiredAge(18);
-//        this.gameDTORes.setSchedule(modelMapper.map(schedule, ScheduleDTORes.class));
-//
-//        var games = new ArrayList<Game>();
-//        games.add(game1);
-//        games.add(game2);
-//
-//        var pageable = PageRequest.of(page, size);
-//        when(gameRepository.findAll(pageable)).thenReturn(new PageImpl<>(games,pageable, games.size()));
-//        when(modelMapper.map(game1, GameDTORes.class)).thenReturn(this.gameDTORes);
-//        var result = gameService.getAllGames(pageable);
-//
-//        assertEquals(this.gameDTORes, result.getContent().get(0));
-//
-//        assertEquals(games.size(), result.getTotalElements());
-//        assertEquals(0, result.getNumber());
-//        assertEquals(1, result.getTotalPages());
-//
-//    }
+    @Test
+    void getAllGamesPageable(){
+
+        int page = 0;
+        int size = 2;
+
+        var schedule = new Schedule();
+        schedule.setId(4L);
+
+        var game1 = Game.builder()
+                .id(1L)
+                .requiredAge(18)
+                .schedule(schedule)
+                .build();
+        var game2 = Game.builder().id(2L).build();
+
+        this.gameDTORes.setId(1L);
+        this.gameDTORes.setRequiredAge(18);
+        this.gameDTORes.setSchedule(modelMapper.map(schedule, ScheduleDTORes.class));
+
+        var games = new ArrayList<Game>();
+        games.add(game1);
+        games.add(game2);
+
+        var pageable = PageRequest.of(page, size);
+        when(gameRepository.findAll(pageable)).thenReturn(new PageImpl<>(games,pageable, games.size()));
+        when(modelMapper.map(game1, GameDTORes.class)).thenReturn(this.gameDTORes);
+        var result = gameService.getAllGames(pageable);
+
+        assertEquals(this.gameDTORes, result.getContent().get(0));
+
+        assertEquals(games.size(), result.getTotalElements());
+        assertEquals(0, result.getNumber());
+        assertEquals(1, result.getTotalPages());
+
+    }
 
     @Test
     void updateGame() throws Exception {

@@ -232,6 +232,57 @@ class ReportServiceTest {
     }
 
     @Test
-    void gameWithMoreTicketsSold() {
+    void gameWithTheHighestNumberOfTicketsSoldSoFar() throws Exception {
+        var game1 = new Game();
+        game1.setId(1L);
+        game1.setName("Montaña Rusa");
+
+        var sale1 = new Sale();
+        sale1.setId(1L);
+        sale1.setTotalPrice(10000.0);
+        sale1.setGame(game1);
+        sale1.setPurchaseDate(LocalDateTime.of(LocalDate.of(1988,6,6), LocalTime.now()));
+        sale1.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail(), new TicketDetail()));
+
+        var sales = new ArrayList<Sale>();
+        sales.add(sale1);
+
+        when(saleRepository.findAll()).thenReturn(sales);
+        when(saleRepository.findAllByGame_id(game1.getId())).thenReturn(sales);
+        var cuerrentReportDTORes = reportService.gameWithTheHighestNumberOfTicketsSoldSoFar(LocalDate.of(1988,6,6));
+        assertEquals(3, cuerrentReportDTORes.getTotalTicketsSold());
+        assertEquals(game1.getName(), cuerrentReportDTORes.getGameName());
     }
+
+
+    @Test
+    void totalNumberOfTicketsSoldPlusTheirRevenueToDate(){
+        var sale1 = new Sale();
+        sale1.setId(1L);
+        sale1.setTotalPrice(10000.0);
+        sale1.setPurchaseDate(LocalDateTime.of(LocalDate.of(1988,6,6), LocalTime.now()));
+        sale1.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail(), new TicketDetail()));
+
+
+        var sale2 = new Sale();
+        sale2.setId(2L);
+        sale2.setTotalPrice(10000.0);
+        sale2.setPurchaseDate(LocalDateTime.of(LocalDate.now(), LocalTime.now()));
+        sale2.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail(), new TicketDetail()));
+        var sales = new ArrayList<Sale>();
+        sales.add(sale1);
+        sales.add(sale2);
+
+        when(saleRepository.findAll()).thenReturn(sales);
+        var currentReportDTORes = reportService.totalNumberOfTicketsSoldPlusTheirRevenueToDate(LocalDate.now());
+        assertEquals(20000, currentReportDTORes.getTotalAmountSaleYear());
+        assertEquals(6, currentReportDTORes.getTotalTicketsSold());
+    }
+
+
+
+
+
+
+
 }

@@ -20,7 +20,4 @@ public interface IGameService {
     void updateGame(GameDTOReq gameDTO) throws IdNotFoundException, NameExistsException;
     void deleteGame(Long gameID);
 
-    //MUESTRA JUEGO CON LA MAYOR CANTIDAD DE TICKETS VENDIDOS EN DETERMINADO DIA
-    ReportDTORes gameWithTheMostTicketsSold(LocalDate date);
-
 }

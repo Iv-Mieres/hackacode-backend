@@ -87,47 +87,5 @@ public class GameService implements IGameService{
     }
 
 
-    //MUESTRA JUEGO CON LA MAYOR CANTIDAD DE TICKETS VENDIDOS EN DETERMINADO DIA
-    @Override
-    public ReportDTORes gameWithTheMostTicketsSold(LocalDate date){
-        LocalDateTime dateTime = LocalDateTime.of(date, LocalTime.MAX);
-        Sale saleDB = saleRepository.findTopByPurchaseDateBeforeOrderByGame_idDesc(dateTime);
-
-        Long totalTicketsSold = saleRepository.countSalesByGame_Id(saleDB.getGame().getId());
-        String gameName = saleDB.getGame().getName();
-        return ReportDTORes.builder()
-                .totalTicketsSold(totalTicketsSold)
-                .gameName(gameName)
-                .build();
-    }
-
-//        public ReportDTORes oneGameWithTheMostTicketsSold(LocalDateTime date){
-//
-//        var games = gameRepository.findAll();
-//        String gameName = null;
-//        long totalNormalTicketsSold = 0L;
-//
-//        //recorre la lista de juegos
-//        for (Game game : games) {
-//            int totalTickets = 0;
-//            //recorre la lista de tickets normal del juego y comprueba que la
-//            //fecha de los tickets sea anterior o igual a la ingresada y lo guarda en un contador
-//            for (Ticket ticket : game.getTickets()) {
-//                if (ticket.getPurchaseDate().isBefore(date) || ticket.getPurchaseDate().equals(date)) {
-//                    totalTickets++;
-//                }
-//            }
-//            //compara si el contador del siguiente juego es mayor a la cantidad de tickets guardada
-//            if (totalTickets > totalNormalTicketsSold) {
-//                totalNormalTicketsSold= totalTickets;
-//                gameName = game.getName();
-//            }
-//        }
-//        return ReportDTORes.builder()
-//                .totalNormalTicketsSold(totalNormalTicketsSold)
-//                .gameName(gameName)
-//                .build();
-//    }
-
 
 }
