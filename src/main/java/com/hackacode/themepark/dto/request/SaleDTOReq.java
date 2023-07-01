@@ -17,5 +17,4 @@ public class SaleDTOReq {
     private List<TicketDetailDTOReq> ticketsDetail;
     @NotNull(message = "Debe asignar un juego")
     private GameDTOReq game;
-    private LocalDateTime purchaseDate;
 }
