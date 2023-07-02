@@ -115,7 +115,7 @@ class TicketDetailServiceTest {
 
         when(ticketDetailRepository.findAll(pageable)).thenReturn(new PageImpl<>(ticketsDetail, pageable, ticketsDetail.size()));
         when(modelMapper.map(this.ticketDetail, TicketDetailDTORes.class)).thenReturn(this.ticketDetailDTORes);
-        var currentResults =  ticketDetailService.getAll(pageable);
+        var currentResults =  ticketDetailService.getAllTciketsDetails(pageable);
 
         assertEquals(2, currentResults.getTotalElements());
         assertEquals(0, currentResults.getNumber());

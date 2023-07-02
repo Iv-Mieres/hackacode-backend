@@ -16,11 +16,11 @@ public interface ITicketDetailService {
 
     UUID saveTicket(TicketDetailDTOReq ticket) throws IdNotFoundException;
 
-    Page<TicketDetailDTORes> getAll(Pageable pageable);
+    Page<TicketDetailDTORes> getAllTciketsDetails(Pageable pageable);
 
     TicketDetailDTORes getById(UUID id) throws IdNotFoundException;
 
-    void delete(UUID id) throws  IdNotFoundException;
+    void delete(UUID id);
 
     String lastVisit(Long buyerId);
 

@@ -23,14 +23,14 @@ public class TicketDetailController {
 
     private final ITicketDetailService ticketDetailService;
 
-    @GetMapping
+    @GetMapping("/{uuid}")
     public ResponseEntity<TicketDetailDTORes> getById(@PathVariable UUID uuid) throws IdNotFoundException {
         return ResponseEntity.ok().body(ticketDetailService.getById(uuid));
     }
 
     @GetMapping
     public ResponseEntity<Page<TicketDetailDTORes>> getAll(Pageable pageable){
-        return ResponseEntity.ok().body(ticketDetailService.getAll(pageable));
+        return ResponseEntity.ok().body(ticketDetailService.getAllTciketsDetails(pageable));
     }
 
     @PostMapping
@@ -39,7 +39,7 @@ public class TicketDetailController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> delete(@PathVariable UUID id) throws IdNotFoundException {
+    public ResponseEntity<HttpStatus> delete(@PathVariable UUID id) {
         ticketDetailService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

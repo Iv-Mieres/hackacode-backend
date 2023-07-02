@@ -3,6 +3,7 @@ package com.hackacode.themepark.service;
 import com.hackacode.themepark.dto.request.TicketDetailDTOReq;
 import com.hackacode.themepark.dto.response.BuyerDTORes;
 import com.hackacode.themepark.dto.response.ReportDTORes;
+import com.hackacode.themepark.dto.response.TicketDTORes;
 import com.hackacode.themepark.dto.response.TicketDetailDTORes;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.TicketDetail;
@@ -44,29 +45,38 @@ public class TicketDetailService implements ITicketDetailService{
         if (!ticketRepository.existsById(request.getTicket().getId())){
             throw new IdNotFoundException("El ticket ingresado no se encuentra registrado");
         }
-        var ticketDetail = modelMapper.map(request,TicketDetail.class);
-        ticketDetail.setId(UUID.randomUUID());
-        return repository.save(ticketDetail).getId();
+        return repository.save(modelMapper.map(request,TicketDetail.class)).getId();
     }
 
     @Override
-    public Page<TicketDetailDTORes> getAll(Pageable pageable) {
-        Page<TicketDetail> tickets = repository.findAll(pageable);
-        List<TicketDetailDTORes> ticketsDTO = new ArrayList<>();
-        for(TicketDetail ticket: tickets) {
-            ticketsDTO.add(modelMapper.map(ticket, TicketDetailDTORes.class));
+    public Page<TicketDetailDTORes> getAllTciketsDetails(Pageable pageable) {
+        var ticketsDetails = repository.findAll(pageable);
+        var ticketsDTO = new ArrayList<TicketDetailDTORes>();
+        for(TicketDetail ticketDetail: ticketsDetails) {
+            var ticketDTO = new TicketDetailDTORes();
+            ticketDTO.setId(ticketDetail.getId());
+            ticketDTO.setPurchaseDate(ticketDetail.getPurchaseDate());
+            ticketDTO.setBuyer( modelMapper.map(ticketDetail.getBuyer(), BuyerDTORes.class));
+            ticketDTO.setTicket( modelMapper.map(ticketDetail.getTicket(), TicketDTORes.class));
+            ticketsDTO.add(ticketDTO);
         }
         return new PageImpl<>(ticketsDTO, pageable, ticketsDTO.size());
     }
 
     @Override
     public TicketDetailDTORes getById(UUID id) throws IdNotFoundException {
-        return modelMapper.map(repository.findById(id).orElseThrow(
-                ()-> new IdNotFoundException("El ticket con el id ingresado no se encuentra registado")),TicketDetailDTORes.class);
+        var ticketDetail =  repository.findById(id).orElseThrow(
+                ()-> new IdNotFoundException("El ticket con el id ingresado no se encuentra registado"));
+        var ticketDetailDTO = new TicketDetailDTORes();
+        ticketDetailDTO.setId(ticketDetail.getId());
+        ticketDetailDTO.setPurchaseDate(ticketDetail.getPurchaseDate());
+        ticketDetailDTO.setBuyer( modelMapper.map(ticketDetail.getBuyer(), BuyerDTORes.class));
+        ticketDetailDTO.setTicket( modelMapper.map(ticketDetail.getTicket(), TicketDTORes.class));
+        return ticketDetailDTO;
     }
 
     @Override
-    public void delete(UUID id) throws IdNotFoundException {
+    public void delete(UUID id){
         repository.deleteById(id);
     }
 
