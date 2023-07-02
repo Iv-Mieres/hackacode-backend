@@ -3,6 +3,7 @@ package com.hackacode.themepark.service;
 import com.hackacode.themepark.dto.response.BuyerDTORes;
 import com.hackacode.themepark.dto.response.EmployeeDTORes;
 import com.hackacode.themepark.dto.response.ReportDTORes;
+import com.hackacode.themepark.dto.response.ReportGameDTORes;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -37,4 +38,6 @@ public interface IReportService {
     ReportDTORes sumTotalAmountOfAGivenMonth(int year, int month) throws Exception;
 
 
+    // Historico -  Número total de entradas vendidas de cada juego hasta la fecha
+    List<ReportGameDTORes> totalTicketsSoldForEachGameToDate(LocalDate date) throws Exception;
 }

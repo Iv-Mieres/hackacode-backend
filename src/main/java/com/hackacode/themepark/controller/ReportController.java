@@ -1,9 +1,6 @@
 package com.hackacode.themepark.controller;
 
-import com.hackacode.themepark.dto.response.BuyerDTORes;
-import com.hackacode.themepark.dto.response.EmployeeDTORes;
-import com.hackacode.themepark.dto.response.ReportDTORes;
-import com.hackacode.themepark.dto.response.UserDTORes;
+import com.hackacode.themepark.dto.response.*;
 import com.hackacode.themepark.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/informes")
@@ -63,7 +61,7 @@ public class ReportController {
 
     //Lista de empleados encargados de juegos con su juego asignado
     @GetMapping("/empleados/con_juego_asignado")
-    public ResponseEntity<Page<EmployeeDTORes>> getAllEmployeesByRole(Pageable pageable) {
+    public ResponseEntity<Page<EmployeeDTORes>> getAllEmployeesWhitGames(Pageable pageable) {
         return ResponseEntity.ok(reportService.getAllEmployeesWithTheirAssignedGame(pageable));
     }
 
@@ -76,17 +74,25 @@ public class ReportController {
     //Juego con la mayor cantidad de entradas vendidas hasta el día en que se lleve a cabo la consulta
     @GetMapping("/juego/con_mas_entradas_vendidas_hasta")
     public ResponseEntity<ReportDTORes> getGameWithTheMostTicketsSold(@RequestParam
-                                                                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-                                                                          LocalDate date) throws Exception {
+                                                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                                                                      LocalDate date) throws Exception {
         return ResponseEntity.ok(reportService.gameWithTheHighestNumberOfTicketsSoldSoFar(date));
     }
 
     // Historico - Número total de entradas vendidas más sus ingresos hasta la fecha
     @GetMapping("/historico/ventas_monto")
     public ResponseEntity<ReportDTORes> totalNumberOfTicketsSoldPlusTheirRevenueToDate(@RequestParam
-                                                                                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-                                                                                           LocalDate date){
+                                                                                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                                                                                       LocalDate date) {
         return ResponseEntity.ok(reportService.totalNumberOfTicketsSoldPlusTheirRevenueToDate(date));
+    }
+
+    // Historico - Número total de entradas vendidas de cada juego hasta la fecha
+    @GetMapping("/historico/juegos_monto")
+    public ResponseEntity<List<ReportGameDTORes>> totalTicketsSoldForEachGameToDate(@RequestParam
+                                                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                                                                                LocalDate date) throws Exception {
+        return ResponseEntity.ok(reportService.totalTicketsSoldForEachGameToDate(date));
     }
 
 }
