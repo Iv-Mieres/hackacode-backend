@@ -2,25 +2,19 @@ package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.GameDTOReq;
 import com.hackacode.themepark.dto.response.GameDTORes;
-import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.exception.NameExistsException;
 import com.hackacode.themepark.model.Game;
-import com.hackacode.themepark.model.Sale;
-import com.hackacode.themepark.model.Ticket;
 import com.hackacode.themepark.repository.IGameRepository;
 import com.hackacode.themepark.repository.ISaleRepository;
+import com.hackacode.themepark.util.IWordsConverter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 
 @Service

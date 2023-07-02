@@ -1,13 +1,11 @@
 package com.hackacode.themepark.service;
 
-import com.hackacode.themepark.dto.request.ResetPasswordDTOReq;
 import com.hackacode.themepark.exception.UsernameNotFoundException;
 import com.hackacode.themepark.model.Token;
 import com.hackacode.themepark.repository.ICustomUserRepository;
 import com.hackacode.themepark.repository.ITokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -39,17 +37,11 @@ public class TokenService implements ITokenService {
     @Override
     public Token getToken(String token) throws Exception {
         return tokenRepository.findByToken(token)
-                .orElseThrow(() -> new Exception("El token no fue encotrado"));
+                .orElseThrow(() -> new Exception("El token no ha sido encotrado"));
     }
 
     @Override
-    @Transactional
-    public void deleteByToken(String token) {
-        tokenRepository.deleteByToken(token);
-    }
-
-    @Override
-    public void deleteToken(Long tokenId) {
+    public void deleteById(Long tokenId) {
         tokenRepository.deleteById(tokenId);
     }
 

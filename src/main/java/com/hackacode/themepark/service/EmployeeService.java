@@ -9,6 +9,7 @@ import com.hackacode.themepark.model.Employee;
 import com.hackacode.themepark.repository.ICustomUserRepository;
 import com.hackacode.themepark.repository.IEmployeeRepository;
 import com.hackacode.themepark.repository.IGameRepository;
+import com.hackacode.themepark.util.IWordsConverter;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

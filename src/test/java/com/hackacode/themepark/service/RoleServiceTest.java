@@ -6,6 +6,7 @@ import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.exception.RoleExistsException;
 import com.hackacode.themepark.model.Role;
 import com.hackacode.themepark.repository.IRoleRepository;
+import com.hackacode.themepark.util.IWordsConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

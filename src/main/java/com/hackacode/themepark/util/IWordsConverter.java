@@ -1,4 +1,4 @@
-package com.hackacode.themepark.service;
+package com.hackacode.themepark.util;
 
 public interface IWordsConverter {
 

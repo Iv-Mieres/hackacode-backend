@@ -1,8 +1,6 @@
-package com.hackacode.themepark.service;
+package com.hackacode.themepark.util;
 
 import com.hackacode.themepark.dto.request.ResetPasswordDTOReq;
-import com.hackacode.themepark.model.CustomUser;
-import com.hackacode.themepark.model.Role;
 import com.hackacode.themepark.model.Token;
 import com.hackacode.themepark.repository.ICustomUserRepository;
 import com.hackacode.themepark.repository.ITokenRepository;
@@ -17,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Service
 public class EmailService implements IEmailService{

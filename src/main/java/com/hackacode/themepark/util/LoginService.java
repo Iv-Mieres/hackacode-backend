@@ -1,10 +1,9 @@
-package com.hackacode.themepark.service;
+package com.hackacode.themepark.util;
 
 import com.hackacode.themepark.dto.request.AuthRequestDTOReq;
 import com.hackacode.themepark.dto.response.AuthResponseDTORes;
 import com.hackacode.themepark.model.CustomUser;
 import com.hackacode.themepark.repository.ICustomUserRepository;
-import com.hackacode.themepark.util.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

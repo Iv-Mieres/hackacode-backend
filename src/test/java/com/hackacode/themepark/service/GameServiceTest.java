@@ -1,16 +1,14 @@
 package com.hackacode.themepark.service;
 
-import com.hackacode.themepark.dto.request.EmployeeDTOReq;
 import com.hackacode.themepark.dto.request.GameDTOReq;
 import com.hackacode.themepark.dto.request.ScheduleDTOReq;
 import com.hackacode.themepark.dto.response.GameDTORes;
 import com.hackacode.themepark.dto.response.ScheduleDTORes;
 import com.hackacode.themepark.exception.NameExistsException;
-import com.hackacode.themepark.model.Employee;
 import com.hackacode.themepark.model.Game;
-import com.hackacode.themepark.model.Role;
 import com.hackacode.themepark.model.Schedule;
 import com.hackacode.themepark.repository.IGameRepository;
+import com.hackacode.themepark.util.IWordsConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,16 +17,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

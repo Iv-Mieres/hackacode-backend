@@ -14,7 +14,7 @@ import java.util.UUID;
 public interface ITicketDetailService {
 
 
-    UUID saveTicket(TicketDetailDTOReq ticket) throws Exception;
+    UUID saveTicket(TicketDetailDTOReq ticket) throws IdNotFoundException;
 
     Page<TicketDetailDTORes> getAll(Pageable pageable);
 

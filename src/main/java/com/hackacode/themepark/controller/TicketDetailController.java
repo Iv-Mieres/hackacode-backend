@@ -24,13 +24,17 @@ public class TicketDetailController {
     private final ITicketDetailService ticketDetailService;
 
     @GetMapping
-    public ResponseEntity<Page<TicketDetailDTORes>> getAll(Pageable pageable){
+    public ResponseEntity<TicketDetailDTORes> getById(@PathVariable UUID uuid) throws IdNotFoundException {
+        return ResponseEntity.ok().body(ticketDetailService.getById(uuid));
+    }
 
+    @GetMapping
+    public ResponseEntity<Page<TicketDetailDTORes>> getAll(Pageable pageable){
         return ResponseEntity.ok().body(ticketDetailService.getAll(pageable));
     }
 
     @PostMapping
-    public ResponseEntity<UUID> save(@Valid @RequestBody TicketDetailDTOReq request) throws Exception {
+    public ResponseEntity<UUID> save(@Valid @RequestBody TicketDetailDTOReq request) throws IdNotFoundException {
         return ResponseEntity.status(HttpStatus.CREATED).body(ticketDetailService.saveTicket(request));
     }
 

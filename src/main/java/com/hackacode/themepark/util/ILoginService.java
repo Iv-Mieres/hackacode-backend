@@ -1,4 +1,4 @@
-package com.hackacode.themepark.service;
+package com.hackacode.themepark.util;
 
 
 import com.hackacode.themepark.dto.request.AuthRequestDTOReq;

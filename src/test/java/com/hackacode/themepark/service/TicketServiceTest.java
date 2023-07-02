@@ -17,9 +17,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -131,7 +128,6 @@ class TicketServiceTest {
         assertEquals(excpectedEx, currentEx.getMessage());
     }
 
-
     @DisplayName("Comprueba que se elimine una entrada")
     @Test
     void deleteTicket(){
@@ -140,32 +136,5 @@ class TicketServiceTest {
         ticketService.deleteTicket(this.ticketDTOReq.getId());
         verify(ticketRepository).deleteById(this.ticketDTOReq.getId());
     }
-
-//
-//    @Test
-//    void calculateTotalNormalTicketsSoldOnAGivenDate(){
-//
-//        LocalDateTime start = LocalDateTime.of(LocalDate.of(2010,4,5), LocalTime.MIN);
-//        LocalDateTime end = LocalDateTime.of(LocalDate.of(2010,4,5), LocalTime.MAX);
-//
-//        when(ticketRepository.countByPurchaseDateBetween(start, end)).thenReturn(4L);
-//        var result = normalTicketService.totalTicketsSoldOnAGivenDate(LocalDate.of(2010,4,5));
-//
-//        assertEquals(4, result.getTotalNormalTicketsSold());
-//    }
-//
-//    @Test
-//    void calculateTotalNormalTicketsSoldOfOneGameOnAGivenDate(){
-//
-//        String gameName = "Montaña Rusa";
-//
-//        LocalDateTime start = LocalDateTime.of(LocalDate.of(2010,4,5), LocalTime.MIN);
-//        LocalDateTime end = LocalDateTime.of(LocalDate.of(2010,4,5), LocalTime.MAX);
-//
-//        when(ticketRepository.countByPurchaseDateBetweenAndGame_name(start, end, gameName)).thenReturn(4L);
-//        var result = normalTicketService.totalTicketsSoldOfOneGameOnAGivenDate(LocalDate.of(2010,4,5), "Montaña Rusa");
-//
-//        assertEquals(4, result.getTotalTicketsSold());
-//    }
 
 }

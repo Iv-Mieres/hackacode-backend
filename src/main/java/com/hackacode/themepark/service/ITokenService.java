@@ -7,9 +7,7 @@ import com.hackacode.themepark.model.Token;
 public interface ITokenService {
 
     Token saveToken(String token) throws UsernameNotFoundException;
-
     Token getToken(String token) throws Exception;
-    void deleteByToken(String token);
 
-    void deleteToken(Long tokenId);
+    void deleteById(Long tokenId);
 }

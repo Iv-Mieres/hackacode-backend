@@ -6,6 +6,7 @@ import com.hackacode.themepark.exception.DniExistsException;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.Buyer;
 import com.hackacode.themepark.repository.IBuyerRepository;
+import com.hackacode.themepark.util.IWordsConverter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;

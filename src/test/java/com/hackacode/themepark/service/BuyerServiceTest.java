@@ -6,6 +6,7 @@ import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.Buyer;
 import com.hackacode.themepark.model.TicketDetail;
 import com.hackacode.themepark.repository.IBuyerRepository;
+import com.hackacode.themepark.util.IWordsConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

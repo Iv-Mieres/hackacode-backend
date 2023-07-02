@@ -37,15 +37,16 @@ public class TicketDetailService implements ITicketDetailService{
     private final ModelMapper modelMapper;
 
     @Override
-    public UUID saveTicket(TicketDetailDTOReq request) throws Exception {
-        buyerRepository.findById(request.getBuyer().getId()).orElseThrow(
-                ()-> new IdNotFoundException("El comprador ingresado no existe"));
-        ticketRepository.findById(request.getTicket().getId()).orElseThrow(
-                ()-> new IdNotFoundException("El ticket ingresado no existe"));;
-
-        TicketDetail ticket = modelMapper.map(request,TicketDetail.class);
-
-        return repository.save(ticket).getId();
+    public UUID saveTicket(TicketDetailDTOReq request) throws IdNotFoundException {
+        if (!buyerRepository.existsById(request.getBuyer().getId())){
+           throw  new IdNotFoundException("El comprador ingresado no se encuentra registrado");
+        }
+        if (!ticketRepository.existsById(request.getTicket().getId())){
+            throw new IdNotFoundException("El ticket ingresado no se encuentra registrado");
+        }
+        var ticketDetail = modelMapper.map(request,TicketDetail.class);
+        ticketDetail.setId(UUID.randomUUID());
+        return repository.save(ticketDetail).getId();
     }
 
     @Override
@@ -61,14 +62,12 @@ public class TicketDetailService implements ITicketDetailService{
     @Override
     public TicketDetailDTORes getById(UUID id) throws IdNotFoundException {
         return modelMapper.map(repository.findById(id).orElseThrow(
-                ()-> new IdNotFoundException("El ticket con el id ingresado no existe")),TicketDetailDTORes.class);
+                ()-> new IdNotFoundException("El ticket con el id ingresado no se encuentra registado")),TicketDetailDTORes.class);
     }
 
     @Override
     public void delete(UUID id) throws IdNotFoundException {
-        TicketDetail ticketDetail = repository.findById(id).orElseThrow(
-                ()-> new IdNotFoundException("El ticket con el id ingresado no existe"));
-        repository.delete(ticketDetail);
+        repository.deleteById(id);
     }
 
     @Override
