@@ -26,7 +26,7 @@ public interface IReportService {
     BuyerDTORes buyerWithTheMostTicketsSoldInTheMonth(int year, int month) throws Exception;
 
     // Juego con la mayor cantidad de entradas vendidas hasta el día en que se lleve a cabo la consulta
-    ReportDTORes gameWithTheHighestNumberOfTicketsSoldSoFar(LocalDate date) throws Exception;
+    ReportGameDTORes gameWithTheHighestNumberOfTicketsSoldSoFar(LocalDate date) throws Exception;
 
     // Número total de entradas vendidas más sus ingresos hasta la fecha
     ReportDTORes  totalNumberOfTicketsSoldPlusTheirRevenueToDate(LocalDate date);

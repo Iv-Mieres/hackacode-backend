@@ -73,7 +73,7 @@ public class ReportController {
 
     //Juego con la mayor cantidad de entradas vendidas hasta el día en que se lleve a cabo la consulta
     @GetMapping("/juego/con_mas_entradas_vendidas_hasta")
-    public ResponseEntity<ReportDTORes> getGameWithTheMostTicketsSold(@RequestParam
+    public ResponseEntity<ReportGameDTORes> getGameWithTheMostTicketsSold(@RequestParam
                                                                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
                                                                       LocalDate date) throws Exception {
         return ResponseEntity.ok(reportService.gameWithTheHighestNumberOfTicketsSoldSoFar(date));

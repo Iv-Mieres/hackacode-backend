@@ -21,6 +21,7 @@ import java.time.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ReportService implements IReportService {
@@ -159,7 +160,7 @@ public class ReportService implements IReportService {
 
         TicketDetail ticketDetail = ticketDetailRepository.findTopByPurchaseDateBetweenOrderByBuyer_IdDesc(start, end);
         if (ticketDetail == null) {
-            throw new Exception("La fecha ingresada no contiene compradores");
+            return new BuyerDTORes();
         }
         var buyerDTO = modelMapper.map(ticketDetail.getBuyer(), BuyerDTORes.class);
         buyerDTO.setLastVisit(ticketDetailService.lastVisit(buyerDTO.getId()));
@@ -170,44 +171,47 @@ public class ReportService implements IReportService {
 
     // Juego con la mayor cantidad de entradas vendidas hasta el día en que se lleve a cabo la consulta
     @Override
-    public ReportDTORes gameWithTheHighestNumberOfTicketsSoldSoFar(LocalDate date) throws Exception {
+    public ReportGameDTORes gameWithTheHighestNumberOfTicketsSoldSoFar(LocalDate date) throws Exception {
         if (date.isAfter(LocalDate.now())) {
             throw new Exception("La fecha máxima ingresada solo puede ser hasta " + LocalDate.now());
         }
-        Game game = new Game();
+
         String name = "";
-        long totalTicketsSold = 0;
+        long count = 0;
+        var reportGame = new ReportGameDTORes();
+        reportGame.setTotalTicketsSold(0L);
 
-        var sales = saleRepository.findAll();
+        Sort sort = Sort.by(Sort.Direction.ASC, "game");
+        var sales = saleRepository.findAll(sort);
 
-        //recorre las ventas
         for (Sale sale : sales) {
             if (sale.getPurchaseDate().toLocalDate().isBefore(date)
-                    || sale.getPurchaseDate().toLocalDate().isEqual(date)
-                    && game.getId() == null || !game.getId().equals(sale.getGame().getId())) {
-                game = sale.getGame();
-                // busca todas las ventas por id del juego
-                var salesByGame = saleRepository.findAllByGame_id(game.getId());
-                long totalTickets = 0;
-                //recorre las ventas encontradas por id del juego
-                //guarda el total de los tickets que contiene
-                for (Sale gameSale : salesByGame) {
-                    totalTickets += gameSale.getTicketsDetail().size();
-                    //si el recuento de tickets es meayor a la cantidad final de tickets vendidas
-                    //asigna el nombre del juego y el recuento en la cantidad final
-                    if (totalTickets > totalTicketsSold) {
-                        name = sale.getGame().getName();
-                        totalTicketsSold = totalTickets;
+                    || sale.getPurchaseDate().toLocalDate().isEqual(date)) {
+                //Si el nombre del juego de cada venta coincide se hace la suma de ticktes
+                // y se guarda el nombre del juego
+                if (name.equals("") || sale.getGame().getName().equals(name)) {
+                    name = sale.getGame().getName();
+                    count += sale.getTicketsDetail().size();
+                }
+                else {//si la cuenta de tickets es mayor a la del reportGame se asginan las valores al report
+                    if (count > reportGame.getTotalTicketsSold()) {
+                        reportGame.setGame(name);
+                        reportGame.setTotalTicketsSold(count);
                     }
+                    //vuelve a hacer el recuento con los ticktes vendidos y el nombre del siguiente juego
+                    count = sale.getTicketsDetail().size();
+                    name = sale.getGame().getName();
                 }
             }
         }
-        return ReportDTORes.builder()
-                .totalTicketsSold(totalTicketsSold)
-                .gameName(name)
-                .build();
 
-
+        if (!sales.isEmpty()) {//asigna los datos del ultimo juego que contiene las ventas
+            if (count > reportGame.getTotalTicketsSold()) {
+                reportGame.setGame(name);
+                reportGame.setTotalTicketsSold(count);
+            }
+        }
+        return reportGame;
     }
 
     // EXTRAS
@@ -251,19 +255,23 @@ public class ReportService implements IReportService {
         var sales = saleRepository.findAll(sort);
 
         for (Sale sale1 : sales) {
-            if (name.equals("") || sale1.getGame().getName().equals(name)) {
-                name = sale1.getGame().getName();
-                count += sale1.getTicketsDetail().size();
-            }
-            else{
-                //asigna el juego y sus tickets vendidos a la lista de juegos
-                var reportGame = new ReportGameDTORes(name, count);
-                games.add(reportGame);
-                //vuelve a hacer el recuento con los ticktes vendidos y el nombre del siguiente juego
-                count = sale1.getTicketsDetail().size();
-                name =  sale1.getGame().getName();
+            if (sale1.getPurchaseDate().toLocalDate().isBefore(date)
+                    || sale1.getPurchaseDate().toLocalDate().isEqual(date)) {
+
+                if (name.equals("") || sale1.getGame().getName().equals(name)) {
+                    name = sale1.getGame().getName();
+                    count += sale1.getTicketsDetail().size();
+                } else {
+                    //asigna el juego y sus tickets vendidos a la lista de juegos
+                    var reportGame = new ReportGameDTORes(name, count);
+                    games.add(reportGame);
+                    //vuelve a hacer el recuento con los ticktes vendidos y el nombre del siguiente juego
+                    count = sale1.getTicketsDetail().size();
+                    name = sale1.getGame().getName();
+                }
             }
         }
+
         if (!sales.isEmpty()) {//asigna los datos del ultimo juego que contiene las ventas
             var reportGame = new ReportGameDTORes(name, count);
             games.add(reportGame);
