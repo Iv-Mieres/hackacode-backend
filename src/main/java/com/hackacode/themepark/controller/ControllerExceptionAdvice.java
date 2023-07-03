@@ -16,7 +16,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class ControllerExceptionAdvice {
 
-    //Controla excepciones de tipo - "MethodArgumentNotValidException"
+    //Controla excepciones de Spring Validation - "MethodArgumentNotValidException"
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> validException(MethodArgumentNotValidException ex) {
@@ -26,27 +26,6 @@ public class ControllerExceptionAdvice {
                 .forEach(error -> errorDetails.put(error.getField(), error.getDefaultMessage()));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
     }
-
-    // Controla excepciones de tipo - "ConstraintViolationException"
-//    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-//    @ExceptionHandler({ConstraintViolationException.class})
-//    public ResponseEntity<Map<Path, String>> constraintViolationException(ConstraintViolationException ex) {
-//
-//        Map<Path, String> errorDetails = new HashMap<>();
-//
-//        Path campo = ex.getConstraintViolations()
-//                .stream()
-//                .findFirst()
-//                .map(ConstraintViolation::getPropertyPath).get();
-//
-//        String mj =  ex.getConstraintViolations()
-//                .stream()
-//                .findFirst()
-//                .map(ConstraintViolation::getMessage).get();
-//
-//        errorDetails.put(campo, mj);
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
-//    }
 
     // Controla excepciones de datos no encontrados
 
@@ -60,19 +39,6 @@ public class ControllerExceptionAdvice {
         errorDetails.setMessage(ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails);
-    }
-
-    // Controla excepciones de formatos mal ingresados
-
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({ HttpMessageNotReadableException.class})
-    public ResponseEntity<ErrorDetails> badRequestFormatExceptions() {
-
-        ErrorDetails errorDetails = new ErrorDetails();
-        errorDetails.setStatus(HttpStatus.BAD_REQUEST.value() + " BAD_REQUEST");
-        errorDetails.setMessage("El tipo de formato ingresado es incorrecto");
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
     }
 
     // Controla Bad Requests y excepciones generales
@@ -89,8 +55,19 @@ public class ControllerExceptionAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
     }
 
-    // Controla errores de tipeo en la URL
+    // Controla excepciones de formatos mal ingresados
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({ HttpMessageNotReadableException.class})
+    public ResponseEntity<ErrorDetails> badRequestFormatExceptions() {
 
+        ErrorDetails errorDetails = new ErrorDetails();
+        errorDetails.setStatus(HttpStatus.BAD_REQUEST.value() + " BAD_REQUEST");
+        errorDetails.setMessage("El tipo de formato ingresado es incorrecto");
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
+    }
+
+    // Controla errores de tipeo en la URL
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorDetails> typingErrorExceptions() {
