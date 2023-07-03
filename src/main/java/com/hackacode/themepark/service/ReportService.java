@@ -156,7 +156,14 @@ public class ReportService implements IReportService {
             throw new Exception("La fecha máxima ingresada solo puede ser hasta " + LocalDate.now());
         }
         LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
-        LocalDateTime end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).maxLength()), LocalTime.MAX);
+        LocalDateTime end;
+
+        if (start.toLocalDate().isLeapYear() && month == 2){
+            end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).maxLength()), LocalTime.MAX);
+        }
+        else{
+            end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).minLength()), LocalTime.MAX);
+        }
 
         TicketDetail ticketDetail = ticketDetailRepository.findTopByPurchaseDateBetweenOrderByBuyer_IdDesc(start, end);
         if (ticketDetail == null) {

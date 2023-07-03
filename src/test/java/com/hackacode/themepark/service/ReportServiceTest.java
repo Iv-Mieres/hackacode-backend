@@ -280,9 +280,74 @@ class ReportServiceTest {
     }
 
 
+    @Test
+    void totalTicketsSoldForEachGameToDate() throws Exception {
+        var game1 = new Game();
+        game1.setId(1L);
+        game1.setName("Montaña Rusa");
+
+        var sale1 = new Sale();
+        sale1.setId(1L);
+        sale1.setTotalPrice(10000.0);
+        sale1.setGame(game1);
+        sale1.setPurchaseDate(LocalDateTime.of(LocalDate.of(1988,6,6), LocalTime.now()));
+        sale1.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail(), new TicketDetail()));
+
+        var sale2 = new Sale();
+        sale2.setId(1L);
+        sale2.setTotalPrice(10000.0);
+        sale2.setGame(game1);
+        sale2.setPurchaseDate(LocalDateTime.of(LocalDate.of(1988,6,6), LocalTime.now()));
+        sale2.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail(), new TicketDetail()));
 
 
+        var sales = new ArrayList<Sale>();
+        sales.add(sale1);
+        sales.add(sale2);
+
+        Sort sort = Sort.by(Sort.Direction.ASC, "game");
+        when(saleRepository.findAll(sort)).thenReturn(sales);
+        var currentReportDTORes = reportService.totalTicketsSoldForEachGameToDate(LocalDate.of(1988,6,6));
+        assertEquals(1, currentReportDTORes.size());
+        assertEquals(6, currentReportDTORes.get(0).getTotalTicketsSold());
+    }
+
+    @Test
+    void totalTicketsSoldForEachGameToDateIfThereAreTwoGames() throws Exception {
+        var game1 = new Game();
+        game1.setId(1L);
+        game1.setName("Montaña Rusa");
+
+        var game2 = new Game();
+        game2.setId(2L);
+        game2.setName("Zamba");
+
+        var sale1 = new Sale();
+        sale1.setId(1L);
+        sale1.setTotalPrice(10000.0);
+        sale1.setGame(game1);
+        sale1.setPurchaseDate(LocalDateTime.of(LocalDate.of(1988,6,6), LocalTime.now()));
+        sale1.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail(), new TicketDetail()));
+
+        var sale2 = new Sale();
+        sale2.setId(1L);
+        sale2.setTotalPrice(10000.0);
+        sale2.setGame(game2);
+        sale2.setPurchaseDate(LocalDateTime.of(LocalDate.of(1988,6,6), LocalTime.now()));
+        sale2.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail(), new TicketDetail()));
 
 
+        var sales = new ArrayList<Sale>();
+        sales.add(sale1);
+        sales.add(sale2);
 
+        Sort sort = Sort.by(Sort.Direction.ASC, "game");
+        when(saleRepository.findAll(sort)).thenReturn(sales);
+        var currentReportDTORes = reportService.totalTicketsSoldForEachGameToDate(LocalDate.of(1988,6,6));
+        assertEquals(2, currentReportDTORes.size());
+        assertEquals(3, currentReportDTORes.get(0).getTotalTicketsSold());
+        assertEquals(3, currentReportDTORes.get(1).getTotalTicketsSold());
+        assertEquals(game1.getName(), currentReportDTORes.get(0).getGame());
+        assertEquals(game2.getName(), currentReportDTORes.get(1).getGame());
+    }
 }
