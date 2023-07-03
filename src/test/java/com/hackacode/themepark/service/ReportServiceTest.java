@@ -350,4 +350,34 @@ class ReportServiceTest {
         assertEquals(game1.getName(), currentReportDTORes.get(0).getGame());
         assertEquals(game2.getName(), currentReportDTORes.get(1).getGame());
     }
+
+    @Test
+    void isLeapYear() {
+        int year = 2020;
+        int month = 2;
+        var expected = LocalDateTime.of(LocalDate.of(year, month, 29), LocalTime.MAX);
+
+        var isLeap = reportService.isLeapYearOrNot(year, month);
+        assertEquals(expected, isLeap);
+    }
+
+    @Test
+    void notALeapYear() {
+        int year = 2019;
+        int month = 2;
+        var expected = LocalDateTime.of(LocalDate.of(year, month, 28 ), LocalTime.MAX);
+
+        var notALeap = reportService.isLeapYearOrNot(year, month);
+        assertEquals(expected, notALeap);
+    }
+
+    @Test
+    void ifNotFebruary() {
+        int year = 2019;
+        int month = 5;
+        var expected = LocalDateTime.of(LocalDate.of(year, month,  Month.of(month).maxLength()), LocalTime.MAX);
+
+        var notALeap = reportService.isLeapYearOrNot(year, month);
+        assertEquals(expected, notALeap);
+    }
 }

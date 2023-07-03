@@ -108,7 +108,7 @@ public class ReportService implements IReportService {
             throw new Exception("La fecha máxima ingresada solo puede ser hasta " + LocalDate.now());
         }
         LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
-        LocalDateTime end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).maxLength()), LocalTime.MAX);
+        LocalDateTime end = this.isLeapYearOrNot(year, month);
 
         List<Sale> salesBD = saleRepository.findAllByPurchaseDateBetween(start, end);
         return this.sumTotalAmountOfAGivenMonthOrDay(salesBD, "month");
@@ -155,15 +155,8 @@ public class ReportService implements IReportService {
         if (year > LocalDate.now().getYear() || month > LocalDate.now().getMonthValue()) {
             throw new Exception("La fecha máxima ingresada solo puede ser hasta " + LocalDate.now());
         }
-        LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
-        LocalDateTime end;
-
-        if (start.toLocalDate().isLeapYear() && month == 2){
-            end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).maxLength()), LocalTime.MAX);
-        }
-        else{
-            end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).minLength()), LocalTime.MAX);
-        }
+        var start = LocalDateTime.of(year, month, 1, 0, 0);
+        var end = this.isLeapYearOrNot(year, month);
 
         TicketDetail ticketDetail = ticketDetailRepository.findTopByPurchaseDateBetweenOrderByBuyer_IdDesc(start, end);
         if (ticketDetail == null) {
@@ -199,8 +192,7 @@ public class ReportService implements IReportService {
                 if (name.equals("") || sale.getGame().getName().equals(name)) {
                     name = sale.getGame().getName();
                     count += sale.getTicketsDetail().size();
-                }
-                else {//si la cuenta de tickets es mayor a la del reportGame se asginan las valores al report
+                } else {//si la cuenta de tickets es mayor a la del reportGame se asginan las valores al report
                     if (count > reportGame.getTotalTicketsSold()) {
                         reportGame.setGame(name);
                         reportGame.setTotalTicketsSold(count);
@@ -285,6 +277,21 @@ public class ReportService implements IReportService {
         }
         return games;
     }
+
+    //Comprueba si el año ingresado es bisiesto o no
+    public LocalDateTime isLeapYearOrNot(int year, int month) {
+        LocalDateTime end;
+
+        if (Year.of(year).isLeap() && Month.of(month).equals(Month.FEBRUARY)) {
+            end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).maxLength()), LocalTime.MAX);
+        } else if (!Year.of(year).isLeap() && Month.of(month).equals(Month.FEBRUARY)) {
+            end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).minLength()), LocalTime.MAX);
+        } else {
+            end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).maxLength()), LocalTime.MAX);
+        }
+        return end;
+    }
+
 
 }
 
