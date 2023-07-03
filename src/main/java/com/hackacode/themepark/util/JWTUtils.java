@@ -7,6 +7,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -23,6 +24,10 @@ public class JWTUtils {
     private String timeExpiration;
 
 
+    public String extractUsername(String token) {
+        return getClaim(token, Claims::getSubject);
+    }
+
     // Generar token de acceso
     public String generateAccesToken(String username){
         return Jwts.builder()
@@ -34,18 +39,9 @@ public class JWTUtils {
     }
 
     // Validar el token de acceso
-    public boolean isTokenValid(String token){
-        try{
-            Jwts.parserBuilder()
-                    .setSigningKey(getSignatureKey())
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-            return true;
-        }catch (Exception e){
-            log.error("Token invalido, error: ".concat(e.getMessage()));
-            return false;
-        }
+    public boolean isTokenValid(String token, UserDetails user) {
+        final String username = extractUsername(token);
+        return (username.equals(user.getUsername()));
     }
 
     // Obtener el username del token
