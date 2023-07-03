@@ -14,6 +14,7 @@ import com.hackacode.themepark.model.Role;
 import com.hackacode.themepark.repository.ICustomUserRepository;
 import com.hackacode.themepark.repository.IEmployeeRepository;
 import com.hackacode.themepark.repository.IRoleRepository;
+import jakarta.persistence.EntityExistsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -216,10 +217,35 @@ class CustomUserServiceTest {
     }
 
     @Test
-    void validateDataBeforeSavingUser() {
+    void validateUsernameBeforeSavingUser() throws EmailExistsException{
+
+        String expectedEx = "El Email " + this.userDTOReq.getUsername() + " ya existe. Ingrese un nuevo Email";
+
+        when(customUserRepository.existsByUsername(this.userDTOReq.getUsername())).thenReturn(true);
+        var currentEx = assertThrows(EmailExistsException.class, () ->  customUserService.saveUser(this.userDTOReq));
+        assertEquals(expectedEx, currentEx.getMessage());
     }
 
     @Test
-    void validateDataBeforeUpdatingUser() {
+    void validateEmployeeBeforeSavingUser() throws EntityExistsException{
+        String expectedEx = "El empleado que intenta ingresar ya tiene asignado un usuario";
+
+        when(customUserRepository.existsByUsername(this.userDTOReq.getUsername())).thenReturn(false);
+        when(employeeRepository.existsById(this.userDTOReq.getEmployee().getId())).thenReturn(true);
+        when(customUserRepository.existsByEmployee_Id(this.userDTOReq.getEmployee().getId())).thenReturn(true);
+        var currentEx = assertThrows(EntityExistsException.class, () ->  customUserService.saveUser(this.userDTOReq));
+        assertEquals(expectedEx, currentEx.getMessage());
+    }
+
+    @Test
+    void validateRoleBeforeUpdatingUser() throws RoleNotFoundException{
+        String expectedEx = "El rol que intenta ingresar no se encuentra registrado";
+
+        when(customUserRepository.existsByUsername(this.userDTOReq.getUsername())).thenReturn(false);
+        when(employeeRepository.existsById(this.userDTOReq.getEmployee().getId())).thenReturn(true);
+        when(customUserRepository.existsByEmployee_Id(this.userDTOReq.getEmployee().getId())).thenReturn(false);
+        when(roleRepository.existsById(this.userDTOReq.getRoles().get(0).getId())).thenReturn(false);
+        var currentEx = assertThrows(RoleNotFoundException.class, () ->  customUserService.saveUser(this.userDTOReq));
+        assertEquals(expectedEx, currentEx.getMessage());
     }
 }
