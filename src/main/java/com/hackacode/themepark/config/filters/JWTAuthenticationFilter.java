@@ -1,48 +1,64 @@
 package com.hackacode.themepark.config.filters;
 
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.databind.DatabindException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hackacode.themepark.model.CustomUser;
 import com.hackacode.themepark.util.JWTUtils;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
-public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+@Component
+@RequiredArgsConstructor
+public class JWTAuthenticationFilter extends OncePerRequestFilter {
+    final JWTUtils jwtUtils;
+    final UserDetailsService userDetailsService;
 
-    private JWTUtils jwtUtils;
-
-    public JWTAuthenticationFilter(JWTUtils jwtUtils) {
-        this.jwtUtils = jwtUtils;
+    private List<String> urlsToSkip = List.of("/swagger-ui/**", "/v3/api-docs/**", "/token/recuperar_pass", "/token");
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return urlsToSkip.stream().anyMatch(url -> request.getRequestURI().contains(url));
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request,
-                                                HttpServletResponse response) throws AuthenticationException {
-
-        CustomUser user = null;
-        String username = "";
-        String password = "";
-        try{
-            user = new ObjectMapper().readValue(request.getInputStream(), CustomUser.class);
-            username = user.getUsername();
-            password = user.getPassword();
-        } catch (StreamReadException e) {
-            throw new RuntimeException(e);
-        } catch (DatabindException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain
+    ) throws ServletException, IOException {
+        final String authHeader = request.getHeader("Authorization");
+        final String jwt;
+        final String username;
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
         }
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(username, password);
-
-        return getAuthenticationManager().authenticate(authenticationToken);
+        jwt = authHeader.substring(7);
+        username = jwtUtils.extractUsername(jwt);
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+            if (jwtUtils.isTokenValid(jwt, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                );
+                authToken.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        }
+        filterChain.doFilter(request, response);
     }
 }

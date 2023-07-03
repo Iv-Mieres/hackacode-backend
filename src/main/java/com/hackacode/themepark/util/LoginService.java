@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class LoginService implements ILoginService {
 
     @Autowired
-    private JWTUtils jwtService;
+    private JWTUtils jwtUtils;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -30,7 +30,7 @@ public class LoginService implements ILoginService {
                 )
         );
         CustomUser user = userRepository.findByUsername(request.getUsername()).orElseThrow();
-        var token = jwtService.generateAccesToken(user.getUsername());
+        var token = jwtUtils.generateToken(user);
         return AuthResponseDTORes.builder()
                 .token(token)
                 .build();
