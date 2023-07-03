@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -246,12 +247,11 @@ class ReportServiceTest {
 
         var sales = new ArrayList<Sale>();
         sales.add(sale1);
-
-        when(saleRepository.findAll()).thenReturn(sales);
-        when(saleRepository.findAllByGame_id(game1.getId())).thenReturn(sales);
+        Sort sort = Sort.by(Sort.Direction.ASC, "game");
+        when(saleRepository.findAll(sort)).thenReturn(sales);
         var cuerrentReportDTORes = reportService.gameWithTheHighestNumberOfTicketsSoldSoFar(LocalDate.of(1988,6,6));
         assertEquals(3, cuerrentReportDTORes.getTotalTicketsSold());
-        assertEquals(game1.getName(), cuerrentReportDTORes.getGameName());
+        assertEquals(game1.getName(), cuerrentReportDTORes.getGame());
     }
 
 

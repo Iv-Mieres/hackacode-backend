@@ -18,6 +18,6 @@ public interface ISaleService {
     SaleDTORes getSaleById(Long saleId) throws IdNotFoundException;
     Page<SaleDTORes> getSales(Pageable pageable);
     void updateSale(SaleDTOReq saleDTOReq) throws IdNotFoundException;
-    void deleteSale(Long saleId) throws IdNotFoundException;
+    void deleteSale(Long saleId);
 
 }

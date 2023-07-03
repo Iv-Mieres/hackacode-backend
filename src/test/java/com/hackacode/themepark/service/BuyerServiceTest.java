@@ -70,7 +70,6 @@ class BuyerServiceTest {
         buyerDTORes.setDni("40948585");
         buyerDTORes.setAge(Period.between(buyerDTORes.getBirthdate(), LocalDate.now()).getYears());
         buyerDTORes.setLastVisit("2023-06-29");
-        buyerDTORes.setTicketDetail(new TicketDetail());
 
     }
 

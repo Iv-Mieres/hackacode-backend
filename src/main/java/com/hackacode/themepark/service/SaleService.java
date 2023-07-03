@@ -33,9 +33,9 @@ public class SaleService implements ISaleService {
     private final ModelMapper modelMapper;
 
     @Override
-    public void saveSale(SaleDTOReq request) throws Exception {
-        Sale sale = modelMapper.map(request, Sale.class);
-        sale.setTotalPrice(calculateTotalPrice(request));
+    public void saveSale(SaleDTOReq saleDTOReq) throws Exception {
+        Sale sale = modelMapper.map(saleDTOReq, Sale.class);
+        sale.setTotalPrice(this.calculateTotalPrice(saleDTOReq));
 
         saleRepository.save(sale);
 
@@ -49,8 +49,8 @@ public class SaleService implements ISaleService {
 
     @Override
     public Page<SaleDTORes> getSales(Pageable pageable) {
-        Page<Sale> sales = saleRepository.findAll(pageable);
-        List<SaleDTORes> salesDTO = new ArrayList<>();
+        var sales = saleRepository.findAll(pageable);
+        var salesDTO = new ArrayList<SaleDTORes>();
 
         for (Sale sale : sales) {
             salesDTO.add(modelMapper.map(sale, SaleDTORes.class));
@@ -60,17 +60,16 @@ public class SaleService implements ISaleService {
 
     @Override
     public void updateSale(SaleDTOReq saleDTOReq) throws IdNotFoundException {
-        if (saleRepository.existsById(saleDTOReq.getId())) {
+        if (!saleRepository.existsById(saleDTOReq.getId())) {
             throw new IdNotFoundException("El id " + saleDTOReq.getId() + " no existe");
         }
         var saleUpdate = modelMapper.map(saleDTOReq, Sale.class);
+        saleUpdate.setTotalPrice(this.calculateTotalPrice(saleDTOReq));
         saleRepository.save(saleUpdate);
     }
 
     @Override
-    public void deleteSale(Long id) throws IdNotFoundException {
-        Sale sale = saleRepository.findById(id).orElseThrow(
-                () -> new IdNotFoundException("La venta con el id ingresado no existe"));
+    public void deleteSale(Long id){
         saleRepository.deleteById(id);
     }
 
@@ -79,19 +78,16 @@ public class SaleService implements ISaleService {
         if (saleDTOReq.getTicketsDetail() == null) {
             return 0.0;
         }
-        List<TicketDetailDTOReq> ticketsDetail = saleDTOReq.getTicketsDetail();
         double totalPrice = 0.0;
-        for (TicketDetailDTOReq dtoReq : ticketsDetail) {
-            UUID ticketDetailID = dtoReq.getId();
-            TicketDetail ticket = ticketDetailRepository.findById(ticketDetailID).orElseThrow(
+        for (TicketDetailDTOReq ticketDetailDTOReq : saleDTOReq.getTicketsDetail()) {
+            TicketDetail ticketDetail = ticketDetailRepository.findById(ticketDetailDTOReq.getId()).orElseThrow(
                     () -> new IdNotFoundException("No se encontro el ticket")
             );
-            if (ticket != null) {
-                totalPrice += ticket.getTicket().getPrice();
+            if (ticketDetail != null) {
+                totalPrice += ticketDetail.getTicket().getPrice();
             }
 
         }
-
         return totalPrice;
     }
 }
