@@ -30,7 +30,7 @@ public class LoginService implements ILoginService {
                 )
         );
         CustomUser user = userRepository.findByUsername(request.getUsername()).orElseThrow();
-        var token = jwtUtils.generateAccesToken(user.getUsername());
+        var token = jwtUtils.generateToken(user);
         return AuthResponseDTORes.builder()
                 .token(token)
                 .build();

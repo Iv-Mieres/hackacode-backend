@@ -1,6 +1,8 @@
 package com.hackacode.themepark.config;
 
 import com.hackacode.themepark.config.filters.JWTAuthenticationFilter;
+import com.hackacode.themepark.repository.ICustomUserRepository;
+import com.hackacode.themepark.service.ICustomUserService;
 import com.hackacode.themepark.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -17,6 +19,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -29,8 +32,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class MySecurityFilterChain {
 
     private final JWTAuthenticationFilter jwtAuthenticationFilter;
+    private final AuthenticationProvider authenticationProvider;
 
-    private final UserDetailsService userDetailsService;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
@@ -38,47 +41,35 @@ public class MySecurityFilterChain {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/api/informes").hasRole("GERENTE")
-                            .requestMatchers("/api/compradores", "/api/empleados", "/api/empleados/**",
-                                    "/api/roles", "/api/usuarios").hasRole("ADMINISTRADOR")
-                            .requestMatchers("/api/ventas", "/api/tickets",
-                                    "/api/ticketsvip", "/api/juegos", "/api/horarios").hasRole("VENTAS")
-                            .requestMatchers("/token").permitAll()
-                            .requestMatchers("/token/recuperar_pass").permitAll()
-                            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll();
-                })
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers("/token/**").permitAll()
+                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll())
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers("/api/informes").hasRole("GERENTE")
+
+
+                )
+                .authorizeHttpRequests(auth->
+                                auth.requestMatchers("/api/compradores", "/api/empleados","/api/roles", "/api/usuarios").hasRole("ADMINISTRADOR")
+                        )
+                .authorizeHttpRequests(auth->
+                        auth.requestMatchers("/api/ventas", "/api/tickets","/api/ticket-details", "/api/juegos", "/api/horarios").hasRole("VENTAS")
+                )
                 .authorizeHttpRequests(
                         auth -> auth.anyRequest().authenticated()
                 )
-                .sessionManagement(session -> {
-                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-                })
-                .authenticationProvider(authenticationProvider())
+
+                .sessionManagement(session->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
-    @Bean
-    PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
+
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
-
-    @Bean
-    ModelMapper modelMapper(){
+    ModelMapper modelMapper() {
         return new ModelMapper();
     }
 }

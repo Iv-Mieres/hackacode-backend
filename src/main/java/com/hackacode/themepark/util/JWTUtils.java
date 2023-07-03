@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 @Component
@@ -19,6 +21,7 @@ import java.util.function.Function;
 public class JWTUtils {
     @Value("${jwt.secret.key}")
     private String secretKey;
+    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     @Value("${jwt.time.expiration}")
     private String timeExpiration;
@@ -29,13 +32,19 @@ public class JWTUtils {
     }
 
     // Generar token de acceso
-    public String generateAccesToken(String username){
+    private String createToken(Map<String, Object> claims, String subject) {
+
         return Jwts.builder()
-                .setSubject(username)
+                .setClaims(claims)
+                .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(timeExpiration)))
-                .signWith(getSignatureKey(), SignatureAlgorithm.HS256)
+                .setExpiration(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 10))) //10 horas
+                .signWith(SECRET_KEY)
                 .compact();
+    }
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, userDetails.getUsername());
     }
 
     // Validar el token de acceso
@@ -58,7 +67,7 @@ public class JWTUtils {
     // Obtener todos los claims del token
     public Claims extractAllClaims(String token){
         return Jwts.parserBuilder()
-                .setSigningKey(getSignatureKey())
+                .setSigningKey(SECRET_KEY)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
