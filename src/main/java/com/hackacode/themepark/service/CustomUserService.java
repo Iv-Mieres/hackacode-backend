@@ -1,6 +1,5 @@
 package com.hackacode.themepark.service;
 
-import com.hackacode.themepark.dto.request.RecoverPasswordDTOReq;
 import com.hackacode.themepark.dto.request.RoleDTOReq;
 import com.hackacode.themepark.dto.request.UserDTOReq;
 import com.hackacode.themepark.dto.request.UserUpdateDTOReq;
@@ -8,6 +7,7 @@ import com.hackacode.themepark.dto.response.UserDTORes;
 import com.hackacode.themepark.exception.EmailExistsException;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.exception.RoleNotFoundException;
+import com.hackacode.themepark.exception.UsernameNotFoundException;
 import com.hackacode.themepark.model.CustomUser;
 import com.hackacode.themepark.repository.ICustomUserRepository;
 import com.hackacode.themepark.repository.IEmployeeRepository;
@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

@@ -3,6 +3,8 @@ package com.hackacode.themepark.service;
 import com.hackacode.themepark.dto.request.EmployeeDTOReq;
 import com.hackacode.themepark.dto.request.GameDTOReq;
 import com.hackacode.themepark.dto.response.EmployeeDTORes;
+import com.hackacode.themepark.exception.DniExistsException;
+import com.hackacode.themepark.exception.DniNotFoundException;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.CustomUser;
 import com.hackacode.themepark.model.Employee;
@@ -51,7 +53,7 @@ class EmployeeServiceTest {
     void setUp() {
 
         this.employee = new Employee(1L, "34845347", "diego", "Sosa",
-                LocalDate.of(1989, 3,1), true,null);
+                LocalDate.of(1989, 3, 1), true, null);
     }
 
     @DisplayName("comprueba que se guarde un empleado")
@@ -70,7 +72,7 @@ class EmployeeServiceTest {
 
     @DisplayName("comprueba excepción si el juego es nulo")
     @Test
-    void throwsAnExceptionIfTheGameIsNull() throws Exception {
+    void throwsAnExceptionIfTheGameIsNull() throws EntityNotFoundException {
         String expected = "El juego que intenta ingresar no existe. Ingrese un juego existente";
         var game = new GameDTOReq();
         game.setId(1L);
@@ -82,9 +84,9 @@ class EmployeeServiceTest {
         when(modelMapper.map(employeeDTO, Employee.class)).thenReturn(this.employee);
         when(gameRepository.existsById(game.getId())).thenReturn(false);
 
-        Exception cuerrentError =  assertThrows(EntityNotFoundException.class,
+        Exception currentError = assertThrows(EntityNotFoundException.class,
                 () -> employeeService.saveEmployee(employeeDTO));
-        assertEquals(expected, cuerrentError.getMessage());
+        assertEquals(expected, currentError.getMessage());
     }
 
     @DisplayName("comprueba excepción si el id del juego ingresado es nulo")
@@ -98,26 +100,24 @@ class EmployeeServiceTest {
         when(wordsConverter.capitalizeWords(employeeDTO.getName())).thenReturn("Diego");
         when(modelMapper.map(employeeDTO, Employee.class)).thenReturn(this.employee);
 
-        Exception cuerrentError =  assertThrows(EntityNotFoundException.class,
+        Exception cuerrentError = assertThrows(EntityNotFoundException.class,
                 () -> employeeService.saveEmployee(employeeDTO));
         assertEquals(expected, cuerrentError.getMessage());
     }
 
     @DisplayName("comprueba que lance una excepción si el dni ya está registrado al guardar un empleado")
     @Test
-    void throwAnExceptionIfExistsByDniIsTrue() throws Exception {
-
+    void throwAnExceptionIfExistsByDniIsTrue() {
+        String expectedEx = "El dni " + this.employee.getDni() + " ya existe. Ingrese un nuevo dni";
         EmployeeDTOReq employeeDTOReq = new EmployeeDTOReq();
         employeeDTOReq.setDni("34845347");
 
         when(modelMapper.map(employeeDTOReq, Employee.class)).thenReturn(this.employee);
         when(employeeUserRepository.existsByDni(employeeDTOReq.getDni())).thenReturn(true);
-        Exception expected =  assertThrows(Exception.class,
+        Exception currentEx = assertThrows(DniExistsException.class,
                 () -> employeeService.saveEmployee(employeeDTOReq));
 
-        assertEquals(expected.getMessage(), "El dni " + this.employee.getDni() + " ya existe. Ingrese un nuevo dni");
-
-
+        assertEquals(expectedEx, currentEx.getMessage());
     }
 
     @DisplayName("comprueba que se devuelva un empleado al buscar por id")
@@ -128,10 +128,9 @@ class EmployeeServiceTest {
         EmployeeDTORes employeeDTORes = new EmployeeDTORes();
         employeeDTORes.setId(this.employee.getId());
 
-
         when(employeeUserRepository.findById(1L)).thenReturn(Optional.ofNullable(this.employee));
         when(modelMapper.map(this.employee, EmployeeDTORes.class)).thenReturn(employeeDTORes);
-        EmployeeDTORes employeeDTORes1 =  employeeService.getEmployeeById(1L);
+        EmployeeDTORes employeeDTORes1 = employeeService.getEmployeeById(1L);
 
         assertEquals(this.employee.getId(), employeeDTORes1.getId());
         verify(employeeUserRepository).findById(1L);
@@ -142,21 +141,30 @@ class EmployeeServiceTest {
     @Test
     void getEmployeeByDni() throws Exception {
 
-        var employeeDTORes = new EmployeeDTORes(1L,  "Diego", "Sosa","34845347",
-                LocalDate.of(1989, 3,1), true,null);
+        var employeeDTORes = new EmployeeDTORes(1L, "Diego", "Sosa", "34845347",
+                LocalDate.of(1989, 3, 1), true, null);
 
         when(employeeUserRepository.findByDni(this.employee.getDni())).thenReturn(Optional.ofNullable(this.employee));
         when(modelMapper.map(this.employee, EmployeeDTORes.class)).thenReturn(employeeDTORes);
-        var result =  employeeService.getEmployeeByDni(this.employee.getDni());
+        var result = employeeService.getEmployeeByDni(this.employee.getDni());
 
         assertEquals(this.employee.getDni(), result.getDni());
         verify(employeeUserRepository).findByDni(this.employee.getDni());
 
     }
 
+    @Test
+    void dniNotFoundException() {
+        String expectedEx = "El dni " + this.employee.getDni() + " no existe";
+        when(employeeUserRepository.findByDni(this.employee.getDni())).thenReturn(Optional.empty());
+        Exception currentEx = assertThrows(DniNotFoundException.class,
+                () -> employeeService.getEmployeeByDni(this.employee.getDni()));
+        assertEquals(expectedEx, currentEx.getMessage());
+    }
+
     @DisplayName("comprueba el paginado juento con el page y el size al llamar a todos lo empleados")
     @Test
-    void findAllEmployeesPageable(){
+    void findAllEmployeesPageable() {
         int page = 0;
         int size = 3;
 
@@ -167,7 +175,7 @@ class EmployeeServiceTest {
         var employees = new ArrayList<Employee>();
         employees.add(this.employee);
         employees.add(new Employee(2L, "56845347", "Silvia", "Sosa",
-                LocalDate.of(1989, 3,1), true,null));
+                LocalDate.of(1989, 3, 1), true, null));
 
         var pageable = PageRequest.of(page, size);
         when(modelMapper.map(this.employee, EmployeeDTORes.class)).thenReturn(employeeDTORes);
@@ -186,16 +194,17 @@ class EmployeeServiceTest {
         verify(employeeUserRepository).findAllByIsEnable(true, pageable);
 
     }
+
     @DisplayName("comprueba excepción al llamar al método para validar si el dni existe")
     @Test
     void ifWhenValidatingTheDniItIsNotUniqueToThrowAnException() throws Exception {
-            String dniDTO = "24845347";
-            String espectedMjError = "El dni " + dniDTO + " ya existe. Ingrese un nuevo dni";
+        String dniDTO = "24845347";
+        String espectedMjError = "El dni " + dniDTO + " ya existe. Ingrese un nuevo dni";
 
-            when(employeeUserRepository.existsByDni(dniDTO)).thenReturn(true);
-           Exception actual = assertThrows(Exception.class,
-                    () ->  employeeService.validateIfExistsByDni(dniDTO , "34845347"));
-            assertEquals(espectedMjError, actual.getMessage());
+        when(employeeUserRepository.existsByDni(dniDTO)).thenReturn(true);
+        Exception actual = assertThrows(Exception.class,
+                () -> employeeService.validateIfExistsByDni(dniDTO, "34845347"));
+        assertEquals(espectedMjError, actual.getMessage());
 
     }
 

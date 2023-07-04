@@ -1,13 +1,10 @@
 package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.TicketDTOReq;
-import com.hackacode.themepark.dto.response.BuyerDTORes;
 import com.hackacode.themepark.dto.response.TicketDTORes;
-import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.exception.DescriptionExistsException;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.Ticket;
-import com.hackacode.themepark.model.TicketDetail;
 import com.hackacode.themepark.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -16,27 +13,15 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 
 @Service
 @RequiredArgsConstructor
 public class TicketService implements ITicketService {
 
-    private final IGameRepository gameRepository;
-
     private final ITicketRepository ticketRepository;
-    private final ITicketDetailRepository ticketDetailRepository;
-
-    private final IBuyerRepository buyerRepository;
-    private final ISaleRepository saleRepository;
-
     private final ModelMapper modelMapper;
 
     //CREA UN TICKET

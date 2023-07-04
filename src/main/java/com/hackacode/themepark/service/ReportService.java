@@ -5,7 +5,6 @@ import com.hackacode.themepark.dto.response.EmployeeDTORes;
 import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.dto.response.ReportGameDTORes;
 import com.hackacode.themepark.model.Employee;
-import com.hackacode.themepark.model.Game;
 import com.hackacode.themepark.model.Sale;
 import com.hackacode.themepark.model.TicketDetail;
 import com.hackacode.themepark.repository.*;
@@ -19,9 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class ReportService implements IReportService {

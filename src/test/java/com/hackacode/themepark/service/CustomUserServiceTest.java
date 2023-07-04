@@ -8,6 +8,7 @@ import com.hackacode.themepark.dto.response.UserDTORes;
 import com.hackacode.themepark.exception.EmailExistsException;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.exception.RoleNotFoundException;
+import com.hackacode.themepark.exception.UsernameNotFoundException;
 import com.hackacode.themepark.model.CustomUser;
 import com.hackacode.themepark.model.Employee;
 import com.hackacode.themepark.model.Role;
@@ -100,7 +101,7 @@ class CustomUserServiceTest {
 
     @DisplayName("comprueba que se muestre un usuario por username")
     @Test
-    void getByUsername() {
+    void getByUsername() throws UsernameNotFoundException {
         when(modelMapper.map(this.user, UserDTORes.class)).thenReturn(new UserDTORes());
         when(customUserRepository.findByUsername(this.userDTOReq.getUsername())).thenReturn(Optional.ofNullable(this.user));
         customUserService.getByUsername(this.userDTOReq.getUsername());
@@ -108,6 +109,17 @@ class CustomUserServiceTest {
     }
 
     @DisplayName("comprueba que se muestre un usuario por id")
+    @Test
+    void usernameNotFoundException() {
+
+        String expectedEx = "El usuario:" + this.userDTOReq.getUsername() + " no se encuentra registrado";
+
+        when(customUserRepository.findByUsername(this.userDTOReq.getUsername())).thenReturn(Optional.empty());
+        Exception currentEx = assertThrows(UsernameNotFoundException.class,
+                () -> customUserService.getByUsername(this.userDTOReq.getUsername()));
+        assertEquals(expectedEx, currentEx.getMessage());
+    }
+
     @Test
     void getUserById() throws IdNotFoundException {
         when(modelMapper.map(this.user, UserDTORes.class)).thenReturn(new UserDTORes());
@@ -189,7 +201,7 @@ class CustomUserServiceTest {
         var updateDTO = new UserUpdateDTOReq();
         updateDTO.setId(1L);
         updateDTO.setEnable(true);
-        updateDTO.setUsername("ivan@gmail.com");
+        updateDTO.setUsername("Pablo@gmail.com");
         updateDTO.setRoles(List.of(this.roleDTO));
         updateDTO.setEmployee(new EmployeeDTOReq(1L, "20394857", "Pablo", "Pedroso",
                 LocalDate.of(2000,11,23), null));

@@ -9,7 +9,6 @@ import com.hackacode.themepark.model.Sale;
 import com.hackacode.themepark.model.Ticket;
 import com.hackacode.themepark.model.TicketDetail;
 import com.hackacode.themepark.repository.ISaleRepository;
-import com.hackacode.themepark.repository.IScheduleRepository;
 import com.hackacode.themepark.repository.ITicketDetailRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,29 +47,19 @@ class SaleServiceTest {
     private SaleDTOReq saleDTOReq;
     private SaleDTORes saleDTORes;
     private TicketDetail ticketDetail;
+    private TicketDetailDTOReq ticketDetailDTOReq;
 
     @BeforeEach
     void setUp() {
-        this.sale = new Sale(1L, 0.0, LocalDateTime.now(), null, null);
-        this.saleDTOReq = new SaleDTOReq();
-    }
-
-    @DisplayName("comprueba que se guarda una venta")
-    @Test
-    void saveSale() throws Exception {
         var uuid = UUID.randomUUID();
 
         var ticketDTO = new TicketDTOReq();
         ticketDTO.setId(1L);
         ticketDTO.setPrice(3000.0);
 
-        var ticketDTO2 = new TicketDTOReq();
-        ticketDTO2.setId(1L);
-        ticketDTO2.setPrice(7000.0);
-
-        var ticketDetailReq = new TicketDetailDTOReq();
-        ticketDetailReq.setId(uuid);
-        ticketDetailReq.setTicket(ticketDTO);
+        this.ticketDetailDTOReq = new TicketDetailDTOReq();
+        this.ticketDetailDTOReq.setId(uuid);
+        this.ticketDetailDTOReq.setTicket(ticketDTO);
 
         var ticket = new Ticket();
         ticket.setId(1L);
@@ -80,15 +69,25 @@ class SaleServiceTest {
         ticketDetail.setId(uuid);
         ticketDetail.setTicket(ticket);
 
-        this.sale.setTicketsDetail(List.of(ticketDetail));
+        this.sale = new Sale(1L, 0.0, LocalDateTime.now(), List.of(this.ticketDetail), null);
 
+        this.saleDTORes = new SaleDTORes();
+
+        this.saleDTOReq = new SaleDTOReq();
         this.saleDTOReq.setId(1L);
-        this.saleDTOReq.setTicketsDetail(List.of(ticketDetailReq));
+        this.saleDTOReq.setTicketsDetail(List.of(this.ticketDetailDTOReq));
 
-        when(ticketDetailRepository.findById(uuid)).thenReturn(Optional.ofNullable(this.ticketDetail));
+
+    }
+
+    @DisplayName("comprueba que se guarda una venta")
+    @Test
+    void saveSale() throws Exception {
+        when(ticketDetailRepository.findById(this.ticketDetailDTOReq.getId()))
+                .thenReturn(Optional.ofNullable(this.ticketDetail));
         when(modelMapper.map(this.saleDTOReq, Sale.class)).thenReturn(this.sale);
-
         saleService.saveSale(this.saleDTOReq);
+
         verify(saleRepository).save(this.sale);
     }
 
@@ -98,7 +97,7 @@ class SaleServiceTest {
         when(saleRepository.findById(1L)).thenReturn(Optional.ofNullable(this.sale));
         when(modelMapper.map(this.sale, SaleDTORes.class)).thenReturn(this.saleDTORes);
         var currentSale = saleService.getSaleById(1L);
-        assertEquals(this.saleDTORes, currentSale);
+        assertEquals(this.sale.getTotalPrice(), currentSale.getTotalPrice());
         verify(saleRepository).findById(1L);
     }
 
@@ -112,7 +111,6 @@ class SaleServiceTest {
         var sales = new ArrayList<Sale>();
         sales.add(this.sale);
         sales.add(new Sale());
-
 
         when(saleRepository.findAll(pageable)).thenReturn(new PageImpl<>(sales, pageable, sales.size()));
         when(modelMapper.map(this.sale, SaleDTORes.class)).thenReturn(this.saleDTORes);
@@ -129,42 +127,15 @@ class SaleServiceTest {
     @DisplayName("comprueba que se modifique una venta")
     @Test
     void updateSale() throws Exception {
-        var uuid = UUID.randomUUID();
-
-        var ticketDTO = new TicketDTOReq();
-        ticketDTO.setId(1L);
-        ticketDTO.setPrice(3000.0);
-
-        var ticketDTO2 = new TicketDTOReq();
-        ticketDTO2.setId(1L);
-        ticketDTO2.setPrice(7000.0);
-
-        var ticketDetailReq = new TicketDetailDTOReq();
-        ticketDetailReq.setId(uuid);
-        ticketDetailReq.setTicket(ticketDTO);
-
-        var ticket = new Ticket();
-        ticket.setId(1L);
-        ticket.setPrice(3000.0);
-
-        this.ticketDetail = new TicketDetail();
-        ticketDetail.setId(uuid);
-        ticketDetail.setTicket(ticket);
-
-        this.sale.setTicketsDetail(List.of(ticketDetail));
-
-        this.saleDTOReq.setId(1L);
-        this.saleDTOReq.setTicketsDetail(List.of(ticketDetailReq));
-
         when(saleRepository.existsById(this.saleDTOReq.getId())).thenReturn(true);
-        when(ticketDetailRepository.findById(uuid)).thenReturn(Optional.ofNullable(this.ticketDetail));
+        when(ticketDetailRepository.findById(this.ticketDetailDTOReq.getId())).thenReturn(Optional.ofNullable(this.ticketDetail));
         when(modelMapper.map(this.saleDTOReq, Sale.class)).thenReturn(this.sale);
 
         saleService.updateSale(this.saleDTOReq);
         verify(saleRepository).save(this.sale);
-
     }
 
+    @DisplayName("comprueba que se elimine una venta")
     @Test
     void deleteSale() {
         doNothing().when(saleRepository).deleteById(1L);
@@ -172,7 +143,11 @@ class SaleServiceTest {
         verify(saleRepository).deleteById(1L);
     }
 
+    @DisplayName("comprueba que la cuenta sea correcta")
     @Test
-    void calculateTotalPrice() {
+    void calculateTotalPrice() throws IdNotFoundException {
+        when(ticketDetailRepository.findById(this.ticketDetail.getId())).thenReturn(Optional.ofNullable(this.ticketDetail));
+        var currentTotal = saleService.calculateTotalPrice(this.saleDTOReq);
+        assertEquals(3000, currentTotal);
     }
 }

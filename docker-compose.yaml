@@ -6,9 +6,9 @@ services:
     image: hackacode:1.0.0
     build: .
     ports:
-      - 8080:8080
+      - "8080:8080"
     environment:
-      - DATABASE_URL=jdbc:mysql://java_db:3306/fantasykingdom
+      - DATABASE_URL=jdbc:mysql://java_db:3307/fantasykingdom
       - DATABASE_USERNAME=root
       - DATABASE_PASSWORD=
     depends_on:
@@ -17,8 +17,7 @@ services:
     container_name: java_db
     image: mysql:8.0
     ports:
-      - 3306:3306
+      - "3307:3306"
     environment:
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=
       - MYSQL_DB=fantasykingdom
+      - MYSQL_ALLOW_EMPTY_PASSWORD=TRUE

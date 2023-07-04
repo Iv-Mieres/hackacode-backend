@@ -14,13 +14,10 @@ import java.time.LocalDate;
 public class Employee extends Person {
 
     private boolean isEnable;
-
     @ManyToOne
     @JoinColumn(name = "fkGame")
     @JsonIgnoreProperties("employee")
     private Game game;
-
-
 
     public Employee() {
         super();

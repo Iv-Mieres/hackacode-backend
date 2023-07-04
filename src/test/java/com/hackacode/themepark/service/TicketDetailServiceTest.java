@@ -3,7 +3,6 @@ package com.hackacode.themepark.service;
 import com.hackacode.themepark.dto.request.BuyerDTOReq;
 import com.hackacode.themepark.dto.request.TicketDTOReq;
 import com.hackacode.themepark.dto.request.TicketDetailDTOReq;
-import com.hackacode.themepark.dto.response.TicketDTORes;
 import com.hackacode.themepark.dto.response.TicketDetailDTORes;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.Buyer;

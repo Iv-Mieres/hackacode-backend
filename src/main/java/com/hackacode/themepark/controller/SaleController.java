@@ -1,7 +1,6 @@
 package com.hackacode.themepark.controller;
 
 import com.hackacode.themepark.dto.request.SaleDTOReq;
-import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.dto.response.SaleDTORes;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.service.ISaleService;
@@ -9,12 +8,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor

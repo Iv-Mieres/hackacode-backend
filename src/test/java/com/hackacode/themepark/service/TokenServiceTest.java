@@ -1,10 +1,8 @@
 package com.hackacode.themepark.service;
 
-import com.hackacode.themepark.dto.request.TicketDTOReq;
 import com.hackacode.themepark.exception.UsernameNotFoundException;
 import com.hackacode.themepark.model.*;
 import com.hackacode.themepark.repository.ICustomUserRepository;
-import com.hackacode.themepark.repository.ITicketDetailRepository;
 import com.hackacode.themepark.repository.ITokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
