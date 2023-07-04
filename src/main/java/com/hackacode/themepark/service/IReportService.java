@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface IReportService {
 
@@ -22,7 +23,7 @@ public interface IReportService {
     Page<EmployeeDTORes> getAllEmployeesWithTheirAssignedGame(Pageable pageable);
 
     //Comprador que más entradas compró en un determinado mes y año
-    BuyerDTORes buyerWithTheMostTicketsSoldInTheMonth(int year, int month) throws Exception;
+    Map<String,Object> buyerWithTheMostTicketsSoldInTheMonth(int year, int month) throws Exception;
 
     // Juego con la mayor cantidad de entradas vendidas hasta el día en que se lleve a cabo la consulta
     ReportGameDTORes gameWithTheHighestNumberOfTicketsSoldSoFar(LocalDate date) throws Exception;

@@ -27,25 +27,24 @@ public class MySecurityFilterChain {
 
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/token/**").permitAll()
-                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll())
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/informes").hasRole("GERENTE")
+                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**","/api/usuarios/por_nombre/**").permitAll())
 
 
-                )
+
                 .authorizeHttpRequests(auth->
-                                auth.requestMatchers("/api/compradores", "/api/empleados","/api/roles", "/api/usuarios").hasRole("ADMINISTRADOR")
+                                auth.requestMatchers("/api/compradores", "/api/empleados","/api/roles", "/api/usuarios").hasAnyRole("ADMINISTRADOR","GERENTE")
                         )
                 .authorizeHttpRequests(auth->
-                        auth.requestMatchers("/api/ventas", "/api/tickets","/api/ticket-details", "/api/juegos", "/api/horarios").hasRole("VENTAS")
+                        auth.requestMatchers("/api/ventas", "/api/tickets","/api/ticket-details", "/api/juegos", "/api/horarios").hasAnyRole("VENTAS","GERENTE")
                 )
+
                 .authorizeHttpRequests(
                         auth -> auth.anyRequest().authenticated()
                 )
