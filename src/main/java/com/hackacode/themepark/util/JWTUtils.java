@@ -39,7 +39,7 @@ public class JWTUtils {
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 10))) //10 horas
-                .signWith(SECRET_KEY)
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
     }
     public String generateToken(UserDetails userDetails) {
@@ -67,7 +67,7 @@ public class JWTUtils {
     // Obtener todos los claims del token
     public Claims extractAllClaims(String token){
         return Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
+                .setSigningKey(secretKey.getBytes())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
