@@ -1,18 +1,31 @@
 package com.hackacode.themepark.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+
 @Data
 @MappedSuperclass
 public class Person {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String dni;
     private String name;
     private String surname;
+    @Temporal(TemporalType.DATE)
     private LocalDate birthdate;
 
+    public Person(Long id, String dni, String name, String surname, LocalDate birthdate) {
+        this.id = id;
+        this.dni = dni;
+        this.name = name;
+        this.surname = surname;
+        this.birthdate = birthdate;
+    }
+
+    public Person() {
+    }
 }

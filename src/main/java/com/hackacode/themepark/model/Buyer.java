@@ -1,24 +1,24 @@
 package com.hackacode.themepark.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Entity
+import java.time.LocalDate;
+
+
+
+@EqualsAndHashCode(callSuper = true)
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@Entity(name = "buyers")
 public class Buyer extends Person{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @OneToOne
-    @JoinColumn(name = "fkTicketVip")
-    private TicketVip ticketVip;
-    @OneToOne
-    @JoinColumn(name = "fkTicket")
-    private Ticket ticket;
+
+    private boolean isBanned;
+
+    public Buyer() {
+    }
+
+    public Buyer(Long id, String dni, String name, String surname, LocalDate birthdate, boolean isBanned) {
+        super(id, dni, name, surname, birthdate);
+        this.isBanned = isBanned;
+    }
 }

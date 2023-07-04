@@ -1,37 +1,28 @@
 package com.hackacode.themepark.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
-@Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@NoArgsConstructor
+@Entity(name = "tickets")
 public class Ticket {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @CreationTimestamp
-    private LocalDateTime dateTime;
-    private boolean used;
-    @OneToOne
-    @JoinColumn(name = "fkGame")
-    private Game game;
-    @ManyToOne
-    @JoinColumn(name = "fkSale")
-    private Sale sale;
-    @OneToOne
-    @JoinColumn(name = "fkBuyer")
-    private Buyer buyer;
-    //aca metio mano fede
+    private double price;
+    private String description;
+    private boolean vip;
 
 }
