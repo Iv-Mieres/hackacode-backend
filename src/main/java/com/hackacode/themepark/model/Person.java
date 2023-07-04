@@ -1,10 +1,12 @@
 package com.hackacode.themepark.model;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
 
+@Hidden
 @Data
 @MappedSuperclass
 public class Person {

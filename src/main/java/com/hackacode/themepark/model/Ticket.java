@@ -1,5 +1,6 @@
 package com.hackacode.themepark.model;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+@Hidden
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

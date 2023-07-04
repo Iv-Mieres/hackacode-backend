@@ -46,8 +46,6 @@ public class MySecurityFilterChain {
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll())
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/informes").hasRole("GERENTE")
-
-
                 )
                 .authorizeHttpRequests(auth->
                                 auth.requestMatchers("/api/compradores", "/api/empleados","/api/roles", "/api/usuarios").hasRole("ADMINISTRADOR")
