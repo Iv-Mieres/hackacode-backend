@@ -60,12 +60,17 @@ class EmployeeServiceTest {
     @Test
     void saveEmployee() throws Exception {
 
-        var employeeDTO = EmployeeDTOReq.builder().id(1L).name("diego").build();
+        var employeeDTO = EmployeeDTOReq.builder()
+                .id(1L).name("diego").surname("SoSa").dni("34845347")
+                .birthdate(LocalDate.of(1989, 3, 1)).build();
 
         when(employeeUserRepository.existsByDni(employeeDTO.getDni())).thenReturn(false);
         when(wordsConverter.capitalizeWords(employeeDTO.getName())).thenReturn("Diego");
+        when(wordsConverter.capitalizeWords(employeeDTO.getSurname())).thenReturn("Sosa");
         when(modelMapper.map(employeeDTO, Employee.class)).thenReturn(this.employee);
         employeeService.saveEmployee(employeeDTO);
+        assertEquals(employeeDTO.getDni(), "34845347");
+        assertEquals(employeeDTO.getSurname(), "Sosa");
         assertEquals(employeeDTO.getName(), "Diego");
         verify(employeeUserRepository).save(this.employee);
     }
@@ -123,17 +128,15 @@ class EmployeeServiceTest {
     @DisplayName("comprueba que se devuelva un empleado al buscar por id")
     @Test
     void getEmployeeById() throws Exception {
-        this.employee.setId(1L);
-
         EmployeeDTORes employeeDTORes = new EmployeeDTORes();
-        employeeDTORes.setId(this.employee.getId());
+        employeeDTORes.setId(1L);
 
-        when(employeeUserRepository.findById(1L)).thenReturn(Optional.ofNullable(this.employee));
+        when(employeeUserRepository.findById(this.employee.getId())).thenReturn(Optional.ofNullable(this.employee));
         when(modelMapper.map(this.employee, EmployeeDTORes.class)).thenReturn(employeeDTORes);
-        EmployeeDTORes employeeDTORes1 = employeeService.getEmployeeById(1L);
+        EmployeeDTORes employeeDTORes1 = employeeService.getEmployeeById(this.employee.getId());
 
         assertEquals(this.employee.getId(), employeeDTORes1.getId());
-        verify(employeeUserRepository).findById(1L);
+        verify(employeeUserRepository).findById(this.employee.getId());
 
     }
 

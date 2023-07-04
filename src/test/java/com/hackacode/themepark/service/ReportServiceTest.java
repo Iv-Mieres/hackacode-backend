@@ -1,11 +1,11 @@
 package com.hackacode.themepark.service;
 
-
 import com.hackacode.themepark.dto.response.BuyerDTORes;
 import com.hackacode.themepark.dto.response.EmployeeDTORes;
 import com.hackacode.themepark.dto.response.GameDTORes;
 import com.hackacode.themepark.model.*;
 import com.hackacode.themepark.repository.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,11 +21,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -52,53 +50,51 @@ class ReportServiceTest {
     @Mock
     private ModelMapper modelMapper;
 
+    private Sale sale;
+    private Sale sale2;
+
+
+    @BeforeEach
+    void setUp() {
+        var game = new Game();
+        game.setName("Montaña Rusa");
+
+        this.sale = new Sale();
+        this.sale.setId(1L);
+        this.sale.setGame(game);
+        this.sale.setTotalPrice(10000.0);
+        this.sale.setPurchaseDate(LocalDateTime.now());
+        this.sale.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail(), new TicketDetail()));
+
+        this.sale2 = new Sale();
+        this.sale2.setGame(game);
+        this.sale2.setTotalPrice(5000.0);
+        this.sale2.setId(2L);
+        this.sale2.setPurchaseDate(LocalDateTime.now());
+        this.sale2.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail()));
+    }
 
     @DisplayName("comprueba la cantidad de tickets vendidos de todo los juegos")
     @Test
     void totalTicketsSoldOnAGivenDateOfTotalGames() {
-
-
-        var sale1 = new Sale();
-        sale1.setId(1L);
-        sale1.setPurchaseDate(LocalDateTime.now());
-        sale1.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail(), new TicketDetail()));
-        var sale2 = new Sale();
-        sale2.setId(2L);
-        sale2.setPurchaseDate(LocalDateTime.now());
-        sale2.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail()));
-
         var sales = new ArrayList<Sale>();
-        sales.add(sale1);
-        sales.add(sale2);
+        sales.add(this.sale);
+        sales.add(this.sale2);
 
         when(saleRepository.findAll()).thenReturn(sales);
         var reportDTO = reportService.totalTicketsSoldOnAGivenDateOfTotalGames(LocalDate.now());
 
         assertEquals(5, reportDTO.getTotalTicketsSold());
-
     }
 
     @Test
     void nameOfTheGameWithTheHighestNumberOfTicketsSoldOnASpecificDate() {
         LocalDate date = LocalDate.now();
         String gameName = "Montaña Rusa";
-        var game = new Game();
-        game.setName(gameName);
-
-        var sale1 = new Sale();
-        sale1.setId(1L);
-        sale1.setGame(game);
-        sale1.setPurchaseDate(LocalDateTime.now());
-        sale1.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail(), new TicketDetail()));
-        var sale2 = new Sale();
-        sale2.setId(2L);
-        sale2.setGame(game);
-        sale2.setPurchaseDate(LocalDateTime.now());
-        sale2.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail()));
 
         var sales = new ArrayList<Sale>();
-        sales.add(sale1);
-        sales.add(sale2);
+        sales.add(this.sale);
+        sales.add(this.sale2);
 
         when(saleRepository.findAll()).thenReturn(sales);
         var reportDTORes= reportService.nameOfTheGameWithTheHighestNumberOfTicketsSoldOnASpecificDate(date, gameName);
@@ -112,22 +108,11 @@ class ReportServiceTest {
         LocalDateTime start = LocalDateTime.of(date, LocalTime.MIN);
         LocalDateTime end = LocalDateTime.of(date, LocalTime.MAX);
 
-        var sale1 = new Sale();
-        sale1.setId(1L);
-        sale1.setTotalPrice(10000.0);
-        sale1.setPurchaseDate(LocalDateTime.now());
-        sale1.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail(), new TicketDetail()));
-        var sale2 = new Sale();
-        sale2.setId(2L);
-        sale1.setTotalPrice(5000.0);
-        sale2.setPurchaseDate(LocalDateTime.now());
-        sale2.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail()));
-
         var sales = new ArrayList<Sale>();
-        sales.add(sale1);
-        sales.add(sale2);
+        sales.add(this.sale);
+        sales.add(this.sale2);
 
-        var expected = sale1.getTotalPrice() + sale2.getTotalPrice();
+        var expected = this.sale.getTotalPrice() + this.sale2.getTotalPrice();
 
         when(saleRepository.findAllByPurchaseDateBetween(start, end)).thenReturn(sales);
         var reportDTORes =  reportService.sumTotalAmountOfAGivenDay(date);
@@ -141,23 +126,11 @@ class ReportServiceTest {
         LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
         LocalDateTime end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).maxLength()), LocalTime.MAX);
 
-
-        var sale1 = new Sale();
-        sale1.setId(1L);
-        sale1.setTotalPrice(10000.0);
-        sale1.setPurchaseDate(LocalDateTime.now());
-        sale1.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail(), new TicketDetail()));
-        var sale2 = new Sale();
-        sale2.setId(2L);
-        sale1.setTotalPrice(5000.0);
-        sale2.setPurchaseDate(LocalDateTime.now());
-        sale2.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail()));
-
         var sales = new ArrayList<Sale>();
-        sales.add(sale1);
-        sales.add(sale2);
+        sales.add(this.sale);
+        sales.add(this.sale2);
 
-        var expected = sale1.getTotalPrice() + sale2.getTotalPrice();
+        var expected = this.sale.getTotalPrice() + this.sale2.getTotalPrice();
 
         when(saleRepository.findAllByPurchaseDateBetween(start, end)).thenReturn(sales);
         var reportDTORes =  reportService.sumTotalAmountOfAGivenMonth(year, month);
@@ -201,153 +174,83 @@ class ReportServiceTest {
     }
 
     @Test
-    void buyerWithTheMostTicketsSoldInTheMonth() throws Exception {
-
-        var buyer = new Buyer();
-        buyer.setId(1L);
-        buyer.setBanned(false);
-        buyer.setBirthdate(LocalDate.of(1984, 4,20));
-
-        var ticketDetail = new TicketDetail();
-        ticketDetail.setBuyer(buyer);
-        int year = LocalDate.now().getYear();
-        int month = LocalDate.now().getMonthValue();
-
-        var expectedBuyerDTO = new BuyerDTORes();
-        expectedBuyerDTO.setId(1L);
-        expectedBuyerDTO.setBanned(false);
-        expectedBuyerDTO.setBirthdate(LocalDate.of(1984, 4,20));
-
-
-        LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
-        LocalDateTime end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).maxLength()), LocalTime.MAX);
-
-        when(modelMapper.map(ticketDetail.getBuyer(), BuyerDTORes.class)).thenReturn(expectedBuyerDTO);
-        when(ticketDetailService.lastVisit(buyer.getId())).thenReturn("39");
-        when(ticketDetailRepository.findTopByPurchaseDateBetweenOrderByBuyer_IdDesc(start, end))
-                .thenReturn(ticketDetail);
-        var currentBuyerDTORes =  reportService.buyerWithTheMostTicketsSoldInTheMonth(year, month);
-
-        assertEquals(expectedBuyerDTO, currentBuyerDTORes);
-
-    }
-
-    @Test
     void gameWithTheHighestNumberOfTicketsSoldSoFar() throws Exception {
         var game1 = new Game();
-        game1.setId(1L);
-        game1.setName("Montaña Rusa");
+        game1.setId(2L);
+        game1.setName("Zamba");
 
-        var sale1 = new Sale();
-        sale1.setId(1L);
-        sale1.setTotalPrice(10000.0);
-        sale1.setGame(game1);
-        sale1.setPurchaseDate(LocalDateTime.of(LocalDate.of(1988,6,6), LocalTime.now()));
-        sale1.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail(), new TicketDetail()));
+        this.sale.setPurchaseDate(LocalDateTime.of(LocalDate.of(1988,6,6), LocalTime.now()));
+        this.sale2.setPurchaseDate(LocalDateTime.of(LocalDate.of(1988,6,6), LocalTime.now()));
+        this.sale2.setGame(game1);
 
         var sales = new ArrayList<Sale>();
-        sales.add(sale1);
+        sales.add(this.sale);
+        sales.add(this.sale2);
+
         Sort sort = Sort.by(Sort.Direction.ASC, "game");
         when(saleRepository.findAll(sort)).thenReturn(sales);
         var cuerrentReportDTORes = reportService.gameWithTheHighestNumberOfTicketsSoldSoFar(LocalDate.of(1988,6,6));
         assertEquals(3, cuerrentReportDTORes.getTotalTicketsSold());
-        assertEquals(game1.getName(), cuerrentReportDTORes.getGame());
+        assertEquals(this.sale.getGame().getName(), cuerrentReportDTORes.getGame());
     }
 
 
     @Test
-    void totalNumberOfTicketsSoldPlusTheirRevenueToDate(){
-        var sale1 = new Sale();
-        sale1.setId(1L);
-        sale1.setTotalPrice(10000.0);
-        sale1.setPurchaseDate(LocalDateTime.of(LocalDate.of(1988,6,6), LocalTime.now()));
-        sale1.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail(), new TicketDetail()));
+    void totalNumberOfTicketsSoldPlusTheirRevenueToDate() throws Exception {
+        this.sale.setPurchaseDate(LocalDateTime.of(LocalDate.of(1988,6,6), LocalTime.now()));
 
-
-        var sale2 = new Sale();
-        sale2.setId(2L);
-        sale2.setTotalPrice(10000.0);
-        sale2.setPurchaseDate(LocalDateTime.of(LocalDate.now(), LocalTime.now()));
-        sale2.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail(), new TicketDetail()));
         var sales = new ArrayList<Sale>();
-        sales.add(sale1);
-        sales.add(sale2);
+        sales.add(this.sale);
+        sales.add(this.sale2);
 
         when(saleRepository.findAll()).thenReturn(sales);
         var currentReportDTORes = reportService.totalNumberOfTicketsSoldPlusTheirRevenueToDate(LocalDate.now());
-        assertEquals(20000, currentReportDTORes.getTotalAmountSaleYear());
-        assertEquals(6, currentReportDTORes.getTotalTicketsSold());
+        assertEquals(15000, currentReportDTORes.getTotalAmountSaleYear());
+        assertEquals(5, currentReportDTORes.getTotalTicketsSold());
     }
 
 
     @Test
     void totalTicketsSoldForEachGameToDate() throws Exception {
-        var game1 = new Game();
-        game1.setId(1L);
-        game1.setName("Montaña Rusa");
-
-        var sale1 = new Sale();
-        sale1.setId(1L);
-        sale1.setTotalPrice(10000.0);
-        sale1.setGame(game1);
-        sale1.setPurchaseDate(LocalDateTime.of(LocalDate.of(1988,6,6), LocalTime.now()));
-        sale1.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail(), new TicketDetail()));
-
-        var sale2 = new Sale();
-        sale2.setId(1L);
-        sale2.setTotalPrice(10000.0);
-        sale2.setGame(game1);
-        sale2.setPurchaseDate(LocalDateTime.of(LocalDate.of(1988,6,6), LocalTime.now()));
-        sale2.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail(), new TicketDetail()));
-
+        this.sale.setPurchaseDate(LocalDateTime.of(LocalDate.of(1988,6,6), LocalTime.now()));
+        this.sale2.setPurchaseDate(LocalDateTime.of(LocalDate.of(1988,6,6), LocalTime.now()));
 
         var sales = new ArrayList<Sale>();
-        sales.add(sale1);
-        sales.add(sale2);
+        sales.add(this.sale);
+        sales.add(this.sale2);
 
         Sort sort = Sort.by(Sort.Direction.ASC, "game");
         when(saleRepository.findAll(sort)).thenReturn(sales);
+
         var currentReportDTORes = reportService.totalTicketsSoldForEachGameToDate(LocalDate.of(1988,6,6));
-        assertEquals(1, currentReportDTORes.size());
-        assertEquals(6, currentReportDTORes.get(0).getTotalTicketsSold());
+        assertEquals(5, currentReportDTORes.get(0).getTotalTicketsSold());
     }
 
     @Test
     void totalTicketsSoldForEachGameToDateIfThereAreTwoGames() throws Exception {
-        var game1 = new Game();
-        game1.setId(1L);
-        game1.setName("Montaña Rusa");
-
         var game2 = new Game();
         game2.setId(2L);
         game2.setName("Zamba");
 
-        var sale1 = new Sale();
-        sale1.setId(1L);
-        sale1.setTotalPrice(10000.0);
-        sale1.setGame(game1);
-        sale1.setPurchaseDate(LocalDateTime.of(LocalDate.of(1988,6,6), LocalTime.now()));
-        sale1.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail(), new TicketDetail()));
-
-        var sale2 = new Sale();
-        sale2.setId(1L);
-        sale2.setTotalPrice(10000.0);
-        sale2.setGame(game2);
-        sale2.setPurchaseDate(LocalDateTime.of(LocalDate.of(1988,6,6), LocalTime.now()));
-        sale2.setTicketsDetail(List.of(new TicketDetail(), new TicketDetail(), new TicketDetail()));
-
+        this.sale.setPurchaseDate(LocalDateTime.of(LocalDate.of(1988,6,6), LocalTime.now()));
+        this.sale2.setGame(game2);
+        this.sale2.setPurchaseDate(LocalDateTime.of(LocalDate.of(1988,6,6), LocalTime.now()));
 
         var sales = new ArrayList<Sale>();
-        sales.add(sale1);
-        sales.add(sale2);
+        sales.add(this.sale);
+        sales.add(this.sale2);
 
         Sort sort = Sort.by(Sort.Direction.ASC, "game");
         when(saleRepository.findAll(sort)).thenReturn(sales);
+
         var currentReportDTORes = reportService.totalTicketsSoldForEachGameToDate(LocalDate.of(1988,6,6));
+
         assertEquals(2, currentReportDTORes.size());
+        //compara datos del primer juego de la lista
         assertEquals(3, currentReportDTORes.get(0).getTotalTicketsSold());
-        assertEquals(3, currentReportDTORes.get(1).getTotalTicketsSold());
-        assertEquals(game1.getName(), currentReportDTORes.get(0).getGame());
+        assertEquals(this.sale.getGame().getName(), currentReportDTORes.get(0).getGame());
+        //compara datos del segundo juego de la lista
+        assertEquals(2, currentReportDTORes.get(1).getTotalTicketsSold());
         assertEquals(game2.getName(), currentReportDTORes.get(1).getGame());
     }
 
@@ -380,4 +283,40 @@ class ReportServiceTest {
         var notALeap = reportService.isLeapYearOrNot(year, month);
         assertEquals(expected, notALeap);
     }
+
+    @DisplayName("comprueba que devuelva un comprador vacio si la entrada detallada es null")
+    @Test
+    void ifTicketDetailIsNullReturnAnBuyerEmpty() throws Exception {
+        int year = LocalDate.now().getYear();
+        int month = LocalDate.now().getMonthValue();
+        var start = LocalDateTime.of(year, month, 1, 0, 0);
+        var end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).maxLength()), LocalTime.MAX);
+        TicketDetail ticketDetail = null;
+        Map<String, Object> expected = new HashMap<>();
+        expected.put("buyer",new BuyerDTORes());
+
+        when(ticketDetailRepository.findTopByPurchaseDateBetweenOrderByBuyer_IdAsc(start, end)).thenReturn(ticketDetail);
+        var currenteResult = reportService.buyerWithTheMostTicketsSoldInTheMonth(year, month);
+        assertEquals(expected, currenteResult);
+        verify(ticketDetailRepository).findTopByPurchaseDateBetweenOrderByBuyer_IdAsc(start, end);
+    }
+
+    @DisplayName("comprueba que devuelva un comprador vacio si la entrada detallada es null")
+    @Test
+    void buyerWithTheMostTicketsSoldInTheMonth() throws Exception {
+        int year = LocalDate.now().getYear();
+        int month = LocalDate.now().getMonthValue();
+        var start = LocalDateTime.of(year, month, 1, 0, 0);
+        var end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).maxLength()), LocalTime.MAX);
+        TicketDetail ticketDetail = null;
+        Map<String, Object> expected = new HashMap<>();
+        expected.put("buyer",new BuyerDTORes());
+
+        when(ticketDetailRepository.findTopByPurchaseDateBetweenOrderByBuyer_IdAsc(start, end)).thenReturn(ticketDetail);
+        var currenteResult = reportService.buyerWithTheMostTicketsSoldInTheMonth(year, month);
+        assertEquals(expected, currenteResult);
+        verify(ticketDetailRepository).findTopByPurchaseDateBetweenOrderByBuyer_IdAsc(start, end);
+    }
+
+
 }

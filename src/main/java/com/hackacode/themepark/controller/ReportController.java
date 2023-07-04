@@ -67,7 +67,7 @@ public class ReportController {
 
     //Comprador que más entradas compró en un determinado mes y año
     @GetMapping("/comprador/con_mas_entradas_vedidas_al_mes")
-    public ResponseEntity<Map<String,Object>> getBuyerWithMoreNormalTicketsPerMonthAndYear(@RequestParam int year, int month) throws Exception {
+    public ResponseEntity<Map<String, Object>> getBuyerWithMoreNormalTicketsPerMonthAndYear(@RequestParam int year, int month) throws Exception {
         return ResponseEntity.ok(reportService.buyerWithTheMostTicketsSoldInTheMonth(year, month));
     }
 
@@ -83,7 +83,7 @@ public class ReportController {
     @GetMapping("/historico/ventas_monto")
     public ResponseEntity<ReportDTORes> totalNumberOfTicketsSoldPlusTheirRevenueToDate(@RequestParam
                                                                                        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-                                                                                       LocalDate date) {
+                                                                                       LocalDate date) throws Exception {
         return ResponseEntity.ok(reportService.totalNumberOfTicketsSoldPlusTheirRevenueToDate(date));
     }
 

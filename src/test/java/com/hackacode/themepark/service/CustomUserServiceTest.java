@@ -211,7 +211,6 @@ class CustomUserServiceTest {
         when(customUserRepository.existsByUsername(updateDTO.getUsername())).thenReturn(false);
         when(roleRepository.existsById(updateDTO.getRoles().get(0).getId())).thenReturn(true);
         when(modelMapper.map(updateDTO, CustomUser.class)).thenReturn(this.user);
-        when(passwordEncoder.encode(this.user.getPassword())).thenReturn(this.user.getPassword());
         customUserService.updateUser(updateDTO);
         verify(customUserRepository).save(this.user);
 

@@ -19,7 +19,8 @@ import java.util.function.Function;
 @Slf4j
 public class JWTUtils {
 
-    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    @Value("${jwt.secret.key}")
+    private String secretKey;
 
     @Value("${jwt.time.expiration}")
     private String timeExpiration;

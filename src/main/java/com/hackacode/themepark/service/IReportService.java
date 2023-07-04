@@ -23,13 +23,13 @@ public interface IReportService {
     Page<EmployeeDTORes> getAllEmployeesWithTheirAssignedGame(Pageable pageable);
 
     //Comprador que más entradas compró en un determinado mes y año
-    Map<String,Object> buyerWithTheMostTicketsSoldInTheMonth(int year, int month) throws Exception;
+    Map<String, Object> buyerWithTheMostTicketsSoldInTheMonth(int year, int month) throws Exception;
 
     // Juego con la mayor cantidad de entradas vendidas hasta el día en que se lleve a cabo la consulta
     ReportGameDTORes gameWithTheHighestNumberOfTicketsSoldSoFar(LocalDate date) throws Exception;
 
     // Número total de entradas vendidas más sus ingresos hasta la fecha
-    ReportDTORes  totalNumberOfTicketsSoldPlusTheirRevenueToDate(LocalDate date);
+    ReportDTORes  totalNumberOfTicketsSoldPlusTheirRevenueToDate(LocalDate date) throws Exception;
 
     // Sumatoria total de los montos de ventas en un determinado día
     ReportDTORes sumTotalAmountOfAGivenDay(LocalDate date) throws Exception;
