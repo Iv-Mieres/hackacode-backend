@@ -6,6 +6,7 @@ import com.hackacode.themepark.exception.DescriptionExistsException;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.Ticket;
 import com.hackacode.themepark.repository.*;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -32,20 +33,25 @@ public class TicketService implements ITicketService {
             throw new DescriptionExistsException("Ya existe un ticket con la descripción ingresada. " +
                     "Ingrese una nueva descripción");
         }
+
         ticketRepository.save(modelMapper.map(request, Ticket.class));
     }
 
     //MUESTRA UN TICKET POR ID
     @Override
     public TicketDTORes getTicketById(Long ticketId) throws IdNotFoundException {
-        return modelMapper.map(ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new IdNotFoundException("El id ingresado no existe")), TicketDTORes.class);
+        var ticketBD = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new IdNotFoundException("El id ingresado no existe"));
+        if (ticketBD.isDelete()){
+            throw new EntityNotFoundException("El ticket selecionado ha sido eliminado");
+        }
+        return modelMapper.map(ticketBD, TicketDTORes.class);
     }
 
     //LISTA DTO DE TICKETS
     @Override
     public Page<TicketDTORes> getTickets(Pageable pageable) {
-        var TicketsDb = ticketRepository.findAll(pageable);
+        var TicketsDb = ticketRepository.findAllByIsDelete(pageable, false);
         List<TicketDTORes> TicketsDTO = new ArrayList<>();
         for (Ticket ticket : TicketsDb) {
             TicketsDTO.add(modelMapper.map(ticket, TicketDTORes.class));
@@ -64,13 +70,16 @@ public class TicketService implements ITicketService {
             throw new DescriptionExistsException("Ya existe un ticket con la descripción ingresada. " +
                     "Ingrese una nueva descripción");
         }
-        var ticket = modelMapper.map(ticketDTOReq, Ticket.class);
-        ticket.setPrice(ticketBD.getPrice());
-        ticketRepository.save(ticket);
+        ticketRepository.save(modelMapper.map(ticketDTOReq, Ticket.class));
     }
+
     //ELIMINA UN TICKET
     @Override
-    public void deleteTicket(Long ticketId) {
-        ticketRepository.deleteById(ticketId);
+    public void deleteTicket(Long ticketId) throws IdNotFoundException {
+        var ticketBD = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new IdNotFoundException("El id " + ticketId + " no existe"));
+        ticketBD.setDescription("");
+        ticketBD.setDelete(true);
+        ticketRepository.save(ticketBD);
     }
 }

@@ -57,7 +57,7 @@ public class TicketController {
             description = "Busca un ticket por id y lo actualiza, devuelve un Codigo de estado 204"
     )
     @PutMapping()
-    public ResponseEntity<HttpStatus> updateNormalTicket(@Valid @RequestBody TicketDTOReq ticketDTOReq)
+    public ResponseEntity<HttpStatus> updateTicket(@Valid @RequestBody TicketDTOReq ticketDTOReq)
             throws IdNotFoundException, DescriptionExistsException {
         ticketService.updateTicket(ticketDTOReq);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -67,9 +67,9 @@ public class TicketController {
             summary = "Elimina un ticket",
             description = "Elimina de forma logica un ticket por id, devuelve un Codigo de estado 204"
     )
-    @DeleteMapping("/{ticketId}")
-    public ResponseEntity<HttpStatus> deleteVipTicket(@PathVariable Long ticketId) {
-        ticketService.deleteTicket(ticketId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteTicket(@PathVariable Long id) throws IdNotFoundException {
+        ticketService.deleteTicket(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

@@ -92,10 +92,9 @@ class TicketDetailServiceTest {
     @DisplayName("comprueba que lance un excepción si la entrada no existe al guardar una entrada detallada")
     @Test
     void ThrowAnExceptionIfTheTicketDoesNotExist() throws IdNotFoundException {
-        String expectedEx = "El ticket ingresado no se encuentra registrado";
+        String expectedEx = "El id " + this.ticket.getId() + " no existe";
 
         when(buyerRepository.existsById(this.buyer.getId())).thenReturn(true);
-        when(ticketRepository.existsById(this.ticket.getId())).thenReturn(false);
         Exception currentEx = assertThrows(IdNotFoundException.class,
                 () -> ticketDetailService.saveTicket(this.ticketDetailDTOReq));
         assertEquals(expectedEx, currentEx.getMessage());

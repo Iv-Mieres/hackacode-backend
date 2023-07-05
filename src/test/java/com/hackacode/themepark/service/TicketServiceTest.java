@@ -41,7 +41,7 @@ class TicketServiceTest {
     @BeforeEach
     void setUp() {
 
-        this.ticket = new Ticket(1L, 3000.0, "General", false);
+        this.ticket = new Ticket(1L, 3000.0, "General", false, false);
         this.ticketDTOReq = new TicketDTOReq(1L, 3000.0, "General", false);
 
     }
@@ -90,7 +90,7 @@ class TicketServiceTest {
 
         var pageable = PageRequest.of(page, size);
 
-        when(ticketRepository.findAll(pageable)).thenReturn(new PageImpl<>(tickets, pageable, tickets.size()));
+        when(ticketRepository.findAllByIsDelete(pageable, false)).thenReturn(new PageImpl<>(tickets, pageable, tickets.size()));
         when(modelMapper.map(this.ticket, TicketDTORes.class)).thenReturn(this.ticketDTORes);
         var currentTicketsDTORes = ticketService.getTickets(pageable);
 
@@ -99,7 +99,7 @@ class TicketServiceTest {
         assertEquals(0, currentTicketsDTORes.getNumber());
         assertEquals(2, currentTicketsDTORes.getTotalPages());
 
-        verify(ticketRepository).findAll(pageable);
+        verify(ticketRepository).findAllByIsDelete(pageable, false);
 
     }
 
@@ -130,11 +130,11 @@ class TicketServiceTest {
 
     @DisplayName("Comprueba que se elimine una entrada")
     @Test
-    void deleteTicket(){
+    void deleteTicket() throws IdNotFoundException {
 
-        doNothing().when(ticketRepository).deleteById(this.ticketDTOReq.getId());
+        when(ticketRepository.findById(this.ticket.getId())).thenReturn(Optional.ofNullable(this.ticket));
         ticketService.deleteTicket(this.ticketDTOReq.getId());
-        verify(ticketRepository).deleteById(this.ticketDTOReq.getId());
+        verify(ticketRepository).save(this.ticket);
     }
 
 }

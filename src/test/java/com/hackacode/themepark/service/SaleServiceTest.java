@@ -146,8 +146,9 @@ class SaleServiceTest {
     @DisplayName("comprueba que la cuenta sea correcta")
     @Test
     void calculateTotalPrice() throws IdNotFoundException {
+        this.ticketDetail.setPrice(3000.0);
         when(ticketDetailRepository.findById(this.ticketDetail.getId())).thenReturn(Optional.ofNullable(this.ticketDetail));
         var currentTotal = saleService.calculateTotalPrice(this.saleDTOReq);
-        assertEquals(3000, currentTotal);
+        assertEquals(3000.0, currentTotal);
     }
 }

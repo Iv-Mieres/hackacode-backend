@@ -14,6 +14,6 @@ public interface ITicketService {
     TicketDTORes getTicketById(Long TicketId) throws IdNotFoundException;
     Page<TicketDTORes> getTickets(Pageable pageable);
     void updateTicket(TicketDTOReq normalTicketDTOReq) throws IdNotFoundException, DescriptionExistsException;
-    void deleteTicket(Long TicketId);
+    void deleteTicket(Long TicketId) throws IdNotFoundException;
 
 }

@@ -19,5 +19,6 @@ public class Ticket {
     private double price;
     private String description;
     private boolean vip;
+    private boolean isDelete;
 
 }

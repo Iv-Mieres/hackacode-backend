@@ -82,7 +82,7 @@ public class SaleService implements ISaleService {
                     () -> new IdNotFoundException("No se encontro el ticket")
             );
             if (ticketDetail != null) {
-                totalPrice += ticketDetail.getTicket().getPrice();
+                totalPrice += ticketDetail.getPrice();
             }
         }
         return totalPrice;
