@@ -46,7 +46,7 @@
 
 ## Tests Unitarios: JUnit/Mockito
  >Los tests unitarios se realizaron sobre la capa service utilizado mocks para la simulación del comportamiento de la persistencia, intentando abarcar la mayoria de métodos y escenarios posibles.
-> Este proyecto no cuenta con test de integración aplicadod con JUnit/Mockito. Todas las pruebas de integración se hicieron de forma manual desde postman y la interfaz gráfica.
+> Este proyecto no cuenta con test de integración aplicado con JUnit/Mockito. Todas las pruebas de integración se hicieron de forma manual desde postman y la interfaz gráfica.
 
  <p align="left">
   <img src=https://github.com/Iv-Mieres/hackacode-backend/assets/103857812/422e2a7b-2459-486d-b03c-476d1924d737.gif alt="Descripción del GIF" width="800" height="250" />
