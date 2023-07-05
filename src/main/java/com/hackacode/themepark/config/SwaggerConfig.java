@@ -12,6 +12,10 @@ import java.util.Collections;
 @Configuration
 public class SwaggerConfig {
 
+    /**
+     * Configurar el bean de Open API para cargar la informacion basica del proyecto
+     * @return open api info
+     */
     @Bean
     public OpenAPI themeparkOpenAPI() {
         return new OpenAPI()

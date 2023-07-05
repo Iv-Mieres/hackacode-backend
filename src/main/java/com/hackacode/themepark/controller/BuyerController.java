@@ -38,8 +38,8 @@ public class BuyerController {
     }
 
     @Operation(
-            summary = "Traer todos los clientes",
-            description = "Trae todos los clientes de base de datos y devuelve un Codigo de estado 200 y el listado de clientes"
+            summary = "Trae un cliente",
+            description = "Busca un cliente por id y devuelve un Codigo de estado 200 y los datos del cliente"
     )
     @GetMapping("/{buyerId}")
     public ResponseEntity<BuyerDTORes> getBuyer(@PathVariable Long buyerId) throws IdNotFoundException {
@@ -47,8 +47,8 @@ public class BuyerController {
     }
 
     @Operation(
-            summary = "Trae un cliente",
-            description = "Busca un cliente por id y devuelve un Codigo de estado 200 y los datos del cliente"
+            summary = "Traer todos los clientes",
+            description = "Trae todos los clientes de base de datos y devuelve un Codigo de estado 200 y el listado de clientes"
     )
     @GetMapping()
     public ResponseEntity<Page<BuyerDTORes>> getAllBuyers(Pageable pageable){

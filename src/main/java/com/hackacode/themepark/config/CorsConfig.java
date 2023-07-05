@@ -9,7 +9,12 @@ import java.util.List;
 
 @Configuration
 public class CorsConfig {
-@Bean
+
+    /**
+     * Configurar los urls permitidos por Cors
+     * @return web mvc configuration
+     */
+    @Bean
 public WebMvcConfigurer corsConfigurer() {
     return new WebMvcConfigurer() {
         @Override
