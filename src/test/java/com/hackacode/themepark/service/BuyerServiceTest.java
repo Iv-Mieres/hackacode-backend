@@ -2,6 +2,7 @@ package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.BuyerDTOReq;
 import com.hackacode.themepark.dto.response.BuyerDTORes;
+import com.hackacode.themepark.exception.DniExistsException;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.model.Buyer;
 import com.hackacode.themepark.model.TicketDetail;
@@ -85,9 +86,9 @@ class BuyerServiceTest {
 
     @DisplayName("Si al hacer el guardado el dni del comprador ya está registrado, lanza una excepción")
     @Test
-    void throwAnExceptionIfTheDniExistsWhenSavingTheBuyer() throws Exception {
+    void throwAnExceptionIfTheDniExistsWhenSavingTheBuyer() throws DniExistsException {
         when(buyerRepository.existsByDni(this.buyerDTOReq.getDni())).thenReturn(true);
-        assertThrows(Exception.class, () -> buyerService.saveBuyer(this.buyerDTOReq));
+        assertThrows(DniExistsException.class, () -> buyerService.saveBuyer(this.buyerDTOReq));
 
     }
     @DisplayName("Comprueba que se edite un comprador")

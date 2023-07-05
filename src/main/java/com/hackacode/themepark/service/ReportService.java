@@ -4,8 +4,8 @@ import com.hackacode.themepark.dto.response.BuyerDTORes;
 import com.hackacode.themepark.dto.response.EmployeeDTORes;
 import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.dto.response.ReportGameDTORes;
+import com.hackacode.themepark.model.Buyer;
 import com.hackacode.themepark.model.Employee;
-import com.hackacode.themepark.model.Game;
 import com.hackacode.themepark.model.Sale;
 import com.hackacode.themepark.model.TicketDetail;
 import com.hackacode.themepark.repository.*;
@@ -18,10 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class ReportService implements IReportService {
@@ -151,21 +148,28 @@ public class ReportService implements IReportService {
 
     //Comprador que más entradas compró en un determinado mes y año
     @Override
-    public BuyerDTORes buyerWithTheMostTicketsSoldInTheMonth(int year, int month) throws Exception {
+    public Map<String, Object> buyerWithTheMostTicketsSoldInTheMonth(int year, int month) throws Exception {
         if (year > LocalDate.now().getYear() || month > LocalDate.now().getMonthValue()) {
             throw new Exception("La fecha máxima ingresada solo puede ser hasta " + LocalDate.now());
         }
+
         var start = LocalDateTime.of(year, month, 1, 0, 0);
         var end = this.isLeapYearOrNot(year, month);
+        Map<String, Object> response = new HashMap<>();
 
-        TicketDetail ticketDetail = ticketDetailRepository.findTopByPurchaseDateBetweenOrderByBuyer_IdDesc(start, end);
+        TicketDetail ticketDetail = ticketDetailRepository.findTopByPurchaseDateBetweenOrderByBuyer_IdAsc(start, end);
+
         if (ticketDetail == null) {
-            return new BuyerDTORes();
+            response.put("buyer",new BuyerDTORes());
+            return response;
         }
         var buyerDTO = modelMapper.map(ticketDetail.getBuyer(), BuyerDTORes.class);
         buyerDTO.setLastVisit(ticketDetailService.lastVisit(buyerDTO.getId()));
+        List<TicketDetail> ticketsCount = ticketDetailRepository.findAllByPurchaseDateBetweenAndBuyer_id(start,end,buyerDTO.getId());
         buyerDTO.setAge(Period.between(buyerDTO.getBirthdate(), LocalDate.now()).getYears());
-        return buyerDTO;
+        response.put("buyer", buyerDTO);
+        response.put("tickets",ticketsCount.size());
+        return response;
 
     }
 
@@ -217,7 +221,11 @@ public class ReportService implements IReportService {
 
     // Historico - Número total de entradas vendidas más sus ingresos hasta la fecha
     @Override
-    public ReportDTORes totalNumberOfTicketsSoldPlusTheirRevenueToDate(LocalDate date) {
+    public ReportDTORes totalNumberOfTicketsSoldPlusTheirRevenueToDate(LocalDate date) throws Exception {
+        if (date.isAfter(LocalDate.now())) {
+            throw new Exception("La fecha máxima ingresada solo puede ser hasta " + LocalDate.now());
+        }
+
         LocalDateTime findDate = LocalDateTime.of(date, LocalTime.MAX);
         long totalTicketsSold = 0;
         double totalAmountMonthAndYear = 0.0;

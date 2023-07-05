@@ -24,12 +24,31 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     final JWTUtils jwtUtils;
     final UserDetailsService userDetailsService;
 
+    /**
+     * Lista de paths permitidas sin autenticacion
+     */
     private List<String> urlsToSkip = List.of("/swagger-ui/**", "/v3/api-docs/**", "/token/recuperar_pass", "/token");
+
+    /**
+     * Metodo para saltar la autenticacion si la url esta en la lista blanca
+     * @param request
+     * @return boolean
+     * @throws ServletException
+     */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         return urlsToSkip.stream().anyMatch(url -> request.getRequestURI().contains(url));
     }
 
+    /**
+     * Metodo para autenticar al usuario por jwt y cargar datos del usuario autenticado en el contexto de seguridad,
+     * o rechazar su solicitud
+     * @param request
+     * @param response
+     * @param filterChain
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,

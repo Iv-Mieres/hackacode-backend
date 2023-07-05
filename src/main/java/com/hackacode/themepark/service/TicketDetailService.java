@@ -19,8 +19,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class TicketDetailService implements ITicketDetailService{
-
+public class TicketDetailService implements ITicketDetailService {
 
     private final ITicketDetailRepository repository;
     private final IBuyerRepository buyerRepository;
@@ -29,20 +28,24 @@ public class TicketDetailService implements ITicketDetailService{
 
     @Override
     public UUID saveTicket(TicketDetailDTOReq request) throws IdNotFoundException {
-        if (!buyerRepository.existsById(request.getBuyer().getId())){
-           throw  new IdNotFoundException("El comprador ingresado no se encuentra registrado");
+        if (!buyerRepository.existsById(request.getBuyer().getId())) {
+            throw new IdNotFoundException("El comprador ingresado no se encuentra registrado");
         }
-        if (!ticketRepository.existsById(request.getTicket().getId())){
-            throw new IdNotFoundException("El ticket ingresado no se encuentra registrado");
+        var ticketBD = ticketRepository.findById(request.getTicket().getId())
+                .orElseThrow(() -> new IdNotFoundException("El id " + request.getTicket().getId() + " no existe"));
+        if(ticketBD.isDelete()){
+            throw new IdNotFoundException("El ticket ingresado no existe");
         }
-        return repository.save(modelMapper.map(request,TicketDetail.class)).getId();
+        var ticketDetail = modelMapper.map(request, TicketDetail.class);
+        ticketDetail.setPrice(ticketBD.getPrice());
+        return repository.save(ticketDetail).getId();
     }
 
     @Override
     public Page<TicketDetailDTORes> getAllTciketsDetails(Pageable pageable) {
         var ticketsDetails = repository.findAll(pageable);
         var ticketsDTO = new ArrayList<TicketDetailDTORes>();
-        for(TicketDetail ticketDetail: ticketsDetails) {
+        for (TicketDetail ticketDetail : ticketsDetails) {
             var ticketDTO = modelMapper.map(ticketDetail, TicketDetailDTORes.class);
             ticketsDTO.add(ticketDTO);
         }
@@ -51,23 +54,22 @@ public class TicketDetailService implements ITicketDetailService{
 
     @Override
     public TicketDetailDTORes getById(UUID id) throws IdNotFoundException {
-        var ticketDetail =  repository.findById(id).orElseThrow(
-                ()-> new IdNotFoundException("El ticket con el id ingresado no se encuentra registado"));
+        var ticketDetail = repository.findById(id).orElseThrow(
+                () -> new IdNotFoundException("El ticket con el id ingresado no se encuentra registado"));
         return modelMapper.map(ticketDetail, TicketDetailDTORes.class);
     }
 
     @Override
-    public void delete(UUID id){
+    public void delete(UUID id) {
         repository.deleteById(id);
     }
 
     @Override
     public String lastVisit(Long buyerId) {
         var ticketDetail = repository.findTopByBuyer_idOrderByBuyer_idDesc(buyerId);
-        if (ticketDetail == null){
+        if (ticketDetail == null) {
             return "Sin visitas";
-        }
-        else {
+        } else {
             return ticketDetail.getPurchaseDate().toLocalDate().toString();
         }
     }

@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
@@ -47,17 +46,9 @@ class UserDetailsServiceImplTest {
         user.setEnable(true);
         user.setRoles(Set.of(role));
 
-        var expectedUser =   new User(user.getUsername(),
-                user.getPassword(),
-                user.isEnabled(),
-                user.isAccountNonExpired(),
-                user.isCredentialsNonExpired(),
-                user.isAccountNonLocked(),
-                user.getAuthorities());
-
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
         var currentUser =  userDetailsService.loadUserByUsername(username);
 
-        assertEquals(expectedUser, currentUser);
+        assertEquals(user, currentUser);
     }
 }

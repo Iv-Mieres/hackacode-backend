@@ -1,6 +1,8 @@
 package com.hackacode.themepark.controller;
 
 import com.hackacode.themepark.exception.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -13,10 +15,14 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.util.HashMap;
 import java.util.Map;
 
+@Tag(name="Controlador de excepciones", description = "Controla excepciones de Spring Validation")
 @RestControllerAdvice
 public class ControllerExceptionAdvice {
 
-    //Controla excepciones de tipo - "MethodArgumentNotValidException"
+    @Operation(
+            summary = "Devuelve excepciones de parametros",
+            description = "Captura y devuelve excepciones de validez de parametros"
+    )
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> validException(MethodArgumentNotValidException ex) {
@@ -27,29 +33,10 @@ public class ControllerExceptionAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
     }
 
-    // Controla excepciones de tipo - "ConstraintViolationException"
-//    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-//    @ExceptionHandler({ConstraintViolationException.class})
-//    public ResponseEntity<Map<Path, String>> constraintViolationException(ConstraintViolationException ex) {
-//
-//        Map<Path, String> errorDetails = new HashMap<>();
-//
-//        Path campo = ex.getConstraintViolations()
-//                .stream()
-//                .findFirst()
-//                .map(ConstraintViolation::getPropertyPath).get();
-//
-//        String mj =  ex.getConstraintViolations()
-//                .stream()
-//                .findFirst()
-//                .map(ConstraintViolation::getMessage).get();
-//
-//        errorDetails.put(campo, mj);
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
-//    }
-
-    // Controla excepciones de datos no encontrados
-
+    @Operation(
+            summary = "Devuelve excepciones de datos no encontrados",
+            description = "Captura y devuelve codigo de estado 404 no encontrado, con excepciones de datos no encontrados"
+    )
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler({IdNotFoundException.class, RoleNotFoundException.class,
             DniNotFoundException.class, UsernameNotFoundException.class})
@@ -62,21 +49,10 @@ public class ControllerExceptionAdvice {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails);
     }
 
-    // Controla excepciones de formatos mal ingresados
-
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({ HttpMessageNotReadableException.class})
-    public ResponseEntity<ErrorDetails> badRequestFormatExceptions() {
-
-        ErrorDetails errorDetails = new ErrorDetails();
-        errorDetails.setStatus(HttpStatus.BAD_REQUEST.value() + " BAD_REQUEST");
-        errorDetails.setMessage("El tipo de formato ingresado es incorrecto");
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
-    }
-
-    // Controla Bad Requests y excepciones generales
-
+    @Operation(
+            summary = "Devuelve excepciones generales",
+            description = "Captura y devuelve codigo de estado 400 con excepciones generales"
+    )
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler({DniExistsException.class, EmailExistsException.class, HoursExistsException.class,
                         NameExistsException.class, RoleExistsException.class, Exception.class})
@@ -89,8 +65,25 @@ public class ControllerExceptionAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
     }
 
-    // Controla errores de tipeo en la URL
+    @Operation(
+            summary = "Devuelve excepciones generales",
+            description = "Captura y devuelve codigo de estado 400 con excepciones de formatos mal ingresados"
+    )
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({ HttpMessageNotReadableException.class})
+    public ResponseEntity<ErrorDetails> badRequestFormatExceptions() {
 
+        ErrorDetails errorDetails = new ErrorDetails();
+        errorDetails.setStatus(HttpStatus.BAD_REQUEST.value() + " BAD_REQUEST");
+        errorDetails.setMessage("El tipo de formato ingresado es incorrecto");
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
+    }
+
+    @Operation(
+            summary = "Devuelve excepciones generales",
+            description = "Captura y devuelve codigo de estado 404 con errores de tipeo en la URL"
+    )
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorDetails> typingErrorExceptions() {

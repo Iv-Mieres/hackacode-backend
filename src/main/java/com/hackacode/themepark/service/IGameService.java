@@ -2,14 +2,10 @@ package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.GameDTOReq;
 import com.hackacode.themepark.dto.response.GameDTORes;
-import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.exception.NameExistsException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public interface IGameService {
 

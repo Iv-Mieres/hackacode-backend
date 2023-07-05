@@ -20,6 +20,7 @@ public class TicketDetail {
     private UUID id;
     @CreationTimestamp
     private LocalDateTime purchaseDate;
+    private double price;
     @OneToOne
     @JoinColumn(name = "fkBuyer")
     private Buyer buyer;

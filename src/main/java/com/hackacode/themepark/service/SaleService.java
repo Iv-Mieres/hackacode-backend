@@ -3,10 +3,8 @@ package com.hackacode.themepark.service;
 
 import com.hackacode.themepark.dto.request.SaleDTOReq;
 import com.hackacode.themepark.dto.request.TicketDetailDTOReq;
-import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.dto.response.SaleDTORes;
 import com.hackacode.themepark.exception.IdNotFoundException;
-import com.hackacode.themepark.model.Game;
 import com.hackacode.themepark.model.Sale;
 import com.hackacode.themepark.model.TicketDetail;
 import com.hackacode.themepark.repository.*;
@@ -18,10 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.*;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,21 +27,22 @@ public class SaleService implements ISaleService {
     private final ITicketDetailRepository ticketDetailRepository;
     private final ModelMapper modelMapper;
 
+    //CREAR UNA VENTA
     @Override
     public void saveSale(SaleDTOReq saleDTOReq) throws Exception {
         Sale sale = modelMapper.map(saleDTOReq, Sale.class);
         sale.setTotalPrice(this.calculateTotalPrice(saleDTOReq));
-
         saleRepository.save(sale);
-
     }
 
+    //MUESTRA UNA VENTA POR ID
     @Override
     public SaleDTORes getSaleById(Long id) throws IdNotFoundException {
         return modelMapper.map(saleRepository.findById(id)
                 .orElseThrow(() -> new IdNotFoundException("El id " + id + " no existe")), SaleDTORes.class);
     }
 
+    //LISTA VENTAS PAGINADAS
     @Override
     public Page<SaleDTORes> getSales(Pageable pageable) {
         var sales = saleRepository.findAll(pageable);
@@ -58,6 +54,7 @@ public class SaleService implements ISaleService {
         return new PageImpl<>(salesDTO, pageable, salesDTO.size());
     }
 
+    //MODIFICA UNA LISTA POR ID
     @Override
     public void updateSale(SaleDTOReq saleDTOReq) throws IdNotFoundException {
         if (!saleRepository.existsById(saleDTOReq.getId())) {
@@ -68,6 +65,7 @@ public class SaleService implements ISaleService {
         saleRepository.save(saleUpdate);
     }
 
+    //ELIMINA UNA LISTA POR ID
     @Override
     public void deleteSale(Long id){
         saleRepository.deleteById(id);
@@ -84,9 +82,8 @@ public class SaleService implements ISaleService {
                     () -> new IdNotFoundException("No se encontro el ticket")
             );
             if (ticketDetail != null) {
-                totalPrice += ticketDetail.getTicket().getPrice();
+                totalPrice += ticketDetail.getPrice();
             }
-
         }
         return totalPrice;
     }

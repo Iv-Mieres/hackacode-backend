@@ -11,13 +11,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import java.util.List;
-
 public interface ICustomUserService {
 
     void saveUser(UserDTOReq user) throws EmailExistsException,
             IdNotFoundException, RoleNotFoundException;
-    UserDTORes getByUsername(String username) throws UsernameNotFoundException;
+    UserDTORes getByUsername(String username) throws UsernameNotFoundException, com.hackacode.themepark.exception.UsernameNotFoundException;
     UserDTORes getUserById(Long userId) throws IdNotFoundException;
     Page<UserDTORes> getAllUsers(Pageable pageable);
 

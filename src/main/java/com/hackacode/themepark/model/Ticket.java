@@ -1,17 +1,12 @@
 package com.hackacode.themepark.model;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
-
+@Hidden
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,5 +19,6 @@ public class Ticket {
     private double price;
     private String description;
     private boolean vip;
+    private boolean isDelete;
 
 }

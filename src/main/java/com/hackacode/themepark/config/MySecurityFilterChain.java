@@ -35,6 +35,13 @@ public class MySecurityFilterChain {
     private final AuthenticationProvider authenticationProvider;
 
 
+    /**
+     * Configurar la seguridad de la aplicacion web, autorizaciones, tipo de sesion, proveedor de autenticacion y filtros
+     * @param httpSecurity
+     * @param authenticationManager
+     * @return http configuration
+     * @throws Exception
+     */
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
 
@@ -46,19 +53,16 @@ public class MySecurityFilterChain {
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll())
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/informes").hasRole("GERENTE")
-
-
                 )
                 .authorizeHttpRequests(auth->
                                 auth.requestMatchers("/api/compradores", "/api/empleados","/api/roles", "/api/usuarios").hasRole("ADMINISTRADOR")
-                        )
+                )
                 .authorizeHttpRequests(auth->
                         auth.requestMatchers("/api/ventas", "/api/tickets","/api/ticket-details", "/api/juegos", "/api/horarios").hasRole("VENTAS")
                 )
                 .authorizeHttpRequests(
                         auth -> auth.anyRequest().authenticated()
                 )
-
                 .sessionManagement(session->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
@@ -68,6 +72,7 @@ public class MySecurityFilterChain {
 
 
 
+    //Subir al contexto de spring el mapeador de modelos
     @Bean
     ModelMapper modelMapper() {
         return new ModelMapper();
