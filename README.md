@@ -41,7 +41,7 @@
 
   ## Diagrama UML 
   <div align="left">
-    <img width="40%" src="https://github.com/Iv-Mieres/hackacode-backend/assets/103857812/79fa6b45-6560-4f31-b5d3-53ff17b49440.png"</img>
+    <img width="40%" src="https://github.com/Iv-Mieres/hackacode-backend/assets/103857812/5d69fd5e-5998-464b-8968-7abb0dd26d8e.png"</img>
 </div> 
 
 ## Tests Unitarios: JUnit/Mockito
