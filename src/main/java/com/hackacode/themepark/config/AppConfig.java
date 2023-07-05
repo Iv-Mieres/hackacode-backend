@@ -19,6 +19,10 @@ public class AppConfig {
 
     private final ICustomUserRepository customUserRepository;
 
+    /**
+     * Configurar el codificador de contraseña
+     * @return codificador de contraseña
+     */
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -28,6 +32,10 @@ public class AppConfig {
         return username -> customUserRepository.findByUsername(username).orElseThrow( () -> new UsernameNotFoundException("User not found"));
     }
 
+    /**
+     * Configurar el proveedor de autenticacion
+     * @return AuthenticationProvider
+     */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -36,6 +44,12 @@ public class AppConfig {
         return authProvider;
     }
 
+    /**
+     * configurar el administrador de autenticacion
+     * @param config
+     * @return AuthenticationManager
+     * @throws Exception
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

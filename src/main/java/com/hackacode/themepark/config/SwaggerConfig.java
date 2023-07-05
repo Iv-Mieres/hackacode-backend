@@ -10,15 +10,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
 
+    /**
+     * Configurar el bean de Open API para cargar la informacion basica del proyecto
+     * @return open api info
+     */
     @Bean
     public OpenAPI themeparkOpenAPI() {
         return new OpenAPI()
-                .info(new Info().title("Crazy Land Themepark API")
-                        .description("Api rest application for thematic park administration")
+                .info(new Info().title("Fantasy Kingdom Themepark API")
+                        .description("Aplicación de API Rest para la administracion de parque temático")
                         .version("v1.0.0")
-                        .license(new License().name("Crazy Land 1.0").url("http://crazy-land.com")))
+                        .license(new License().name("Fantasy Kingdom 1.0").url("http://fantasy-kingdom.com")))
                 .externalDocs(new ExternalDocumentation()
-                        .description("Themepark Documentation")
-                        .url("https://crazy-land.com/docs"));
+                        .description("Documentacion de la API")
+                        .url("https://fantasy-kingdom.com/docs"));
     }
 }
