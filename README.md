@@ -62,3 +62,16 @@
 ## Comentarios finales
 El objetivo principal del back y del proyecto general fue lograr construir un sistema que tuviera la mayor robustes posible. Intentando mantener los posibles errores al mínimo, incluso aplicando válidaciones propias de Spring como lógicas sobre el código. 
  Las posibles excepciones que pudiera arrojar el programa fueron capturadas y controladas de forma global con `@RestControllerAdvice` y `@ExceptionHandler`. De esta forma se logró mantener cierta personalización a la hora de enviar los statuscode y mensajes de errores al cliente. 
+ Por ultimo, tambien se pensó en la seguridad de la aplicación y por eso se decidió implementar `Spring Security/JWT` con el cual se puede gestionar un sistema de roles para la autenticación y autorización de los diferentes endpoints del sistema. Encroptando información sensible con `PasswordEncoder` para el encriptado de contraseñas. 
+
+ 
+
+## Agradecimientos
+
+Primeramente a Todo Code Academy por habernos permitido participar de este evento para mejorar cada día nuestras habilidades técnicos y blandas y segundo a mis compañeros de equipo que se develaron cada día por que este proyecto salga adelante. Estoy muy orgulloso de todo lo que hicimos y sé que mis compañeros tambien, asi que muchas gracias.
+
+## Equipo de desarrollo : DriftTeam
+
+- Federico Silva ([@federicosilva](https://github.com/federico42o))
+- David Thomen ([@davidthomen](https://github.com/DavidLG89))
+- Ivan Mieres 
