@@ -68,7 +68,7 @@ El objetivo principal del back y del proyecto general fue lograr construir un si
 
 ## Agradecimientos
 
-Primeramente a Todo Code Academy por habernos permitido participar de este evento para mejorar cada día nuestras habilidades técnicos y blandas y segundo a mis compañeros de equipo que se develaron cada día por que este proyecto salga adelante. Estoy muy orgulloso de todo lo que hicimos y sé que mis compañeros tambien, asi que muchas gracias.
+Primeramente a Todo Code Academy por habernos permitido participar de este evento para mejorar cada día nuestras habilidades técnicas y blandas y segundo a mis compañeros de equipo que se desvelaron cada día para que este proyecto salga adelante. Estoy muy orgulloso de todo lo que hicimos y sé que mis compañeros tambien, asi que muchas gracias.
 
 ## Equipo de desarrollo : DriftTeam
 
