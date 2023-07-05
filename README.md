@@ -12,7 +12,7 @@
     <img width="30%" src="https://github.com/Iv-Mieres/hackacode-backend/assets/103857812/d916800f-8592-499a-8207-699b47bbe873.png"</img>
 </div>
 
-***[Fantasy Kingdom](https://hackacode.todocodeacademy.com/) , sistema empresarial para el registro de clientes, empleados y ventas, basado en un parque de diversiones. Cuenta además con un registro de juegos junto con un sistema de estadisticas sobre las ganancias de las ventas de entradas y la actividad de los clientes.***
+***Fantasy Kingdom es un sistema empresarial para el registro de clientes, empleados y ventas, basado en un parque de diversiones. Cuenta además con un registro de juegos junto con un sistema de estadisticas sobre las ganancias de las ventas de entradas y la actividad de los clientes.***
 
 
   # Información Técnica del proyecto
@@ -60,5 +60,5 @@
  >Se utilizó Docker para la creación de contenedores con `docker-compose` y realizar el despliegue al servicio cloud de DonWeb con `Java` `Angular` `MySQL`
 
 ## Comentarios finales
-El objetivo principal del back y del proyecto general fue lograr construir un sistema que tuviera la mayor robustes posible. Intentando mantener los posible errores al mínimo, incluso aplicando válidaciones propias de Spring como lógicas sobre el código. 
+El objetivo principal del back y del proyecto general fue lograr construir un sistema que tuviera la mayor robustes posible. Intentando mantener los posibles errores al mínimo, incluso aplicando válidaciones propias de Spring como lógicas sobre el código. 
  Las posibles excepciones que pudiera arrojar el programa fueron capturadas y controladas de forma global con `@RestControllerAdvice` y `@ExceptionHandler`. De esta forma se logró mantener cierta personalización a la hora de enviar los statuscode y mensajes de errores al cliente. 
