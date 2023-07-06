@@ -105,8 +105,8 @@ public class CustomUserService implements ICustomUserService {
                 user.getRoles());
         var saveUser = modelMapper.map(user, CustomUser.class);
         saveUser.setEnable(true);
-        saveUser.setPassword(userBD.getPassword());
-        userRepository.save(saveUser);
+	saveUser.setPassword(userBD.getPassword());
+	userRepository.save(saveUser);
     }
 
     //ELIMINADO LÓGICO DE USUARIO
