@@ -18,6 +18,7 @@ public class UserUpdateDTOReq {
     @NotEmpty(message = "No puede estar vacio")
     @Email(message = "Debe ingresar un formato de tipo email")
     private String username;
+    private String password;
     @NotNull(message = "No puede estar vacio")
     private EmployeeDTOReq employee;
     @NotNull(message = "No puede estar vacio")
