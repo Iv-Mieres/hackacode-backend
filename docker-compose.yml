@@ -23,7 +23,11 @@ services:
       - MYSQL_DB=fantasykingdom
   frontend:
     container_name: frontend
-    build: ./hackacode-frontend
+    build: ../hackacode-frontend
+    ports:
+      - "80:80"
+
+
     ports:
       - "80:80"
 

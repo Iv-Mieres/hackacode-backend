@@ -103,9 +103,9 @@ public class CustomUserService implements ICustomUserService {
                 userBD.getUsername(),
                 user.getEmployee().getId(),
                 user.getRoles());
-        var saveUser = modelMapper.map(user, CustomUser.class);
+        user.setPassword(userBD.getPassword());
+	var saveUser = modelMapper.map(user, CustomUser.class);
         saveUser.setEnable(true);
-	saveUser.setPassword(userBD.getPassword());
 	userRepository.save(saveUser);
     }
 

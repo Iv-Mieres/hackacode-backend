@@ -50,15 +50,12 @@ public class MySecurityFilterChain {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/token/**").permitAll()
-                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll())
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/informes").hasRole("GERENTE")
+                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**","/api/por_nombre/**").permitAll())
+  		.authorizeHttpRequests(auth->
+                                auth.requestMatchers("/api/compradores", "/api/empleados","/api/roles", "/api/usuarios","/api/informes").hasAnyRole("ADMINISTRADOR","GERENTE")
                 )
                 .authorizeHttpRequests(auth->
-                                auth.requestMatchers("/api/compradores", "/api/empleados","/api/roles", "/api/usuarios").hasRole("ADMINISTRADOR")
-                )
-                .authorizeHttpRequests(auth->
-                        auth.requestMatchers("/api/ventas", "/api/tickets","/api/ticket-details", "/api/juegos", "/api/horarios").hasRole("VENTAS")
+                        auth.requestMatchers("/api/ventas", "/api/tickets","/api/ticket-details", "/api/juegos", "/api/horarios").hasAnyRole("VENTAS","GERENTE")
                 )
                 .authorizeHttpRequests(
                         auth -> auth.anyRequest().authenticated()
