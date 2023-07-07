@@ -26,9 +26,3 @@ services:
     build: ../hackacode-frontend
     ports:
       - "80:80"
-
-
-    ports:
-      - "80:80"
-
-
