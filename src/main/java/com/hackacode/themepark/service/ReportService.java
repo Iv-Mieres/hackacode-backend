@@ -4,7 +4,6 @@ import com.hackacode.themepark.dto.response.BuyerDTORes;
 import com.hackacode.themepark.dto.response.EmployeeDTORes;
 import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.dto.response.ReportGameDTORes;
-import com.hackacode.themepark.model.Buyer;
 import com.hackacode.themepark.model.Employee;
 import com.hackacode.themepark.model.Sale;
 import com.hackacode.themepark.model.TicketDetail;
@@ -148,29 +147,49 @@ public class ReportService implements IReportService {
 
     //Comprador que más entradas compró en un determinado mes y año
     @Override
-    public Map<String, Object> buyerWithTheMostTicketsSoldInTheMonth(int year, int month) throws Exception {
+    public ReportDTORes buyerWithTheMostTicketsSoldInTheMonth(int year, int month) throws Exception {
         if (year > LocalDate.now().getYear() || month > LocalDate.now().getMonthValue()) {
             throw new Exception("La fecha máxima ingresada solo puede ser hasta " + LocalDate.now());
         }
 
-        var start = LocalDateTime.of(year, month, 1, 0, 0);
-        var end = this.isLeapYearOrNot(year, month);
-        Map<String, Object> response = new HashMap<>();
+        String dni = "";
+        long count = 0;
+        var buyerDTO = new BuyerDTORes();
+        var report = new ReportDTORes();
+        report.setTotalTicketsSold(0L);
 
-        TicketDetail ticketDetail = ticketDetailRepository.findTopByPurchaseDateBetweenOrderByBuyer_IdAsc(start, end);
+        Sort sort = Sort.by(Sort.Direction.ASC, "buyer");
+        var ticketsDetail = ticketDetailRepository.findAll(sort);
 
-        if (ticketDetail == null) {
-            response.put("buyer",new BuyerDTORes());
-            return response;
+        for (TicketDetail ticketDetail : ticketsDetail) {
+            if (ticketDetail.getPurchaseDate().toLocalDate().getYear() == year
+                    && ticketDetail.getPurchaseDate().toLocalDate().getMonthValue() == month) {
+                //Si el dni del comprador coincide con el siguiente se hace la suma de tickets
+                // y se guarda el comprador en el reportDTO
+                if (dni.equals("") || ticketDetail.getBuyer().getDni().equals(dni)) {
+                    dni =  ticketDetail.getBuyer().getDni();
+                    buyerDTO = modelMapper.map(ticketDetail.getBuyer(), BuyerDTORes.class);
+                    count += 1;
+                } else {//si la cuenta de tickets es mayor a la del report se asignan los valores al report
+                    if (count > report.getTotalTicketsSold()) {
+                        report.setBuyer(buyerDTO);
+                        report.setTotalTicketsSold(count);
+                    }
+                    //vuelve a hacer el recuento con los tickets vendidos y el nombre del siguiente comprador
+                    count = 1;
+                    dni = ticketDetail.getBuyer().getDni();
+                }
+            }
         }
-        var buyerDTO = modelMapper.map(ticketDetail.getBuyer(), BuyerDTORes.class);
-        buyerDTO.setLastVisit(ticketDetailService.lastVisit(buyerDTO.getId()));
-        List<TicketDetail> ticketsCount = ticketDetailRepository.findAllByPurchaseDateBetweenAndBuyer_id(start,end,buyerDTO.getId());
-        buyerDTO.setAge(Period.between(buyerDTO.getBirthdate(), LocalDate.now()).getYears());
-        response.put("buyer", buyerDTO);
-        response.put("tickets",ticketsCount.size());
-        return response;
 
+        if (!ticketsDetail.isEmpty()) {//asigna los datos del ultimo comprador de la lista
+            // si tiene mayor cantidad de tickets
+            if (count > report.getTotalTicketsSold()) {
+                report.setBuyer(buyerDTO);
+                report.setTotalTicketsSold(count);
+            }
+        }
+        return report;
     }
 
     // Juego con la mayor cantidad de entradas vendidas hasta el día en que se lleve a cabo la consulta
@@ -191,17 +210,17 @@ public class ReportService implements IReportService {
         for (Sale sale : sales) {
             if (sale.getPurchaseDate().toLocalDate().isBefore(date)
                     || sale.getPurchaseDate().toLocalDate().isEqual(date)) {
-                //Si el nombre del juego de cada venta coincide se hace la suma de ticktes
+                //Si el nombre del juego de cada venta coincide se hace la suma de tickets
                 // y se guarda el nombre del juego
                 if (name.equals("") || sale.getGame().getName().equals(name)) {
                     name = sale.getGame().getName();
                     count += sale.getTicketsDetail().size();
-                } else {//si la cuenta de tickets es mayor a la del reportGame se asginan las valores al report
+                } else {//si la cuenta de tickets es mayor a la del reportGame se asignan las valores al report
                     if (count > reportGame.getTotalTicketsSold()) {
                         reportGame.setGame(name);
                         reportGame.setTotalTicketsSold(count);
                     }
-                    //vuelve a hacer el recuento con los ticktes vendidos y el nombre del siguiente juego
+                    //vuelve a hacer el recuento con los tickets vendidos y el nombre del siguiente juego
                     count = sale.getTicketsDetail().size();
                     name = sale.getGame().getName();
                 }

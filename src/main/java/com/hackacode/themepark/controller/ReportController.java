@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @Tag(name = "Controlador de Reportes")
 @RestController
@@ -87,7 +86,7 @@ public class ReportController {
             description = "Devuelve el comprador que más entradas compró en un determinado mes y año"
     )
     @GetMapping("/comprador/con_mas_entradas_vedidas_al_mes")
-    public ResponseEntity<Map<String, Object>> getBuyerWithMoreNormalTicketsPerMonthAndYear(@RequestParam int year, int month) throws Exception {
+    public ResponseEntity<ReportDTORes> getBuyerWithMoreNormalTicketsPerMonthAndYear(@RequestParam int year, int month) throws Exception {
         return ResponseEntity.ok(reportService.buyerWithTheMostTicketsSoldInTheMonth(year, month));
     }
 

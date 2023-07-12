@@ -3,6 +3,7 @@ package com.hackacode.themepark.service;
 import com.hackacode.themepark.dto.response.BuyerDTORes;
 import com.hackacode.themepark.dto.response.EmployeeDTORes;
 import com.hackacode.themepark.dto.response.GameDTORes;
+import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.model.*;
 import com.hackacode.themepark.repository.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -289,34 +290,15 @@ class ReportServiceTest {
     void ifTicketDetailIsNullReturnAnBuyerEmpty() throws Exception {
         int year = LocalDate.now().getYear();
         int month = LocalDate.now().getMonthValue();
-        var start = LocalDateTime.of(year, month, 1, 0, 0);
-        var end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).maxLength()), LocalTime.MAX);
-        TicketDetail ticketDetail = null;
-        Map<String, Object> expected = new HashMap<>();
-        expected.put("buyer",new BuyerDTORes());
+        Sort sort = Sort.by(Sort.Direction.ASC, "buyer");
+        var ticketsDetail = new ArrayList<TicketDetail>();
+        var expected = new ReportDTORes();
+        expected.setBuyer(new BuyerDTORes());
 
-        when(ticketDetailRepository.findTopByPurchaseDateBetweenOrderByBuyer_IdAsc(start, end)).thenReturn(ticketDetail);
+        when(ticketDetailRepository.findAll(sort)).thenReturn(ticketsDetail);
         var currenteResult = reportService.buyerWithTheMostTicketsSoldInTheMonth(year, month);
-        assertEquals(expected, currenteResult);
-        verify(ticketDetailRepository).findTopByPurchaseDateBetweenOrderByBuyer_IdAsc(start, end);
+        assertEquals(0, currenteResult.getTotalTicketsSold());
+        assertEquals(null, currenteResult.getBuyer());
+        verify(ticketDetailRepository).findAll(sort);
     }
-
-    @DisplayName("comprueba que devuelva un comprador vacio si la entrada detallada es null")
-    @Test
-    void buyerWithTheMostTicketsSoldInTheMonth() throws Exception {
-        int year = LocalDate.now().getYear();
-        int month = LocalDate.now().getMonthValue();
-        var start = LocalDateTime.of(year, month, 1, 0, 0);
-        var end = LocalDateTime.of(LocalDate.of(year, month, Month.of(month).maxLength()), LocalTime.MAX);
-        TicketDetail ticketDetail = null;
-        Map<String, Object> expected = new HashMap<>();
-        expected.put("buyer",new BuyerDTORes());
-
-        when(ticketDetailRepository.findTopByPurchaseDateBetweenOrderByBuyer_IdAsc(start, end)).thenReturn(ticketDetail);
-        var currenteResult = reportService.buyerWithTheMostTicketsSoldInTheMonth(year, month);
-        assertEquals(expected, currenteResult);
-        verify(ticketDetailRepository).findTopByPurchaseDateBetweenOrderByBuyer_IdAsc(start, end);
-    }
-
-
 }
