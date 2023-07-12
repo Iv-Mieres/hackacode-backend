@@ -1,4 +1,4 @@
-`Versión 0.0.1`
+`Versión 0.0.1` <div align="left"> [![CodeFactor](https://www.codefactor.io/repository/github/iv-mieres/hackacode-backend/badge)](https://www.codefactor.io/repository/github/iv-mieres/hackacode-backend) </div>
 
 <div align="center">
     <img width="50%" src="https://github.com/Iv-Mieres/hackacode-backend/assets/103857812/ba9afcde-567d-4fa1-838f-2350b4381b76.png"</img>
