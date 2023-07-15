@@ -21,9 +21,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -157,8 +159,9 @@ class TicketDetailServiceTest {
     @DisplayName("comprueba que retorne una fecha")
     @Test
     void lastVisit() {
-        when(ticketDetailRepository.findTopByBuyer_idOrderByBuyer_idDesc(this.buyer.getId()))
-                .thenReturn(this.ticketDetail);
+        Sort sort = Sort.by(Sort.Direction.DESC, "purchaseDate");
+        when(ticketDetailRepository.findAllByBuyer_id(sort, this.buyer.getId()))
+                .thenReturn(List.of(this.ticketDetail));
         var currentPurchaseDate = ticketDetailService.lastVisit(this.buyer.getId());
         assertEquals(this.ticketDetail.getPurchaseDate().toLocalDate().toString(), currentPurchaseDate);
     }
@@ -166,7 +169,8 @@ class TicketDetailServiceTest {
     @DisplayName("comprueba que retorne la excepción 'Sin vistas' si la entrada detalla es nula")
     @Test
     void ifTicketDetailsIsNullReturnsWithoutVisits() {
-        when(ticketDetailRepository.findTopByBuyer_idOrderByBuyer_idDesc(this.buyer.getId()))
+        Sort sort = Sort.by(Sort.Direction.DESC, "purchaseDate");
+        when(ticketDetailRepository.findAllByBuyer_id(sort, this.buyer.getId()))
                 .thenReturn(null);
         var currentPurchaseDate = ticketDetailService.lastVisit(this.buyer.getId());
         assertEquals("Sin visitas", currentPurchaseDate);

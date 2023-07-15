@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -66,11 +67,12 @@ public class TicketDetailService implements ITicketDetailService {
 
     @Override
     public String lastVisit(Long buyerId) {
-        var ticketDetail = repository.findTopByBuyer_idOrderByBuyer_idDesc(buyerId);
-        if (ticketDetail == null) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "purchaseDate");
+        var ticketsDetail = repository.findAllByBuyer_id(sort, buyerId);
+        if (ticketsDetail == null) {
             return "Sin visitas";
         } else {
-            return ticketDetail.getPurchaseDate().toLocalDate().toString();
+            return ticketsDetail.get(0).getPurchaseDate().toLocalDate().toString();
         }
     }
 

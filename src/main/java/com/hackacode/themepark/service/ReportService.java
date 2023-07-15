@@ -189,6 +189,10 @@ public class ReportService implements IReportService {
                 report.setTotalTicketsSold(count);
             }
         }
+        if (report.getBuyer() == null) {
+            return report;
+        }
+        report.getBuyer().setLastVisit(ticketDetailService.lastVisit(report.getBuyer().getId()));
         return report;
     }
 
