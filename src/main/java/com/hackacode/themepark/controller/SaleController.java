@@ -1,7 +1,6 @@
 package com.hackacode.themepark.controller;
 
 import com.hackacode.themepark.dto.request.SaleDTOReq;
-import com.hackacode.themepark.dto.response.ReportDTORes;
 import com.hackacode.themepark.dto.response.SaleDTORes;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.service.ISaleService;
@@ -11,12 +10,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
 
 @Tag(name = "Controlador de Venta")
 @RestController
@@ -71,19 +67,9 @@ public class SaleController {
             description = "Elimina de forma logica una venta por id, devuelve un Codigo de estado 204"
     )
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteSale(@PathVariable Long id) throws Exception {
+    public ResponseEntity<HttpStatus> deleteSale(@PathVariable Long id){
         saleService.deleteSale(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-//    @GetMapping("/monto_total_por_dia")
-//    public ResponseEntity<ReportDTORes> getAllSalesPerDay(@RequestParam
-//                                                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-//        return ResponseEntity.ok(saleService.sumTotalAmountOfAGivenDay(date));
-//    }
-//
-//    @GetMapping("/monto_total_por_mes")
-//    public ResponseEntity<ReportDTORes> getAllSalesPerMonth(@RequestParam int year, int month) {
-//        return ResponseEntity.ok(saleService.sumTotalAmountOfAGivenMonth(year, month));
-//    }
 }

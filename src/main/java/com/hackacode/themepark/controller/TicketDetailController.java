@@ -2,7 +2,6 @@ package com.hackacode.themepark.controller;
 
 
 import com.hackacode.themepark.dto.request.TicketDetailDTOReq;
-import com.hackacode.themepark.dto.response.TicketDTORes;
 import com.hackacode.themepark.dto.response.TicketDetailDTORes;
 import com.hackacode.themepark.exception.IdNotFoundException;
 import com.hackacode.themepark.service.ITicketDetailService;

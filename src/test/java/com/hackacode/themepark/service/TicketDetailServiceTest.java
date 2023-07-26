@@ -168,10 +168,10 @@ class TicketDetailServiceTest {
 
     @DisplayName("comprueba que retorne la excepción 'Sin vistas' si la entrada detalla es nula")
     @Test
-    void ifTicketDetailsIsNullReturnsWithoutVisits() {
+    void ifTicketDetailsIsEmptyReturnsWithoutVisits() {
         Sort sort = Sort.by(Sort.Direction.DESC, "purchaseDate");
         when(ticketDetailRepository.findAllByBuyer_id(sort, this.buyer.getId()))
-                .thenReturn(null);
+                .thenReturn(List.of());
         var currentPurchaseDate = ticketDetailService.lastVisit(this.buyer.getId());
         assertEquals("Sin visitas", currentPurchaseDate);
     }

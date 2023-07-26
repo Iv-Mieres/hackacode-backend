@@ -69,7 +69,7 @@ public class TicketDetailService implements ITicketDetailService {
     public String lastVisit(Long buyerId) {
         Sort sort = Sort.by(Sort.Direction.DESC, "purchaseDate");
         var ticketsDetail = repository.findAllByBuyer_id(sort, buyerId);
-        if (ticketsDetail == null) {
+        if (ticketsDetail.isEmpty()) {
             return "Sin visitas";
         } else {
             return ticketsDetail.get(0).getPurchaseDate().toLocalDate().toString();

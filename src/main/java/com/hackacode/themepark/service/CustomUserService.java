@@ -139,7 +139,7 @@ public class CustomUserService implements ICustomUserService {
         }
     }
 
-    //VALIDA DATOS ANTES DE MODIFICAR UN USARIO
+    //VALIDA DATOS ANTES DE MODIFICAR UN USUARIO
     public void validateDataBeforeUpdatingUser(String usernameDTO, String usernameBD,
                                                Long employeeIdDTO, List<RoleDTOReq> rolesDTO) throws IdNotFoundException,
             EmailExistsException, EntityExistsException, RoleNotFoundException {

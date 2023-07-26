@@ -63,7 +63,7 @@ public class BuyerService implements IBuyerService {
 
         //convierte el comprador a DTO y lo guarda en la lista
         for (Buyer buyer : buyerRepository.findAll(pageable)) {
-            var buyerDTO = modelMapper.map(buyer, BuyerDTORes.class);
+                var buyerDTO = modelMapper.map(buyer, BuyerDTORes.class);
                 buyerDTO.setAge(Period.between(buyerDTO.getBirthdate(), LocalDate.now()).getYears());
                 buyerDTO.setLastVisit(ticketDetailService.lastVisit(buyer.getId()));
                 buyersDTO.add(buyerDTO);
