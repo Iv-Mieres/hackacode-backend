@@ -18,7 +18,7 @@ public WebMvcConfigurer corsConfigurer() {
         @Override
         public void addCorsMappings(CorsRegistry registry) {
             registry.addMapping("/**")
-                    .allowedOrigins("http://0.0.0.0","http://localhost:4200/")
+                    .allowedOrigins("http://0.0.0.0","http://vps-3471374-x.dattaweb.com/")
                     .allowedMethods("*")
                     .allowedHeaders("*")
                     .allowCredentials(true);
