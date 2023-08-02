@@ -8,8 +8,6 @@ public class ThemeparkApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ThemeparkApplication.class, args);
-
-
 	}
 
 }

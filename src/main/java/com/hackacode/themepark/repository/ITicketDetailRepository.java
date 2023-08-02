@@ -8,5 +8,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ITicketDetailRepository extends JpaRepository<TicketDetail, UUID> {
-    List<TicketDetail> findAllByBuyer_id(Sort sort , Long buyerId);
+    List<TicketDetail> findAllByBuyer_id(Sort sort, Long buyerId);
 }

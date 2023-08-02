@@ -3,14 +3,15 @@ version: "3.9"
 services:
   java_app:
     container_name: java_app
-    image: hackacode:1.0.0
+    image: backend:1.0
     build: .
     ports:
       - "8080:8080"
     environment:
-      - DATABASE_URL=jdbc:mysql://java_db:3306/fantasykingdom
+      - DATABASE_URL=jdbc:mysql://java_db:3306/fantasykingdom?serverTimezone=UTC
       - DATABASE_USERNAME=root
       - DATABASE_PASSWORD=
+    restart: always
     depends_on:
       - java_db
   java_db:
@@ -21,8 +22,4 @@ services:
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=TRUE
       - MYSQL_DB=fantasykingdom
-  frontend:
-    container_name: frontend
-    build: ../hackacode-frontend
-    ports:
-      - "80:80"
+    restart: always

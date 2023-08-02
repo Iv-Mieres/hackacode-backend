@@ -23,7 +23,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -159,14 +161,24 @@ class TicketDetailServiceTest {
     @DisplayName("comprueba que retorne una fecha")
     @Test
     void lastVisit() {
+
+        var ticketDetail2 = new TicketDetail();
+        ticketDetail2.setTicket(ticket);
+        ticketDetail2.setBuyer(this.buyer);
+        ticketDetail2.setPurchaseDate(LocalDateTime.of(LocalDate.of(2023,04,23), LocalTime.now()));
+
+        var ticketsDetail = new ArrayList<TicketDetail>();
+        ticketsDetail.add(this.ticketDetail);
+        ticketsDetail.add(ticketDetail2);
+
         Sort sort = Sort.by(Sort.Direction.DESC, "purchaseDate");
         when(ticketDetailRepository.findAllByBuyer_id(sort, this.buyer.getId()))
-                .thenReturn(List.of(this.ticketDetail));
+                .thenReturn(ticketsDetail);
         var currentPurchaseDate = ticketDetailService.lastVisit(this.buyer.getId());
-        assertEquals(this.ticketDetail.getPurchaseDate().toLocalDate().toString(), currentPurchaseDate);
+        assertEquals(LocalDate.now().toString(), currentPurchaseDate);
     }
 
-    @DisplayName("comprueba que retorne la excepción 'Sin vistas' si la entrada detalla es nula")
+    @DisplayName("comprueba que retorne la excepción 'Sin vistas' si la lista está vacia")
     @Test
     void ifTicketDetailsIsEmptyReturnsWithoutVisits() {
         Sort sort = Sort.by(Sort.Direction.DESC, "purchaseDate");
