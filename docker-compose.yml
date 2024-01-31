@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  java_app:
+    container_name: java_app
+    image: backend:1.0
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=jdbc:mysql://java_db:3306/fantasykingdom?createDatabaseIfNotExist=TRUE&serverTimezone=UTC
+      - DATABASE_USERNAME=root
+      - DATABASE_PASSWORD=
+    restart: always
+    depends_on:
+      - java_db
+  java_db:
+    container_name: java_db
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=TRUE
+      - MYSQL_DB=fantasykingdom
+    restart: always
